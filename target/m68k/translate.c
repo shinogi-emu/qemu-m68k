@@ -5364,7 +5364,8 @@ DISAS_INSN(frestore)
         gen_exception(s, s->base.pc_next, EXCP_PRIVILEGE);
         return;
     }
-    if (m68k_feature(s->env, M68K_FEATURE_M68040)) {
+    if (m68k_feature(s->env, M68K_FEATURE_M68040) ||
+        m68k_feature(s->env, M68K_FEATURE_M68060)) {
         SRC_EA(env, addr, OS_LONG, 0, NULL);
         /* FIXME: check the state frame */
     } else {
@@ -5379,7 +5380,8 @@ DISAS_INSN(fsave)
         return;
     }
 
-    if (m68k_feature(s->env, M68K_FEATURE_M68040)) {
+    if (m68k_feature(s->env, M68K_FEATURE_M68040) ||
+        m68k_feature(s->env, M68K_FEATURE_M68060)) {
         /* always write IDLE */
         TCGv idle = tcg_constant_i32(0x41000000);
         DEST_EA(env, insn, OS_LONG, idle, NULL);
@@ -6002,7 +6004,9 @@ void register_m68k_insns (CPUM68KState *env)
     INSN(intouch,   f340, ffc0, CF_ISA_A);
     INSN(cpushl,    f428, ff38, CF_ISA_A);
     INSN(cpush,     f420, ff20, M68040);
+    INSN(cpush,     f420, ff20, M68060);
     INSN(cinv,      f400, ff20, M68040);
+    INSN(cinv,      f400, ff20, M68060);
     INSN(pflush,    f500, ffe0, M68040);
     INSN(ptest,     f548, ffd8, M68040);
     INSN(wddata,    fb00, ff00, CF_ISA_A);
