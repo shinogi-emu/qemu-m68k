@@ -197,7 +197,8 @@ static const uint8_t cc_op_live[CC_OP_NB] = {
     [CC_OP_ADDB ... CC_OP_ADDL] = CCF_X | CCF_N | CCF_V,
     [CC_OP_SUBB ... CC_OP_SUBL] = CCF_X | CCF_N | CCF_V,
     [CC_OP_CMPB ... CC_OP_CMPL] = CCF_X | CCF_N | CCF_V,
-    [CC_OP_LOGIC] = CCF_X | CCF_N
+    [CC_OP_LOGIC] = CCF_X | CCF_N,
+    [CC_OP_LOGIC_X] = CCF_X | CCF_N
 };
 
 static void set_cc_op(DisasContext *s, CCOp op)
@@ -576,6 +577,12 @@ static void gen_flush_flags(DisasContext *s)
     case CC_OP_LOGIC:
         tcg_gen_mov_i32(QREG_CC_Z, QREG_CC_N);
         tcg_gen_movi_i32(QREG_CC_C, 0);
+        tcg_gen_movi_i32(QREG_CC_V, 0);
+        break;
+
+    case CC_OP_LOGIC_X:
+        tcg_gen_mov_i32(QREG_CC_Z, QREG_CC_N);
+        tcg_gen_mov_i32(QREG_CC_C, QREG_CC_X);
         tcg_gen_movi_i32(QREG_CC_V, 0);
         break;
 
@@ -1225,7 +1232,7 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
          * and since Z and N are co-located, this becomes a normal
          * comparison vs N.
          */
-        if (op == CC_OP_LOGIC) {
+        if (op == CC_OP_LOGIC || op == CC_OP_LOGIC_X) {
             c->v1 = QREG_CC_N;
             tcond = TCG_COND_LE;
             goto done;
@@ -1234,7 +1241,7 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
     case 12: /* GE (!(N ^ V)) */
     case 13: /* LT (N ^ V) */
         /* Logic operations clear V, which simplifies this to N.  */
-        if (op != CC_OP_LOGIC) {
+        if (op != CC_OP_LOGIC && op != CC_OP_LOGIC_X) {
             break;
         }
         /* fallthru */
@@ -1243,7 +1250,7 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
         /* Several cases represent N normally.  */
         if (op == CC_OP_ADDB || op == CC_OP_ADDW || op == CC_OP_ADDL ||
             op == CC_OP_SUBB || op == CC_OP_SUBW || op == CC_OP_SUBL ||
-            op == CC_OP_LOGIC) {
+            op == CC_OP_LOGIC || op == CC_OP_LOGIC_X) {
             c->v1 = QREG_CC_N;
             tcond = TCG_COND_LT;
             goto done;
@@ -1254,7 +1261,7 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
         /* Some cases fold Z into N.  */
         if (op == CC_OP_ADDB || op == CC_OP_ADDW || op == CC_OP_ADDL ||
             op == CC_OP_SUBB || op == CC_OP_SUBW || op == CC_OP_SUBL ||
-            op == CC_OP_LOGIC) {
+            op == CC_OP_LOGIC || op == CC_OP_LOGIC_X) {
             tcond = TCG_COND_EQ;
             c->v1 = QREG_CC_N;
             goto done;
@@ -1269,11 +1276,16 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
             c->v1 = QREG_CC_X;
             goto done;
         }
+        if (op == CC_OP_LOGIC_X) {
+            tcond = TCG_COND_NE;
+            c->v1 = QREG_CC_X;
+            goto done;
+        }
         /* fallthru */
     case 8: /* VC (!V) */
     case 9: /* VS (V) */
         /* Logic operations clear V and C.  */
-        if (op == CC_OP_LOGIC) {
+        if (op == CC_OP_LOGIC || op == CC_OP_LOGIC_X) {
             tcond = TCG_COND_NEVER;
             c->v1 = c->v2;
             goto done;
@@ -3357,14 +3369,17 @@ static inline void shift_im(DisasContext *s, uint16_t insn, int opsize)
     int left = insn & 0x100;
     int bits = opsize_bytes(opsize) * 8;
     TCGv reg = gen_extend(s, DREG(insn, 0), opsize, !logical);
+    TCGv carry = logical ? QREG_CC_X : QREG_CC_C;
 
     if (count == 0) {
         count = 8;
     }
 
-    tcg_gen_movi_i32(QREG_CC_V, 0);
+    if (!logical) {
+        tcg_gen_movi_i32(QREG_CC_V, 0);
+    }
     if (left) {
-        tcg_gen_shri_i32(QREG_CC_C, reg, bits - count);
+        tcg_gen_shri_i32(carry, reg, bits - count);
         tcg_gen_shli_i32(QREG_CC_N, reg, count);
 
         /*
@@ -3384,7 +3399,7 @@ static inline void shift_im(DisasContext *s, uint16_t insn, int opsize)
             }
         }
     } else {
-        tcg_gen_shri_i32(QREG_CC_C, reg, count - 1);
+        tcg_gen_shri_i32(carry, reg, count - 1);
         if (logical) {
             tcg_gen_shri_i32(QREG_CC_N, reg, count);
         } else {
@@ -3393,12 +3408,16 @@ static inline void shift_im(DisasContext *s, uint16_t insn, int opsize)
     }
 
     gen_ext(QREG_CC_N, QREG_CC_N, opsize, 1);
-    tcg_gen_andi_i32(QREG_CC_C, QREG_CC_C, 1);
-    tcg_gen_mov_i32(QREG_CC_Z, QREG_CC_N);
-    tcg_gen_mov_i32(QREG_CC_X, QREG_CC_C);
+    tcg_gen_andi_i32(carry, carry, 1);
 
     gen_partset_reg(opsize, DREG(insn, 0), QREG_CC_N);
-    set_cc_op(s, CC_OP_FLAGS);
+    if (logical) {
+        set_cc_op(s, CC_OP_LOGIC_X);
+    } else {
+        tcg_gen_mov_i32(QREG_CC_Z, QREG_CC_N);
+        tcg_gen_mov_i32(QREG_CC_X, QREG_CC_C);
+        set_cc_op(s, CC_OP_FLAGS);
+    }
 }
 
 static inline void shift_reg(DisasContext *s, uint16_t insn, int opsize)
