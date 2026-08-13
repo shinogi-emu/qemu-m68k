@@ -342,7 +342,23 @@ static void m68k_interrupt_all(CPUM68KState *env, int is_hw)
     switch (cs->exception_index) {
     case EXCP_ACCESS:
         if (env->mmu.fault) {
-            cpu_abort(cs, "DOUBLE MMU FAULT\n");
+            /*
+             * A fault while the last one is still being taken. Real
+             * hardware halts the processor: it asserts HALT and stops
+             * until reset, which leaves the machine dead but intact.
+             *
+             * Aborting instead takes the whole emulator with it, so a
+             * guest bug becomes an emulator crash and the user loses
+             * the screen along with any chance of seeing what happened.
+             * That is the same complaint as the control registers -- a
+             * guest must not be able to end the process.
+             */
+            qemu_log_mask(LOG_GUEST_ERROR,
+                          "m68k: double access fault at 0x%08x, halting\n",
+                          env->pc);
+            cs->halted = 1;
+            cs->exception_index = EXCP_HLT;
+            cpu_loop_exit(cs);
         }
         env->mmu.fault = true;
         /* push data 3 */

@@ -175,6 +175,11 @@ static void m68k_cpu_reset_hold(Object *obj, ResetType type)
     cpu_m68k_set_fpcr(env, 0);
     env->fpsr = 0;
 
+    if (m68k_feature(env, M68K_FEATURE_M68060)) {
+        /* MC68060 identification field, revision 0, control bits reset. */
+        env->pcr = 0x04300000;
+    }
+
     /* TODO: We should set PC from the interrupt vector.  */
     env->pc = 0;
 }
@@ -572,6 +577,24 @@ const VMStateDescription vmstate_68040_spregs = {
     }
 };
 
+static bool cpu_68060_spregs_needed(void *opaque)
+{
+    M68kCPU *s = opaque;
+
+    return m68k_feature(&s->env, M68K_FEATURE_M68060);
+}
+
+const VMStateDescription vmstate_68060_spregs = {
+    .name = "cpu/68060_spregs",
+    .version_id = 1,
+    .minimum_version_id = 1,
+    .needed = cpu_68060_spregs_needed,
+    .fields = (const VMStateField[]) {
+        VMSTATE_UINT32(env.pcr, M68kCPU),
+        VMSTATE_END_OF_LIST()
+    }
+};
+
 static const VMStateDescription vmstate_m68k_cpu = {
     .name = "cpu",
     .version_id = 1,
@@ -598,6 +621,7 @@ static const VMStateDescription vmstate_m68k_cpu = {
         &vmstate_cf_spregs,
         &vmstate_68040_mmu,
         &vmstate_68040_spregs,
+        &vmstate_68060_spregs,
         NULL
     },
 };

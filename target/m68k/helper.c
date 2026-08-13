@@ -137,6 +137,8 @@ void m68k_cpu_init_gdb(M68kCPU *cpu)
     /* TODO: Add [E]MAC registers.  */
 }
 
+static void raise_exception_ra(CPUM68KState *env, int tt, uintptr_t raddr);
+
 void HELPER(cf_movec_to)(CPUM68KState *env, uint32_t reg, uint32_t val)
 {
     switch (reg) {
@@ -155,9 +157,12 @@ void HELPER(cf_movec_to)(CPUM68KState *env, uint32_t reg, uint32_t val)
         break;
     /* TODO: Implement control registers.  */
     default:
-        cpu_abort(env_cpu(env),
-                  "Unimplemented control register write 0x%x = 0x%x\n",
-                  reg, val);
+        /*
+         * Fault rather than abort, for the same reason as the read
+         * path: a write to a register this CPU does not have is the
+         * guest's mistake to handle, not grounds for killing it.
+         */
+        raise_exception_ra(env, EXCP_ILLEGAL, 0);
     }
 }
 
@@ -280,13 +285,24 @@ void HELPER(m68k_movec_to)(CPUM68KState *env, uint32_t reg, uint32_t val)
             return;
         }
         break;
-    /* Unimplemented Registers */
-    case M68K_CR_CAAR:
+    /*
+     * Unimplemented registers fall through to the exception below, for
+     * the same reason the read path does: on hardware the access faults
+     * and software probing for a register catches it. Writing is not the
+     * rarer case -- enabling the 68060's superscalar dispatch is a write
+     * to the PCR -- so aborting here would let an 060-aware kernel
+     * destroy the machine while merely configuring the CPU it runs on.
+     */
     case M68K_CR_PCR:
+        if (m68k_feature(env, M68K_FEATURE_M68060)) {
+            /* Identification and revision are read-only. */
+            env->pcr = (env->pcr & 0xffff0000) | (val & 0x83);
+            return;
+        }
+        break;
+    case M68K_CR_CAAR:
     case M68K_CR_BUSCR:
-        cpu_abort(env_cpu(env),
-                  "Unimplemented control register write 0x%x = 0x%x\n",
-                  reg, val);
+        break;
     }
 
     /* Invalid control registers will generate an exception. */
@@ -384,12 +400,24 @@ uint32_t HELPER(m68k_movec_from)(CPUM68KState *env, uint32_t reg)
             return env->mmu.ttr[M68K_DTTR1];
         }
         break;
-    /* Unimplemented Registers */
-    case M68K_CR_CAAR:
+    /*
+     * Unimplemented registers fall through to the exception below.
+     *
+     * These are real registers on some family members and absent on
+     * others, so software probes them to tell one CPU from another --
+     * reading the 68060's PCR is the standard way to distinguish an
+     * 040 from an 060. On hardware the probe faults and the prober
+     * catches it; aborting instead lets any guest destroy the machine
+     * with one instruction.
+     */
     case M68K_CR_PCR:
+        if (m68k_feature(env, M68K_FEATURE_M68060)) {
+            return env->pcr;
+        }
+        break;
+    case M68K_CR_CAAR:
     case M68K_CR_BUSCR:
-        cpu_abort(env_cpu(env), "Unimplemented control register read 0x%x\n",
-                  reg);
+        break;
     }
 
     /* Invalid control registers will generate an exception. */
