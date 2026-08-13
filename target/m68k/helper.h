@@ -130,5 +130,8 @@ DEF_HELPER_4(cmp2, void, env, s32, s32, s32)
 #if !defined(CONFIG_USER_ONLY)
 DEF_HELPER_3(ptest, void, env, i32, i32)
 DEF_HELPER_3(pflush, void, env, i32, i32)
+DEF_HELPER_3(plpa, i32, env, i32, i32)
+DEF_HELPER_2(fsave_060, void, env, i32)
+DEF_HELPER_2(frestore_060, void, env, i32)
 DEF_HELPER_FLAGS_1(reset, TCG_CALL_NO_RWG, void, env)
 #endif

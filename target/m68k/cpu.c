@@ -57,6 +57,9 @@ static TCGTBCPUState m68k_get_tb_cpu_state(CPUState *cs)
     if (M68K_SR_TRACE(env->sr) == M68K_SR_TRACE_ANY_INS) {
         flags |= TB_FLAGS_TRACE;
     }
+    if (m68k_feature(env, M68K_FEATURE_M68060) && (env->pcr & 2)) {
+        flags |= TB_FLAGS_060_DFP;
+    }
 
     return (TCGTBCPUState){ .pc = env->pc, .flags = flags };
 }
@@ -174,10 +177,13 @@ static void m68k_cpu_reset_hold(Object *obj, ResetType type)
     }
     cpu_m68k_set_fpcr(env, 0);
     env->fpsr = 0;
+    env->fpiar = 0;
+    env->fpu_state = 0;
 
     if (m68k_feature(env, M68K_FEATURE_M68060)) {
         /* MC68060 identification field, revision 0, control bits reset. */
         env->pcr = 0x04300000;
+        env->buscr = 0;
     }
 
     /* TODO: We should set PC from the interrupt vector.  */
@@ -495,7 +501,7 @@ static int fpu_post_load(void *opaque, int version)
 
 const VMStateDescription vmmstate_fpu = {
     .name = "cpu/fpu",
-    .version_id = 1,
+    .version_id = 2,
     .minimum_version_id = 1,
     .needed = fpu_needed,
     .pre_save = fpu_pre_save,
@@ -503,6 +509,8 @@ const VMStateDescription vmmstate_fpu = {
     .fields = (const VMStateField[]) {
         VMSTATE_UINT32(env.fpcr, M68kCPU),
         VMSTATE_UINT32(env.fpsr, M68kCPU),
+        VMSTATE_UINT32_V(env.fpiar, M68kCPU, 2),
+        VMSTATE_UINT32_V(env.fpu_state, M68kCPU, 2),
         VMSTATE_STRUCT_ARRAY(env.fregs, M68kCPU, 8, 0, vmstate_freg, FPReg),
         VMSTATE_STRUCT(env.fp_result, M68kCPU, 0, vmstate_freg, FPReg),
         VMSTATE_END_OF_LIST()
@@ -535,17 +543,19 @@ static bool cpu_68040_mmu_needed(void *opaque)
 {
     M68kCPU *s = opaque;
 
-    return m68k_feature(&s->env, M68K_FEATURE_M68040);
+    return m68k_feature(&s->env, M68K_FEATURE_M68040) ||
+           m68k_feature(&s->env, M68K_FEATURE_M68060);
 }
 
 const VMStateDescription vmstate_68040_mmu = {
     .name = "cpu/68040_mmu",
-    .version_id = 1,
+    .version_id = 2,
     .minimum_version_id = 1,
     .needed = cpu_68040_mmu_needed,
     .fields = (const VMStateField[]) {
         VMSTATE_UINT32(env.mmu.ar, M68kCPU),
         VMSTATE_UINT32(env.mmu.ssw, M68kCPU),
+        VMSTATE_UINT32_V(env.mmu.fslw, M68kCPU, 2),
         VMSTATE_UINT16(env.mmu.tcr, M68kCPU),
         VMSTATE_UINT32(env.mmu.urp, M68kCPU),
         VMSTATE_UINT32(env.mmu.srp, M68kCPU),
@@ -586,11 +596,16 @@ static bool cpu_68060_spregs_needed(void *opaque)
 
 const VMStateDescription vmstate_68060_spregs = {
     .name = "cpu/68060_spregs",
-    .version_id = 1,
+    .version_id = 2,
     .minimum_version_id = 1,
     .needed = cpu_68060_spregs_needed,
     .fields = (const VMStateField[]) {
         VMSTATE_UINT32(env.pcr, M68kCPU),
+        VMSTATE_UINT32_V(env.buscr, M68kCPU, 2),
+        VMSTATE_UINT32_V(env.vbr, M68kCPU, 2),
+        VMSTATE_UINT32_V(env.cacr, M68kCPU, 2),
+        VMSTATE_UINT32_V(env.sfc, M68kCPU, 2),
+        VMSTATE_UINT32_V(env.dfc, M68kCPU, 2),
         VMSTATE_END_OF_LIST()
     }
 };

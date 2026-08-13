@@ -25,6 +25,7 @@
 #include "exec/target_page.h"
 #include "exec/gdbstub.h"
 #include "exec/helper-proto.h"
+#include "accel/tcg/cpu-ldst.h"
 #include "system/memory.h"
 #include "gdbstub/helpers.h"
 #include "fpu/softfloat.h"
@@ -47,8 +48,8 @@ static int cf_fpu_gdb_get_reg(CPUState *cs, GByteArray *mem_buf, int n)
         return gdb_get_reg32(mem_buf, env->fpcr);
     case 9: /* fpstatus */
         return gdb_get_reg32(mem_buf, env->fpsr);
-    case 10: /* fpiar, not implemented */
-        return gdb_get_reg32(mem_buf, 0);
+    case 10: /* fpiar */
+        return gdb_get_reg32(mem_buf, env->fpiar);
     }
     return 0;
 }
@@ -71,7 +72,8 @@ static int cf_fpu_gdb_set_reg(CPUState *cs, uint8_t *mem_buf, int n)
     case 9: /* fpstatus */
         env->fpsr = ldl_be_p(mem_buf);
         return 4;
-    case 10: /* fpiar, not implemented */
+    case 10: /* fpiar */
+        env->fpiar = ldl_be_p(mem_buf);
         return 4;
     }
     return 0;
@@ -93,8 +95,8 @@ static int m68k_fpu_gdb_get_reg(CPUState *cs, GByteArray *mem_buf, int n)
         return gdb_get_reg32(mem_buf, env->fpcr);
     case 9: /* fpstatus */
         return gdb_get_reg32(mem_buf, cpu_m68k_get_fpsr(env));
-    case 10: /* fpiar, not implemented */
-        return gdb_get_reg32(mem_buf, 0);
+    case 10: /* fpiar */
+        return gdb_get_reg32(mem_buf, env->fpiar);
     }
     return 0;
 }
@@ -116,7 +118,8 @@ static int m68k_fpu_gdb_set_reg(CPUState *cs, uint8_t *mem_buf, int n)
     case 9: /* fpstatus */
         cpu_m68k_set_fpsr(env, ldl_be_p(mem_buf));
         return 4;
-    case 10: /* fpiar, not implemented */
+    case 10: /* fpiar */
+        env->fpiar = ldl_be_p(mem_buf);
         return 4;
     }
     return 0;
@@ -259,28 +262,32 @@ void HELPER(m68k_movec_to)(CPUM68KState *env, uint32_t reg, uint32_t val)
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_ITT0: /* MC68EC040 only: M68K_CR_IACR0 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             env->mmu.ttr[M68K_ITTR0] = val;
             return;
         }
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_ITT1: /* MC68EC040 only: M68K_CR_IACR1 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             env->mmu.ttr[M68K_ITTR1] = val;
             return;
         }
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_DTT0: /* MC68EC040 only: M68K_CR_DACR0 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             env->mmu.ttr[M68K_DTTR0] = val;
             return;
         }
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_DTT1: /* MC68EC040 only: M68K_CR_DACR1 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             env->mmu.ttr[M68K_DTTR1] = val;
             return;
         }
@@ -301,7 +308,12 @@ void HELPER(m68k_movec_to)(CPUM68KState *env, uint32_t reg, uint32_t val)
         }
         break;
     case M68K_CR_CAAR:
+        break;
     case M68K_CR_BUSCR:
+        if (m68k_feature(env, M68K_FEATURE_M68060)) {
+            env->buscr = val & 0xa0000000;
+            return;
+        }
         break;
     }
 
@@ -378,25 +390,29 @@ uint32_t HELPER(m68k_movec_from)(CPUM68KState *env, uint32_t reg)
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_ITT0: /* MC68EC040 only: M68K_CR_IACR0 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             return env->mmu.ttr[M68K_ITTR0];
         }
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_ITT1: /* MC68EC040 only: M68K_CR_IACR1 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             return env->mmu.ttr[M68K_ITTR1];
         }
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_DTT0: /* MC68EC040 only: M68K_CR_DACR0 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             return env->mmu.ttr[M68K_DTTR0];
         }
         break;
     /* MC68040/MC68LC040 */
     case M68K_CR_DTT1: /* MC68EC040 only: M68K_CR_DACR1 */
-        if (m68k_feature(env, M68K_FEATURE_M68040)) {
+        if (m68k_feature(env, M68K_FEATURE_M68040) ||
+            m68k_feature(env, M68K_FEATURE_M68060)) {
             return env->mmu.ttr[M68K_DTTR1];
         }
         break;
@@ -416,7 +432,11 @@ uint32_t HELPER(m68k_movec_from)(CPUM68KState *env, uint32_t reg)
         }
         break;
     case M68K_CR_CAAR:
+        break;
     case M68K_CR_BUSCR:
+        if (m68k_feature(env, M68K_FEATURE_M68060)) {
+            return env->buscr;
+        }
         break;
     }
 
@@ -1026,6 +1046,28 @@ bool m68k_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
     }
 
     /* page fault */
+    if (m68k_feature(env, M68K_FEATURE_M68060)) {
+        uint32_t fslw = 1 << 9; /* PF: invalid page descriptor. */
+
+        if (env->buscr & 0x80000000) {
+            fslw |= 1 << 25; /* LK: fault during a locked sequence. */
+        }
+        if (access_type & ACCESS_CODE) {
+            fslw |= 1 << 15; /* IO: instruction access. */
+        }
+        fslw |= (access_type & ACCESS_STORE) ? (1 << 23) : (2 << 23);
+        switch (size) {
+        case 2:
+            fslw |= 1 << 21;
+            break;
+        case 4:
+            fslw |= 2 << 21;
+            break;
+        }
+        fslw |= ((access_type & ACCESS_SUPER ? 4 : 0) |
+                 (access_type & ACCESS_CODE ? 2 : 1)) << 16;
+        env->mmu.fslw = fslw;
+    }
     env->mmu.ssw = M68K_ATC_040;
     switch (size) {
     case 1:
@@ -1529,6 +1571,83 @@ void HELPER(pflush)(CPUM68KState *env, uint32_t addr, uint32_t opmode)
         tlb_flush(cs);
         break;
     }
+}
+
+uint32_t HELPER(plpa)(CPUM68KState *env, uint32_t addr, uint32_t is_read)
+{
+    CPUState *cs = env_cpu(env);
+    hwaddr physical;
+    int access_type = ACCESS_DATA;
+    int prot;
+    target_ulong page_size;
+
+    if ((env->mmu.tcr & M68K_TCR_ENABLED) == 0) {
+        return addr;
+    }
+    if (env->dfc & 4) {
+        access_type |= ACCESS_SUPER;
+    }
+    if (!is_read) {
+        access_type |= ACCESS_STORE;
+    }
+
+    env->mmu.ssw = 0;
+    if (get_physical_address(env, &physical, &prot, addr,
+                             access_type, &page_size) == 0) {
+        tlb_set_page(cs, addr & TARGET_PAGE_MASK,
+                     physical & TARGET_PAGE_MASK, prot,
+                     access_type & ACCESS_SUPER ?
+                     MMU_KERNEL_IDX : MMU_USER_IDX, page_size);
+        return physical;
+    }
+
+    env->mmu.ssw = M68K_ATC_040 | M68K_BA_SIZE_LONG | M68K_TM_040_DATA;
+    if (access_type & ACCESS_SUPER) {
+        env->mmu.ssw |= M68K_TM_040_SUPER;
+    }
+    if (is_read) {
+        env->mmu.ssw |= M68K_RW_040;
+    }
+    env->mmu.fslw = (is_read ? (2 << 23) : (1 << 23)) |
+                     (2 << 21) | (1 << 9) |
+                     ((access_type & ACCESS_SUPER ? 5 : 1) << 16);
+    env->mmu.ar = addr;
+    raise_exception_ra(env, EXCP_ACCESS, GETPC());
+    return addr;
+}
+
+void HELPER(fsave_060)(CPUM68KState *env, uint32_t addr)
+{
+    cpu_stl_be_mmuidx_ra(env, addr, env->fpu_state << 8,
+                         MMU_KERNEL_IDX, GETPC());
+    cpu_stl_be_mmuidx_ra(env, addr + 4, 0, MMU_KERNEL_IDX, GETPC());
+    cpu_stl_be_mmuidx_ra(env, addr + 8, 0, MMU_KERNEL_IDX, GETPC());
+    env->fpu_state = 0x60;
+}
+
+void HELPER(frestore_060)(CPUM68KState *env, uint32_t addr)
+{
+    uint32_t frame = cpu_ldl_be_mmuidx_ra(env, addr, MMU_KERNEL_IDX, GETPC());
+    uint32_t format = extract32(frame, 8, 8);
+
+    switch (format) {
+    case 0x00:
+        for (int i = 0; i < 8; i++) {
+            env->fregs[i].d = floatx80_default_nan(&env->fp_status);
+        }
+        cpu_m68k_set_fpcr(env, 0);
+        env->fpsr = 0;
+        env->fpiar = 0;
+        break;
+    case 0x60:
+    case 0xe0:
+        cpu_ldl_be_mmuidx_ra(env, addr + 4, MMU_KERNEL_IDX, GETPC());
+        cpu_ldl_be_mmuidx_ra(env, addr + 8, MMU_KERNEL_IDX, GETPC());
+        break;
+    default:
+        raise_exception_ra(env, EXCP_FORMAT, GETPC());
+    }
+    env->fpu_state = format;
 }
 
 void HELPER(reset)(CPUM68KState *env)

@@ -106,6 +106,14 @@ static const char *m68k_exception_name(int index)
         return "Copro Protocol Violation";
     case EXCP_FORMAT:
         return "Format Error";
+    case EXCP_UNIMP_EA:
+        return "Unimplemented Effective Address";
+    case EXCP_UNIMP_INT:
+        return "Unimplemented Integer Instruction";
+    case EXCP_060_FPU_UNIMP:
+        return "68060 Unimplemented Floating-Point Instruction";
+    case EXCP_060_FPU_DISABLED:
+        return "68060 Floating-Point Unit Disabled";
     case EXCP_UNINITIALIZED:
         return "Uninitialized Interrupt";
     case EXCP_SPURIOUS:
@@ -308,7 +316,12 @@ static void m68k_interrupt_all(CPUM68KState *env, int is_hw)
         }
     }
 
-    vector = cs->exception_index << 2;
+    if (cs->exception_index == EXCP_060_FPU_UNIMP ||
+        cs->exception_index == EXCP_060_FPU_DISABLED) {
+        vector = EXCP_LINEF << 2;
+    } else {
+        vector = cs->exception_index << 2;
+    }
 
     sr = env->sr | cpu_m68k_get_ccr(env);
     if (qemu_loglevel_mask(CPU_LOG_INT)) {
@@ -324,6 +337,11 @@ static void m68k_interrupt_all(CPUM68KState *env, int is_hw)
 
     /* "the processor first make an internal copy" */
     oldsr = sr;
+    if (m68k_feature(env, M68K_FEATURE_M68060)) {
+        /* Preserve L/LE in their shadow bits, then end the lock sequence. */
+        env->buscr = ((env->buscr & 0x80000000) >> 1) |
+                     ((env->buscr & 0x20000000) >> 1);
+    }
     /* "set the mode to supervisor" */
     sr |= SR_S;
     /* "suppress tracing" */
@@ -361,6 +379,15 @@ static void m68k_interrupt_all(CPUM68KState *env, int is_hw)
             cpu_loop_exit(cs);
         }
         env->mmu.fault = true;
+        if (m68k_feature(env, M68K_FEATURE_M68060)) {
+            uint32_t fault_pc = env->pc;
+
+            env->pc = env->mmu.fslw;
+            do_stack_frame(env, &sp, 4, oldsr, env->mmu.ar, fault_pc);
+            env->pc = fault_pc;
+            env->mmu.fault = false;
+            break;
+        }
         /* push data 3 */
         sp -= 4;
         cpu_stl_be_mmuidx_ra(env, sp, 0, MMU_KERNEL_IDX, 0);
@@ -419,6 +446,20 @@ static void m68k_interrupt_all(CPUM68KState *env, int is_hw)
     case EXCP_ILLEGAL:
         do_stack_frame(env, &sp, 0, oldsr, 0, env->pc);
         break;
+
+    case EXCP_060_FPU_UNIMP:
+        cs->exception_index = EXCP_LINEF;
+        do_stack_frame(env, &sp, 2, oldsr, env->mmu.ar, env->pc);
+        break;
+
+    case EXCP_060_FPU_DISABLED: {
+        uint32_t next_pc = env->pc;
+
+        cs->exception_index = EXCP_LINEF;
+        env->pc = env->fpiar;
+        do_stack_frame(env, &sp, 4, oldsr, env->mmu.ar, next_pc);
+        break;
+    }
 
     case EXCP_ADDRESS:
         do_stack_frame(env, &sp, 2, oldsr, 0, env->pc);

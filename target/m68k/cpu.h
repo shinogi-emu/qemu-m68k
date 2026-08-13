@@ -66,9 +66,13 @@
 #define EXCP_MMU_CONF       56  /* MMU Configuration Error */
 #define EXCP_MMU_ILLEGAL    57  /* MMU Illegal Operation Error */
 #define EXCP_MMU_ACCESS     58  /* MMU Access Level Violation Error */
+#define EXCP_UNIMP_EA       60  /* 68060 unimplemented effective address */
+#define EXCP_UNIMP_INT      61  /* 68060 unimplemented integer instruction */
 
 #define EXCP_RTE            0x100
 #define EXCP_SEMIHOSTING    0x101
+#define EXCP_060_FPU_UNIMP  0x102
+#define EXCP_060_FPU_DISABLED 0x103
 
 #define M68K_DTTR0   0
 #define M68K_DTTR1   1
@@ -108,6 +112,8 @@ typedef struct CPUArchState {
     FPReg fp_result;
     uint32_t fpcr;
     uint32_t fpsr;
+    uint32_t fpiar;
+    uint32_t fpu_state;
     float_status fp_status;
 
     uint64_t mactmp;
@@ -130,6 +136,7 @@ typedef struct CPUArchState {
          */
         uint32_t ar;
         uint32_t ssw;
+        uint32_t fslw;
         /* 68040 */
         uint16_t tcr;
         uint32_t urp;
@@ -145,6 +152,7 @@ typedef struct CPUArchState {
     uint32_t rambar0;
     uint32_t cacr;
     uint32_t pcr;
+    uint32_t buscr;
     uint32_t sfc;
     uint32_t dfc;
 
@@ -607,6 +615,7 @@ void m68k_cpu_transaction_failed(CPUState *cs, hwaddr physaddr, vaddr addr,
 #define TB_FLAGS_DFC_S          (1 << TB_FLAGS_DFC_S_BIT)
 #define TB_FLAGS_TRACE          16
 #define TB_FLAGS_TRACE_BIT      (1 << TB_FLAGS_TRACE)
+#define TB_FLAGS_060_DFP        (1 << 17)
 
 void dump_mmu(CPUM68KState *env);
 

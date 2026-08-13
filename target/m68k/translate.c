@@ -167,6 +167,8 @@ static void do_writebacks(DisasContext *s)
                       MMU_KERNEL_IDX : MMU_USER_IDX)
 #define DFC_INDEX(s) ((s->base.tb->flags & TB_FLAGS_DFC_S) ? \
                       MMU_KERNEL_IDX : MMU_USER_IDX)
+#define M68060_FPU_DISABLED(s) \
+    ((s)->base.tb->flags & TB_FLAGS_060_DFP)
 #endif
 
 typedef void (*disas_proc)(CPUM68KState *env, DisasContext *s, uint16_t insn);
@@ -661,8 +663,7 @@ static inline int ext_opsize(int ext, int pos)
     case 4: return OS_WORD;
     case 5: return OS_DOUBLE;
     case 6: return OS_BYTE;
-    default:
-        g_assert_not_reached();
+    default: return OS_UNSIZED;
     }
 }
 
@@ -1489,6 +1490,11 @@ DISAS_INSN(undef)
     gen_exception(s, s->base.pc_next, EXCP_ILLEGAL);
 }
 
+DISAS_INSN(unimp_int)
+{
+    gen_exception(s, s->base.pc_next, EXCP_UNIMP_INT);
+}
+
 DISAS_INSN(mulw)
 {
     TCGv reg;
@@ -1546,7 +1552,9 @@ DISAS_INSN(divl)
 
     if (ext & 0x400) {
         if (!m68k_feature(s->env, M68K_FEATURE_QUAD_MULDIV)) {
-            gen_exception(s, s->base.pc_next, EXCP_ILLEGAL);
+            gen_exception(s, s->base.pc_next,
+                          m68k_feature(s->env, M68K_FEATURE_M68060) ?
+                          EXCP_UNIMP_INT : EXCP_ILLEGAL);
             return;
         }
 
@@ -2335,6 +2343,19 @@ DISAS_INSN(cas)
         return;
     }
 
+    if (m68k_feature(s->env, M68K_FEATURE_M68060) &&
+        opsize != OS_BYTE) {
+        TCGLabel *aligned = gen_new_label();
+        TCGv misaligned = tcg_temp_new();
+
+        tcg_gen_andi_i32(misaligned, addr, opsize_bytes(opsize) - 1);
+        tcg_gen_brcondi_i32(TCG_COND_EQ, misaligned, 0, aligned);
+        update_cc_op(s);
+        tcg_gen_movi_i32(QREG_PC, s->base.pc_next);
+        gen_raise_exception(EXCP_UNIMP_INT);
+        gen_set_label(aligned);
+    }
+
     cmp = gen_extend(s, DREG(ext, 0), opsize, 1);
 
     /*
@@ -2747,7 +2768,9 @@ DISAS_INSN(mull)
 
     if (ext & 0x400) {
         if (!m68k_feature(s->env, M68K_FEATURE_QUAD_MULDIV)) {
-            gen_exception(s, s->base.pc_next, EXCP_ILLEGAL);
+            gen_exception(s, s->base.pc_next,
+                          m68k_feature(s->env, M68K_FEATURE_M68060) ?
+                          EXCP_UNIMP_INT : EXCP_ILLEGAL);
             return;
         }
 
@@ -4573,6 +4596,7 @@ DISAS_INSN(m68k_movec)
         reg = DREG(ext, 12);
     }
     creg = tcg_constant_i32(ext & 0xfff);
+    tcg_gen_movi_i32(QREG_PC, s->base.pc_next);
     if (insn & 1) {
         gen_helper_m68k_movec_to(tcg_env, creg, reg);
     } else {
@@ -4629,6 +4653,22 @@ DISAS_INSN(pflush)
 
     opmode = tcg_constant_i32((insn >> 3) & 3);
     gen_helper_pflush(tcg_env, AREG(insn, 0), opmode);
+}
+
+DISAS_INSN(plpa)
+{
+    TCGv physical;
+    TCGv is_read;
+
+    if (IS_USER(s)) {
+        gen_exception(s, s->base.pc_next, EXCP_PRIVILEGE);
+        return;
+    }
+
+    is_read = tcg_constant_i32(extract32(insn, 6, 1));
+    physical = tcg_temp_new();
+    gen_helper_plpa(physical, tcg_env, AREG(insn, 0), is_read);
+    tcg_gen_mov_i32(AREG(insn, 0), physical);
 }
 
 DISAS_INSN(ptest)
@@ -4723,7 +4763,7 @@ static void gen_load_fcr(DisasContext *s, TCGv res, int reg)
 {
     switch (reg) {
     case M68K_FPIAR:
-        tcg_gen_movi_i32(res, 0);
+        tcg_gen_ld_i32(res, tcg_env, offsetof(CPUM68KState, fpiar));
         break;
     case M68K_FPSR:
         gen_helper_get_fpsr(res, tcg_env);
@@ -4738,6 +4778,7 @@ static void gen_store_fcr(DisasContext *s, TCGv val, int reg)
 {
     switch (reg) {
     case M68K_FPIAR:
+        tcg_gen_st_i32(val, tcg_env, offsetof(CPUM68KState, fpiar));
         break;
     case M68K_FPSR:
         gen_helper_set_fpsr(tcg_env, val);
@@ -4929,15 +4970,148 @@ static void gen_op_fmovem(CPUM68KState *env, DisasContext *s,
  * ??? FP exceptions are not implemented.  Most exceptions are deferred until
  * immediately before the next FP instruction is executed.
  */
+static bool m68060_fpu_unimplemented(int opmode)
+{
+    switch (opmode) {
+    case 0x02: /* fsinh */
+    case 0x06: /* flognp1 */
+    case 0x08: /* fetoxm1 */
+    case 0x09: /* ftanh */
+    case 0x0a: /* fatan */
+    case 0x0c: /* fasin */
+    case 0x0d: /* fatanh */
+    case 0x0e: /* fsin */
+    case 0x0f: /* ftan */
+    case 0x10: /* fetox */
+    case 0x11: /* ftwotox */
+    case 0x12: /* ftentox */
+    case 0x14: /* flogn */
+    case 0x15: /* flog10 */
+    case 0x16: /* flog2 */
+    case 0x19: /* fcosh */
+    case 0x1c: /* facos */
+    case 0x1d: /* fcos */
+    case 0x1e: /* fgetexp */
+    case 0x1f: /* fgetman */
+    case 0x21: /* fmod */
+    case 0x25: /* frem */
+    case 0x26: /* fscale */
+    case 0x30 ... 0x37: /* fsincos */
+        return true;
+    default:
+        return false;
+    }
+}
+
+static void gen_060_fpu_exception(DisasContext *s, int exception,
+                                  TCGv ea)
+{
+    tcg_gen_st_i32(tcg_constant_i32(s->base.pc_next), tcg_env,
+                   offsetof(CPUM68KState, fpiar));
+    if (IS_NULL_QREG(ea)) {
+        tcg_gen_st_i32(tcg_constant_i32(0), tcg_env,
+                       offsetof(CPUM68KState, mmu.ar));
+    } else {
+        tcg_gen_st_i32(ea, tcg_env, offsetof(CPUM68KState, mmu.ar));
+    }
+    gen_exception(s, exception == EXCP_UNIMP_EA ?
+                  s->base.pc_next : s->pc, exception);
+}
+
+static TCGv gen_060_fpu_ea(CPUM68KState *env, DisasContext *s,
+                           uint32_t insn, int opsize)
+{
+    int mode = extract32(insn, 3, 3);
+    int reg = REG(insn, 0);
+
+    if (mode == 7 && reg == 4) {
+        int words = (opsize_bytes(opsize) + 1) / 2;
+
+        while (words--) {
+            read_im16(env, s);
+        }
+        return NULL_QREG;
+    }
+    return gen_lea(env, s, insn, opsize);
+}
+
 DISAS_INSN(fpu)
 {
     uint16_t ext;
+    int opclass;
     int opmode;
     int opsize;
     TCGv_ptr cpu_src, cpu_dest;
 
     ext = read_im16(env, s);
+    opclass = (ext >> 13) & 7;
     opmode = ext & 0x7f;
+
+    if ((opclass == 0 || opclass == 2 || opclass == 3) &&
+        (ext & (1 << 14)) && ext_opsize(ext, 10) == OS_UNSIZED) {
+        goto undef;
+    }
+
+    if (m68k_feature(s->env, M68K_FEATURE_M68060)) {
+        bool fmovecr = insn == 0xf200 && (ext & 0xfc00) == 0x5c00;
+
+        if (M68060_FPU_DISABLED(s)) {
+            TCGv ea = NULL_QREG;
+
+            if (!fmovecr) {
+                switch (opclass) {
+                case 0:
+                case 2:
+                    if (ext & (1 << 14)) {
+                        opsize = ext_opsize(ext, 10);
+                        ea = gen_060_fpu_ea(env, s, insn, opsize);
+                    }
+                    break;
+                case 3:
+                    opsize = ext_opsize(ext, 10);
+                    ea = gen_060_fpu_ea(env, s, insn, opsize);
+                    break;
+                case 4:
+                case 5:
+                    ea = gen_060_fpu_ea(env, s, insn, OS_LONG);
+                    break;
+                case 6:
+                case 7:
+                    ea = gen_060_fpu_ea(env, s, insn, OS_EXTENDED);
+                    break;
+                default:
+                    break;
+                }
+            }
+            gen_060_fpu_exception(s, EXCP_060_FPU_DISABLED, ea);
+            return;
+        }
+        if ((opclass == 0 || opclass == 2) && (ext & (1 << 14))) {
+            opsize = ext_opsize(ext, 10);
+            if ((opsize == OS_EXTENDED || opsize == OS_PACKED) &&
+                extract32(insn, 0, 6) == 0x3c) {
+                gen_060_fpu_ea(env, s, insn, opsize);
+                gen_060_fpu_exception(s, EXCP_UNIMP_EA, NULL_QREG);
+                return;
+            }
+        }
+        if (fmovecr || ((opclass == 0 || opclass == 2) &&
+                        m68060_fpu_unimplemented(opmode))) {
+            TCGv ea = NULL_QREG;
+
+            if (!fmovecr && (ext & (1 << 14))) {
+                opsize = ext_opsize(ext, 10);
+                ea = gen_060_fpu_ea(env, s, insn, opsize);
+            }
+            gen_060_fpu_exception(s, EXCP_060_FPU_UNIMP, ea);
+            return;
+        }
+    }
+
+    tcg_gen_st_i32(tcg_constant_i32(s->base.pc_next), tcg_env,
+                   offsetof(CPUM68KState, fpiar));
+    tcg_gen_st_i32(tcg_constant_i32(0x60), tcg_env,
+                   offsetof(CPUM68KState, fpu_state));
     switch ((ext >> 13) & 7) {
     case 0:
         break;
@@ -4963,10 +5137,22 @@ DISAS_INSN(fpu)
         return;
     case 4: /* fmove to control register.  */
     case 5: /* fmove from control register.  */
+        if (m68k_feature(s->env, M68K_FEATURE_M68060) &&
+            extract32(insn, 0, 6) == 0x3c &&
+            ctpop32(extract32(ext, 10, 3)) > 1) {
+            gen_060_fpu_exception(s, EXCP_UNIMP_EA, NULL_QREG);
+            return;
+        }
         gen_op_fmove_fcr(env, s, insn, ext);
         return;
     case 6: /* fmovem */
     case 7:
+        if (m68k_feature(s->env, M68K_FEATURE_M68060) && (ext & 0x0800)) {
+            TCGv ea = gen_060_fpu_ea(env, s, insn, OS_EXTENDED);
+
+            gen_060_fpu_exception(s, EXCP_UNIMP_EA, ea);
+            return;
+        }
         if ((ext & 0x1000) == 0 && !m68k_feature(s->env, M68K_FEATURE_FPU)) {
             goto undef;
         }
@@ -5302,6 +5488,12 @@ DISAS_INSN(fbcc)
         offset = (offset << 16) | read_im16(env, s);
     }
 
+    if (m68k_feature(s->env, M68K_FEATURE_M68060) &&
+        M68060_FPU_DISABLED(s)) {
+        gen_060_fpu_exception(s, EXCP_060_FPU_DISABLED, NULL_QREG);
+        return;
+    }
+
     l1 = gen_new_label();
     update_cc_op(s);
     gen_fjmpcc(s, insn & 0x3f, l1);
@@ -5319,6 +5511,21 @@ DISAS_INSN(fscc)
 
     ext = read_im16(env, s);
     cond = ext & 0x3f;
+
+    if (m68k_feature(s->env, M68K_FEATURE_M68060)) {
+        TCGv ea = NULL_QREG;
+
+        if (extract32(insn, 3, 3) == 1) {
+            read_im16(env, s); /* FDBcc displacement. */
+        } else {
+            ea = gen_lea(env, s, insn, OS_BYTE);
+        }
+        gen_060_fpu_exception(s,
+                              M68060_FPU_DISABLED(s) ?
+                              EXCP_060_FPU_DISABLED : EXCP_060_FPU_UNIMP,
+                              ea);
+        return;
+    }
     gen_fcc_cond(&c, s, cond);
 
     tmp = tcg_temp_new();
@@ -5351,6 +5558,14 @@ DISAS_INSN(ftrapcc)
         g_assert_not_reached();
     }
 
+    if (m68k_feature(s->env, M68K_FEATURE_M68060)) {
+        gen_060_fpu_exception(s,
+                              M68060_FPU_DISABLED(s) ?
+                              EXCP_060_FPU_DISABLED : EXCP_060_FPU_UNIMP,
+                              NULL_QREG);
+        return;
+    }
+
     gen_fcc_cond(&c, s, cond);
     do_trapcc(s, &c);
 }
@@ -5359,13 +5574,27 @@ DISAS_INSN(ftrapcc)
 DISAS_INSN(frestore)
 {
     TCGv addr;
+    int mode = extract32(insn, 3, 3);
 
     if (IS_USER(s)) {
         gen_exception(s, s->base.pc_next, EXCP_PRIVILEGE);
         return;
     }
-    if (m68k_feature(s->env, M68K_FEATURE_M68040) ||
-        m68k_feature(s->env, M68K_FEATURE_M68060)) {
+    if (m68k_feature(s->env, M68K_FEATURE_M68060)) {
+        addr = gen_lea(env, s, insn, OS_EXTENDED);
+        if (IS_NULL_QREG(addr)) {
+            gen_addr_fault(s);
+            return;
+        }
+        if (M68060_FPU_DISABLED(s)) {
+            gen_060_fpu_exception(s, EXCP_060_FPU_DISABLED, addr);
+            return;
+        }
+        gen_helper_frestore_060(tcg_env, addr);
+        if (mode == 3) {
+            tcg_gen_addi_i32(AREG(insn, 0), addr, 12);
+        }
+    } else if (m68k_feature(s->env, M68K_FEATURE_M68040)) {
         SRC_EA(env, addr, OS_LONG, 0, NULL);
         /* FIXME: check the state frame */
     } else {
@@ -5375,13 +5604,31 @@ DISAS_INSN(frestore)
 
 DISAS_INSN(fsave)
 {
+    TCGv addr;
+    int mode = extract32(insn, 3, 3);
+
     if (IS_USER(s)) {
         gen_exception(s, s->base.pc_next, EXCP_PRIVILEGE);
         return;
     }
 
-    if (m68k_feature(s->env, M68K_FEATURE_M68040) ||
-        m68k_feature(s->env, M68K_FEATURE_M68060)) {
+    if (m68k_feature(s->env, M68K_FEATURE_M68060)) {
+        addr = gen_lea(env, s, insn, OS_EXTENDED);
+        if (IS_NULL_QREG(addr)) {
+            gen_addr_fault(s);
+            return;
+        }
+        if (M68060_FPU_DISABLED(s)) {
+            gen_060_fpu_exception(s, EXCP_060_FPU_DISABLED, addr);
+            return;
+        }
+        gen_helper_fsave_060(tcg_env, addr);
+        if (mode == 3) {
+            tcg_gen_addi_i32(AREG(insn, 0), addr, 12);
+        } else if (mode == 4) {
+            tcg_gen_mov_i32(AREG(insn, 0), addr);
+        }
+    } else if (m68k_feature(s->env, M68K_FEATURE_M68040)) {
         /* always write IDLE */
         TCGv idle = tcg_constant_i32(0x41000000);
         DEST_EA(env, insn, OS_LONG, idle, NULL);
@@ -5774,6 +6021,7 @@ void register_m68k_insns (CPUM68KState *env)
     BASE(undef,     0000, 0000);
     INSN(arith_im,  0080, fff8, CF_ISA_A);
     INSN(arith_im,  0000, ff00, M68K);
+    BASE(undef,     00c0, ffc0); /* Invalid size must not reach arith_im. */
     INSN(bitrev,    00c0, fff8, CF_ISA_APLUSC);
     INSN(chk2,      00d0, fff8, CHK2);
     INSN(chk2,      00e8, fff8, CHK2);
@@ -5784,6 +6032,7 @@ void register_m68k_insns (CPUM68KState *env)
     BASE(bitop_reg, 0180, f1c0);
     BASE(bitop_reg, 01c0, f1c0);
     INSN(movep,     0108, f138, MOVEP);
+    INSN(unimp_int, 0108, f138, M68060);
     INSN(arith_im,  0280, fff8, CF_ISA_A);
     INSN(arith_im,  0200, ff00, M68K);
     INSN(undef,     02c0, ffc0, M68K);
@@ -5802,6 +6051,18 @@ void register_m68k_insns (CPUM68KState *env)
     INSN(chk2,      04e8, fff8, CHK2);
     INSN(chk2,      04f0, fff8, CHK2);
     INSN(chk2,      04f8, fffc, CHK2);
+    INSN(unimp_int, 00d0, fff8, M68060);
+    INSN(unimp_int, 00e8, fff8, M68060);
+    INSN(unimp_int, 00f0, fff8, M68060);
+    INSN(unimp_int, 00f8, fffc, M68060);
+    INSN(unimp_int, 02d0, fff8, M68060);
+    INSN(unimp_int, 02e8, fff8, M68060);
+    INSN(unimp_int, 02f0, fff8, M68060);
+    INSN(unimp_int, 02f8, fffc, M68060);
+    INSN(unimp_int, 04d0, fff8, M68060);
+    INSN(unimp_int, 04e8, fff8, M68060);
+    INSN(unimp_int, 04f0, fff8, M68060);
+    INSN(unimp_int, 04f8, fffc, M68060);
     INSN(arith_im,  0680, fff8, CF_ISA_A);
     INSN(arith_im,  0c00, ff38, CF_ISA_A);
     INSN(arith_im,  0c00, ff00, M68K);
@@ -5819,6 +6080,8 @@ void register_m68k_insns (CPUM68KState *env)
     INSN(cas,       0ec0, ffc0, CAS);
     INSN(cas2w,     0cfc, ffff, CAS);
     INSN(cas2l,     0efc, ffff, CAS);
+    INSN(unimp_int, 0cfc, ffff, M68060);
+    INSN(unimp_int, 0efc, ffff, M68060);
     BASE(move,      1000, f000);
     BASE(move,      2000, f000);
     BASE(move,      3000, f000);
@@ -6008,12 +6271,16 @@ void register_m68k_insns (CPUM68KState *env)
     INSN(cinv,      f400, ff20, M68040);
     INSN(cinv,      f400, ff20, M68060);
     INSN(pflush,    f500, ffe0, M68040);
+    INSN(pflush,    f500, ffe0, M68060);
     INSN(ptest,     f548, ffd8, M68040);
+    INSN(plpa,      f588, ffb8, M68060);
     INSN(wddata,    fb00, ff00, CF_ISA_A);
     INSN(wdebug,    fbc0, ffc0, CF_ISA_A);
 #endif
     INSN(move16_mem, f600, ffe0, M68040);
     INSN(move16_reg, f620, fff8, M68040);
+    INSN(move16_mem, f600, ffe0, M68060);
+    INSN(move16_reg, f620, fff8, M68060);
 #undef INSN
 }
 
