@@ -238,6 +238,9 @@ typedef enum {
     /* X in cc_x, C = 0, V = 0, N in cc_n, Z in cc_n.  */
     CC_OP_LOGIC,
 
+    /* X in cc_x, C = X, V = 0, N in cc_n, Z in cc_n.  */
+    CC_OP_LOGIC_X,
+
     CC_OP_NB
 } CCOp;
 

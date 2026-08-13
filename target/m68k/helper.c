@@ -1342,6 +1342,11 @@ void HELPER(mac_set_flags)(CPUM68KState *env, uint32_t acc)
         c = v = 0;                                                         \
         z = n;                                                             \
         break;                                                             \
+    case CC_OP_LOGIC_X:                                                    \
+        c = x;                                                             \
+        v = 0;                                                             \
+        z = n;                                                             \
+        break;                                                             \
     default:                                                               \
         cpu_abort(env_cpu(env), "Bad CC_OP %d", op);                       \
     }                                                                      \
