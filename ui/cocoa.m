@@ -350,6 +350,38 @@ static CGEventRef handleTapEvent(CGEventTapProxy proxy, CGEventType type, CGEven
     return cgEvent;
 }
 
+/*
+ * Describe a pixman surface to Core Graphics.
+ *
+ * A pixman format names its components in the order they occupy a
+ * host-order word, so the byte order in memory depends on the host as
+ * well as on the name. This was hardcoded little-endian, which is right
+ * for PIXMAN_x8r8g8b8 and wrong for its mirror image - and a big-endian
+ * guest gets the mirror image: virtio-gpu maps a guest asking for
+ * X8R8G8B8 through PIXMAN_BE_x8r8g8b8, which on a little-endian host is
+ * PIXMAN_b8g8r8x8.
+ *
+ * Read those bytes little-endian and every component moves along by one.
+ * Blue is discarded as the skipped byte, red and green exchange places,
+ * and the ignored X byte arrives as blue. On screen grey turns olive,
+ * white turns yellow, and nothing blue is ever drawn - which is what an
+ * m68k guest looked like here, while the same guest was correct under
+ * SDL, GTK and screendump, because those read the format instead of
+ * assuming it.
+ */
+static CGBitmapInfo cocoa_bitmap_info(pixman_format_code_t format)
+{
+    switch (format) {
+    case PIXMAN_b8g8r8x8:
+    case PIXMAN_b8g8r8a8:
+        /* memory order X,R,G,B - take the word big-endian */
+        return kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipFirst;
+    default:
+        /* memory order B,G,R,X */
+        return kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst;
+    }
+}
+
 @implementation QemuCocoaView
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -532,7 +564,8 @@ static CGEventRef handleTapEvent(CGEventTapProxy proxy, CGEventType type, CGEven
     } else {
         int w = pixman_image_get_width(pixman_image);
         int h = pixman_image_get_height(pixman_image);
-        int bitsPerPixel = PIXMAN_FORMAT_BPP(pixman_image_get_format(pixman_image));
+        pixman_format_code_t format = pixman_image_get_format(pixman_image);
+        int bitsPerPixel = PIXMAN_FORMAT_BPP(format);
         int stride = pixman_image_get_stride(pixman_image);
         CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(
             NULL,
@@ -547,7 +580,7 @@ static CGEventRef handleTapEvent(CGEventTapProxy proxy, CGEventType type, CGEven
             bitsPerPixel, //bitsPerPixel
             stride, //bytesPerRow
             colorspace, //colorspace
-            kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst, //bitmapInfo
+            cocoa_bitmap_info(format), //bitmapInfo
             dataProviderRef, //provider
             NULL, //decode
             0, //interpolate
