@@ -4567,6 +4567,35 @@ DISAS_INSN(stop)
     gen_exception(s, s->pc, EXCP_HLT);
 }
 
+/*
+ * LPSTOP #imm (F800 01C0 iiii) is the 68060's low-power STOP: load SR,
+ * then wait for an interrupt, as STOP does. The power saving happens on
+ * the bus and has nothing to model here. Any other second word is not an
+ * instruction and takes the line-F vector, like the rest of the F-line
+ * space the 060 leaves undefined.
+ */
+DISAS_INSN(lpstop)
+{
+    uint16_t ext;
+
+    ext = read_im16(env, s);
+    if (ext != 0x01c0) {
+        gen_exception(s, s->base.pc_next, EXCP_LINEF);
+        return;
+    }
+    if (IS_USER(s)) {
+        gen_exception(s, s->base.pc_next, EXCP_PRIVILEGE);
+        return;
+    }
+
+    ext = read_im16(env, s);
+
+    gen_set_sr_im(s, ext, 0);
+    tcg_gen_st_i32(tcg_constant_i32(1), tcg_env,
+                   offsetof(CPUState, halted) - offsetof(M68kCPU, env));
+    gen_exception(s, s->pc, EXCP_HLT);
+}
+
 DISAS_INSN(rte)
 {
     if (IS_USER(s)) {
@@ -6293,6 +6322,7 @@ void register_m68k_insns (CPUM68KState *env)
     INSN(pflush,    f500, ffe0, M68060);
     INSN(ptest,     f548, ffd8, M68040);
     INSN(plpa,      f588, ffb8, M68060);
+    INSN(lpstop,    f800, ffff, M68060);
     INSN(wddata,    fb00, ff00, CF_ISA_A);
     INSN(wdebug,    fbc0, ffc0, CF_ISA_A);
 #endif
