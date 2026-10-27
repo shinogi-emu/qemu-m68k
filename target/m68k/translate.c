@@ -4865,7 +4865,7 @@ static void gen_op_fmove_fcr(CPUM68KState *env, DisasContext *s,
     int is_write = (ext >> 13) & 1;
     int mode = extract32(insn, 3, 3);
     int i;
-    TCGv addr, tmp;
+    TCGv addr, start, tmp;
 
     switch (mode) {
     case 0: /* Dn */
@@ -4923,34 +4923,36 @@ static void gen_op_fmove_fcr(CPUM68KState *env, DisasContext *s,
      * 0b010 Floating-Point Status Register
      * 0b001 Floating-Point Instruction Address Register
      *
+     * Whatever the addressing mode, the selected registers are moved
+     * FPCR first, then FPSR, then FPIAR, from the lowest address up.
+     * Predecrement first lowers the address register by the size of all
+     * of them (M68000PRM, FMOVEM control registers); gen_lea has already
+     * taken off the first. Exception handlers depend on the layout: the
+     * 060 software package saves all three with one FMOVEM and then reads
+     * each one back from where the manual puts it.
      */
 
+    start = addr;
     if (is_write && mode == 4) {
-        for (i = 2; i >= 0; i--, mask >>= 1) {
-            if (mask & 1) {
+        tcg_gen_subi_i32(addr, addr,
+                         (ctpop32(mask) - 1) * opsize_bytes(OS_LONG));
+        start = tcg_temp_new();
+        tcg_gen_mov_i32(start, addr);
+    }
+    for (i = 2; i >= 0; i--) {
+        if (mask & (1 << i)) {
+            if (is_write) {
                 gen_qemu_store_fcr(s, addr, 1 << i);
-                if (mask != 1) {
-                    tcg_gen_subi_i32(addr, addr, opsize_bytes(OS_LONG));
-                }
+            } else {
+                gen_qemu_load_fcr(s, addr, 1 << i);
             }
-       }
-       tcg_gen_mov_i32(AREG(insn, 0), addr);
-    } else {
-        for (i = 0; i < 3; i++, mask >>= 1) {
-            if (mask & 1) {
-                if (is_write) {
-                    gen_qemu_store_fcr(s, addr, 1 << i);
-                } else {
-                    gen_qemu_load_fcr(s, addr, 1 << i);
-                }
-                if (mask != 1 || mode == 3) {
-                    tcg_gen_addi_i32(addr, addr, opsize_bytes(OS_LONG));
-                }
-            }
+            tcg_gen_addi_i32(addr, addr, opsize_bytes(OS_LONG));
         }
-        if (mode == 3) {
-            tcg_gen_mov_i32(AREG(insn, 0), addr);
-        }
+    }
+    if (is_write && mode == 4) {
+        tcg_gen_mov_i32(AREG(insn, 0), start);
+    } else if (mode == 3) {
+        tcg_gen_mov_i32(AREG(insn, 0), addr);
     }
 }
 
