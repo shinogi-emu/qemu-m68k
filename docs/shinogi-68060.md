@@ -1,6 +1,6 @@
 # 68060 support in this fork
 
-Three commits on top of upstream QEMU add a 68060 that behaves like the
+Four commits on top of upstream QEMU add a 68060 that behaves like the
 part rather than like a 68040 wearing a different name. They live on the
 `shinogi-060` branch and touch `target/m68k/` only — no machine, board or
 device code.
@@ -10,6 +10,7 @@ device code.
 | `3d2caab` | complete basic 68060 system support | 88 lines |
 | `d6d0717` | complete 68060 instruction and exception behavior | 482 lines |
 | `3dc4786` | defer logical shift condition codes | 40 lines |
+| `94a378c` | implement the 68060's LPSTOP | 30 lines |
 
 ## The thing to understand first
 
@@ -63,6 +64,12 @@ report needs to know it.
 
 **MOVEC.** The 060's control register set, and faults rather than silent
 zeroes for the registers it does not have.
+
+**LPSTOP.** The 060's low-power STOP (`F800 01C0 #imm`): privileged, it
+loads SR and waits for an interrupt, as STOP does. Operating systems halt
+with it on a 060 — FreeMiNT's `hw_halt()` does — so without it a halt
+ends in a line-F panic. Any other second word after `F800` still takes
+the line-F vector.
 
 ## `3dc4786`, and why an optimisation is in the same series
 
