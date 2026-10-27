@@ -1,6 +1,6 @@
 # 68060 support in this fork
 
-Four commits on top of upstream QEMU add a 68060 that behaves like the
+Six commits on top of upstream QEMU add a 68060 that behaves like the
 part rather than like a 68040 wearing a different name. They live on the
 `shinogi-060` branch and touch `target/m68k/` only — no machine, board or
 device code.
@@ -11,6 +11,8 @@ device code.
 | `d6d0717` | complete 68060 instruction and exception behavior | 482 lines |
 | `3dc4786` | defer logical shift condition codes | 40 lines |
 | `94a378c` | implement the 68060's LPSTOP | 30 lines |
+| `75fe641` | FMOVEM moves the control registers FPCR first | 48 lines |
+| `3de28de` | FMOVE and FMOVEM of control registers leave FPIAR alone | 15 lines |
 
 ## The thing to understand first
 
@@ -70,6 +72,23 @@ loads SR and waits for an interrupt, as STOP does. Operating systems halt
 with it on a 060 — FreeMiNT's `hw_halt()` does — so without it a halt
 ends in a line-F panic. Any other second word after `F800` still takes
 the line-F vector.
+
+**The FPU control registers, as an exception handler sees them.** The
+060 software package saves FPCR, FPSR and FPIAR with one `FMOVEM` and
+then reads FPIAR to find the instruction it is emulating. Two things have
+to hold for that to work, and neither did:
+
+- `FMOVEM` moves the control registers FPCR, FPSR, FPIAR from the lowest
+  address up, in every addressing mode (M68000PRM, FMOVEM). Upstream
+  moved them in the reverse order, and in predecrement mode could store
+  a different register from the one selected.
+- `FMOVE` and `FMOVEM` of the control registers do not modify FPIAR
+  (MC68060UM 6.1.4). Upstream never loads FPIAR at all; our earlier
+  commits loaded it on every FPU instruction, so the package's own save
+  recorded the save.
+
+With either one wrong, every emulated transcendental (`fsin`, `fcos`,
+`fetox`, ...) silently left its destination register unchanged.
 
 ## `3dc4786`, and why an optimisation is in the same series
 
