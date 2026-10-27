@@ -5158,8 +5158,19 @@ DISAS_INSN(fpu)
         }
     }
 
-    tcg_gen_st_i32(tcg_constant_i32(s->base.pc_next), tcg_env,
-                   offsetof(CPUM68KState, fpiar));
+    /*
+     * FPIAR holds the last instruction that could raise a floating-point
+     * exception. FMOVE to or from a control register and FMOVEM cannot,
+     * so they leave it alone (MC68060UM 6.1.4). An exception handler
+     * relies on that: the 060 software package saves the control
+     * registers first and then reads FPIAR to find the instruction to
+     * emulate. Were that save to load FPIAR, the package would find its
+     * own instruction instead.
+     */
+    if (opclass == 0 || opclass == 2 || opclass == 3) {
+        tcg_gen_st_i32(tcg_constant_i32(s->base.pc_next), tcg_env,
+                       offsetof(CPUM68KState, fpiar));
+    }
     tcg_gen_st_i32(tcg_constant_i32(0x60), tcg_env,
                    offsetof(CPUM68KState, fpu_state));
     switch ((ext >> 13) & 7) {
