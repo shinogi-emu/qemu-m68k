@@ -240,6 +240,9 @@ typedef enum {
     /* X in cc_x, C = X, V = 0, N in cc_n, Z in cc_n.  */
     CC_OP_LOGIC_X,
 
+    /* Long addition/subtraction of one; source operand is implicit. */
+    CC_OP_ADD1L, CC_OP_SUB1L,
+
     CC_OP_NB
 } CCOp;
 

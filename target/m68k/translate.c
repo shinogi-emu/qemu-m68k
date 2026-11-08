@@ -198,7 +198,9 @@ static const uint8_t cc_op_live[CC_OP_NB] = {
     [CC_OP_SUBB ... CC_OP_SUBL] = CCF_X | CCF_N | CCF_V,
     [CC_OP_CMPB ... CC_OP_CMPL] = CCF_X | CCF_N | CCF_V,
     [CC_OP_LOGIC] = CCF_X | CCF_N,
-    [CC_OP_LOGIC_X] = CCF_X | CCF_N
+    [CC_OP_LOGIC_X] = CCF_X | CCF_N,
+    [CC_OP_ADD1L] = CCF_X | CCF_N,
+    [CC_OP_SUB1L] = CCF_X | CCF_N
 };
 
 static void set_cc_op(DisasContext *s, CCOp op)
@@ -561,6 +563,15 @@ static void gen_flush_flags(DisasContext *s)
         tcg_gen_xor_i32(t1, QREG_CC_N, t0);
         tcg_gen_xor_i32(QREG_CC_V, QREG_CC_V, t0);
         tcg_gen_and_i32(QREG_CC_V, QREG_CC_V, t1);
+        break;
+
+    case CC_OP_ADD1L:
+    case CC_OP_SUB1L:
+        tcg_gen_mov_i32(QREG_CC_C, QREG_CC_X);
+        tcg_gen_mov_i32(QREG_CC_Z, QREG_CC_N);
+        tcg_gen_setcondi_i32(TCG_COND_EQ, QREG_CC_V, QREG_CC_N,
+                            s->cc_op == CC_OP_ADD1L ? INT32_MIN : INT32_MAX);
+        tcg_gen_neg_i32(QREG_CC_V, QREG_CC_V);
         break;
 
     case CC_OP_CMPB:
@@ -1252,6 +1263,7 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
     case 11: /* MI (N) */
         /* Several cases represent N normally.  */
         if (op == CC_OP_ADDB || op == CC_OP_ADDW || op == CC_OP_ADDL ||
+            op == CC_OP_ADD1L || op == CC_OP_SUB1L ||
             op == CC_OP_SUBB || op == CC_OP_SUBW || op == CC_OP_SUBL ||
             op == CC_OP_LOGIC || op == CC_OP_LOGIC_X) {
             c->v1 = QREG_CC_N;
@@ -1263,6 +1275,7 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
     case 7: /* EQ (Z) */
         /* Some cases fold Z into N.  */
         if (op == CC_OP_ADDB || op == CC_OP_ADDW || op == CC_OP_ADDL ||
+            op == CC_OP_ADD1L || op == CC_OP_SUB1L ||
             op == CC_OP_SUBB || op == CC_OP_SUBW || op == CC_OP_SUBL ||
             op == CC_OP_LOGIC || op == CC_OP_LOGIC_X) {
             tcond = TCG_COND_EQ;
@@ -1274,6 +1287,7 @@ static void gen_cc_cond(DisasCompare *c, DisasContext *s, int cond)
     case 5: /* CS (C) */
         /* Some cases fold C into X.  */
         if (op == CC_OP_ADDB || op == CC_OP_ADDW || op == CC_OP_ADDL ||
+            op == CC_OP_ADD1L || op == CC_OP_SUB1L ||
             op == CC_OP_SUBB || op == CC_OP_SUBW || op == CC_OP_SUBL) {
             tcond = TCG_COND_NE;
             c->v1 = QREG_CC_X;
@@ -2991,13 +3005,19 @@ DISAS_INSN(addsubq)
         if (insn & 0x0100) {
             tcg_gen_setcond_i32(TCG_COND_LTU, QREG_CC_X, dest, val);
             tcg_gen_sub_i32(dest, dest, val);
-            set_cc_op(s, CC_OP_SUBB + opsize);
+            set_cc_op(s, opsize == OS_LONG && imm == 1
+                      ? CC_OP_SUB1L : CC_OP_SUBB + opsize);
         } else {
             tcg_gen_add_i32(dest, dest, val);
             tcg_gen_setcond_i32(TCG_COND_LTU, QREG_CC_X, dest, val);
-            set_cc_op(s, CC_OP_ADDB + opsize);
+            set_cc_op(s, opsize == OS_LONG && imm == 1
+                      ? CC_OP_ADD1L : CC_OP_ADDB + opsize);
         }
-        gen_update_cc_add(dest, val, opsize);
+        if (opsize == OS_LONG && imm == 1) {
+            tcg_gen_mov_i32(QREG_CC_N, dest);
+        } else {
+            gen_update_cc_add(dest, val, opsize);
+        }
     }
     DEST_EA(env, insn, opsize, dest, &addr);
 }

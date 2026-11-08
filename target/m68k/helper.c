@@ -1339,6 +1339,16 @@ void HELPER(mac_set_flags)(CPUM68KState *env, uint32_t acc)
         c = src1 < src2;                                                   \
         v = (res ^ src1) & (src1 ^ src2);                                  \
         break;                                                             \
+    case CC_OP_ADD1L:                                                      \
+        c = x;                                                             \
+        z = n;                                                             \
+        v = (n == 0x80000000u) ? 0x80000000u : 0;                          \
+        break;                                                             \
+    case CC_OP_SUB1L:                                                      \
+        c = x;                                                             \
+        z = n;                                                             \
+        v = (n == 0x7fffffffu) ? 0x80000000u : 0;                          \
+        break;                                                             \
     case CC_OP_LOGIC:                                                      \
         c = v = 0;                                                         \
         z = n;                                                             \

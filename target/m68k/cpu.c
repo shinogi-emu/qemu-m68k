@@ -611,8 +611,21 @@ const VMStateDescription vmstate_68060_spregs = {
     }
 };
 
+static int m68k_cpu_pre_save(void *opaque)
+{
+    M68kCPU *cpu = opaque;
+    CPUM68KState *env = &cpu->env;
+
+    /* The implicit-one encodings are not understood by older receivers. */
+    if (env->cc_op == CC_OP_ADD1L || env->cc_op == CC_OP_SUB1L) {
+        cpu_m68k_set_ccr(env, cpu_m68k_get_ccr(env));
+    }
+    return 0;
+}
+
 static const VMStateDescription vmstate_m68k_cpu = {
     .name = "cpu",
+    .pre_save = m68k_cpu_pre_save,
     .version_id = 1,
     .minimum_version_id = 1,
     .fields = (const VMStateField[]) {
