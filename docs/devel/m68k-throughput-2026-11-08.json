@@ -1,0 +1,351 @@
+{
+  "qemu_base": "74b14cd1b21447d8bf7c1c72e6da3b3286a2b516",
+  "qemu_change": "436b7a9cc96",
+  "winuae_source": "d82bc2549f27943d11dc59482d5388daf1c0f337",
+  "harness_source": "3685818",
+  "logical_cpu": 31,
+  "winuae_softfloat": false,
+  "executable_sha256": {
+    "qemu": "877d7c5811894baa725a1fe2ba4099d82a09ce01007a7a174051465f98c8f9dc",
+    "qemu-reference": "70a68f136add19537b61e5c46fe327d52c93a49b346a494bb01b2d61a43755a2",
+    "winuae": "3a9c92051614ccabf24b17cfacfa4076c346fc39e8921a3e69ddadbe0a42f6e6"
+  },
+  "cases": {
+    "integer": {
+      "workload": {
+        "iterations": 500000000,
+        "warmup": 3906250,
+        "expected": 2154039047,
+        "payload_sha256": "01fcd389870217f13de5aae0d957bd89648e782842b9ffad1fa0088ae4ebfee5",
+        "elf_sha256": "7fa74d8c14cc5abcb6ea4f242ba0c4c82a26e84ecff15654780b0c11780d3a55",
+        "rom_sha256": "ad0ba4c4fe7c9aafe95e61e0ce7766a929ad23e1c8d29b8ae733f2242997cb78"
+      },
+      "results": {
+        "qemu-reference": {
+          "samples_seconds": [
+            0.497730196,
+            0.51936531,
+            0.499126821,
+            0.507627959,
+            0.510699112
+          ],
+          "median_seconds": 0.507627959,
+          "minimum_seconds": 0.497730196,
+          "maximum_seconds": 0.51936531
+        },
+        "qemu": {
+          "samples_seconds": [
+            0.495069577,
+            0.511586375,
+            0.499194188,
+            0.510861478,
+            0.513289248
+          ],
+          "median_seconds": 0.510861478,
+          "minimum_seconds": 0.495069577,
+          "maximum_seconds": 0.513289248
+        },
+        "winuae": {
+          "samples_seconds": [
+            0.448271505,
+            0.454869089,
+            0.445705725,
+            0.452910446,
+            0.455385976
+          ],
+          "median_seconds": 0.452910446,
+          "minimum_seconds": 0.445705725,
+          "maximum_seconds": 0.455385976
+        }
+      }
+    },
+    "branch": {
+      "workload": {
+        "iterations": 250000000,
+        "warmup": 1953125,
+        "expected": 250000001,
+        "payload_sha256": "952d7da7ded12dbf788dfba1c83874e72171ae59f81708727a00638d3fcda85f",
+        "elf_sha256": "f428bbd8387b489c36591decdedaa295858e65f9a90566ffd9ca8d3a1aea28c5",
+        "rom_sha256": "21d62406ab5a739fed30ee39827c63c8577a9c9e594f2af6b2bfacc505fff212"
+      },
+      "results": {
+        "qemu-reference": {
+          "samples_seconds": [
+            0.501722859,
+            0.495507653,
+            0.493449421,
+            0.494302961,
+            0.494330222
+          ],
+          "median_seconds": 0.494330222,
+          "minimum_seconds": 0.493449421,
+          "maximum_seconds": 0.501722859
+        },
+        "qemu": {
+          "samples_seconds": [
+            0.506873895,
+            0.495453011,
+            0.49364,
+            0.493612548,
+            0.493591879
+          ],
+          "median_seconds": 0.49364,
+          "minimum_seconds": 0.493591879,
+          "maximum_seconds": 0.506873895
+        },
+        "winuae": {
+          "samples_seconds": [
+            1.337439812,
+            1.333869197,
+            1.328297476,
+            1.329942659,
+            1.33536081
+          ],
+          "median_seconds": 1.333869197,
+          "minimum_seconds": 1.328297476,
+          "maximum_seconds": 1.337439812
+        }
+      }
+    },
+    "shift": {
+      "workload": {
+        "iterations": 250000000,
+        "warmup": 1953125,
+        "expected": 2512897728,
+        "payload_sha256": "150f6f6b573fc380490bed51174609d79e8a24668a3e5bbd81fb5522e7194e1f",
+        "elf_sha256": "883b7c9883cdb535274ab5db425d3575420ade8f9c4933df8476d5981c95e295",
+        "rom_sha256": "212f3adbcaec6c6164ca7c389bdd3fe536bea51f58226570a8588793041928d5"
+      },
+      "results": {
+        "qemu-reference": {
+          "samples_seconds": [
+            0.245655789,
+            0.245019628,
+            0.24663701,
+            0.246008564,
+            0.245379608
+          ],
+          "median_seconds": 0.245655789,
+          "minimum_seconds": 0.245019628,
+          "maximum_seconds": 0.24663701
+        },
+        "qemu": {
+          "samples_seconds": [
+            0.248012264,
+            0.246295385,
+            0.24622877,
+            0.245278728,
+            0.247722438
+          ],
+          "median_seconds": 0.246295385,
+          "minimum_seconds": 0.245278728,
+          "maximum_seconds": 0.248012264
+        },
+        "winuae": {
+          "samples_seconds": [
+            0.227095966,
+            0.232155391,
+            0.228051149,
+            0.227419897,
+            0.227881839
+          ],
+          "median_seconds": 0.227881839,
+          "minimum_seconds": 0.227095966,
+          "maximum_seconds": 0.232155391
+        }
+      }
+    },
+    "memory": {
+      "workload": {
+        "iterations": 1024,
+        "warmup": 8,
+        "expected": 4261412864,
+        "payload_sha256": "be4ab4e7ed8ee85988a012cc6b6b69abfa12ce48b73fa62c4c55f35889553a2f",
+        "elf_sha256": "f6585c75d4036e88f881ed372ced08d69bd82d04cf5c5a5af6a3beb7222bc56f",
+        "rom_sha256": "9657bffb62af3c8cc978fac97a9846be51d75dec9b46ca3027f6c00927533fcb"
+      },
+      "results": {
+        "qemu-reference": {
+          "samples_seconds": [
+            2.338685879,
+            2.364273799,
+            2.322477152,
+            2.333306221,
+            2.339076536
+          ],
+          "median_seconds": 2.338685879,
+          "minimum_seconds": 2.322477152,
+          "maximum_seconds": 2.364273799
+        },
+        "qemu": {
+          "samples_seconds": [
+            0.342778266,
+            0.348411804,
+            0.341856077,
+            0.344680114,
+            0.341384017
+          ],
+          "median_seconds": 0.342778266,
+          "minimum_seconds": 0.341384017,
+          "maximum_seconds": 0.348411804
+        },
+        "winuae": {
+          "samples_seconds": [
+            0.181059451,
+            0.183342407,
+            0.18126599,
+            0.18132921,
+            0.181288403
+          ],
+          "median_seconds": 0.181288403,
+          "minimum_seconds": 0.181059451,
+          "maximum_seconds": 0.183342407
+        }
+      }
+    },
+    "fpu": {
+      "workload": {
+        "iterations": 20000000,
+        "warmup": 156250,
+        "expected": 1,
+        "payload_sha256": "31eed7f7820cc473a08636d462a83a5649cb1b68a1688d03d00c3df38eac1061",
+        "elf_sha256": "d039a4a4d364210cfbdbd4afdfe0ec70e3ebc55ebd664cdbd25b69dce2999e98",
+        "rom_sha256": "c1ffdfa2ed8e02f8d64881ced1f89254a565f694d9bba3e789b0d384d66461cd"
+      },
+      "results": {
+        "qemu-reference": {
+          "samples_seconds": [
+            1.386204665,
+            1.382165665,
+            1.389844191,
+            1.39871782,
+            1.413243663
+          ],
+          "median_seconds": 1.389844191,
+          "minimum_seconds": 1.382165665,
+          "maximum_seconds": 1.413243663
+        },
+        "qemu": {
+          "samples_seconds": [
+            1.385211481,
+            1.381550005,
+            1.383986951,
+            1.398936634,
+            1.41239905
+          ],
+          "median_seconds": 1.385211481,
+          "minimum_seconds": 1.381550005,
+          "maximum_seconds": 1.41239905
+        },
+        "winuae": {
+          "samples_seconds": [
+            1.675574098,
+            1.676777017,
+            1.678789173,
+            1.680757035,
+            1.678700295
+          ],
+          "median_seconds": 1.678700295,
+          "minimum_seconds": 1.675574098,
+          "maximum_seconds": 1.680757035
+        }
+      }
+    },
+    "memory-offset": {
+      "workload": {
+        "iterations": 1024,
+        "warmup": 8,
+        "expected": 4261412864,
+        "payload_sha256": "2c440d008e0dcdfae5614b778dc1bc17960f5adedcb108c6ff97d70dbc339294",
+        "elf_sha256": "fd1bfd07a87864d46db888023e92a58dbc8dbf23b5aa304b2ee3bce5e78200c6",
+        "rom_sha256": "d1bfe22952779e030fceeaebeb3d29ac1323f0a1d88c19fd2af6b6db0e6a16df"
+      },
+      "results": {
+        "qemu-reference": {
+          "samples_seconds": [
+            0.347140245,
+            0.346652304,
+            0.347295137,
+            0.347886202,
+            0.349296523
+          ],
+          "median_seconds": 0.347295137,
+          "minimum_seconds": 0.346652304,
+          "maximum_seconds": 0.349296523
+        },
+        "qemu": {
+          "samples_seconds": [
+            0.342561638,
+            0.343452138,
+            0.343982869,
+            0.345186971,
+            0.347173157
+          ],
+          "median_seconds": 0.343982869,
+          "minimum_seconds": 0.342561638,
+          "maximum_seconds": 0.347173157
+        },
+        "winuae": {
+          "samples_seconds": [
+            0.180996382,
+            0.181706151,
+            0.181250701,
+            0.181512435,
+            0.181286579
+          ],
+          "median_seconds": 0.181286579,
+          "minimum_seconds": 0.180996382,
+          "maximum_seconds": 0.181706151
+        }
+      }
+    },
+    "memory-flush": {
+      "workload": {
+        "iterations": 1024,
+        "warmup": 8,
+        "expected": 4261412864,
+        "payload_sha256": "dc022f56505546ac8406d0fa9b5e9dd2693b3f3ed0c0dd7ed16de4141a52dfc0",
+        "elf_sha256": "5ee67f67b7847e329efdf32eeda1e2dda1170815063e1d8d16e3f6c30cd518b0",
+        "rom_sha256": "d153168a5c7af1e8bf014760c6b5f2d87adf39ea75e45976a8b1b1e28065f6e2"
+      },
+      "results": {
+        "qemu-reference": {
+          "samples_seconds": [
+            2.335359103,
+            2.326988473,
+            2.318268002,
+            2.314469437,
+            2.323450458
+          ],
+          "median_seconds": 2.323450458,
+          "minimum_seconds": 2.314469437,
+          "maximum_seconds": 2.335359103
+        },
+        "qemu": {
+          "samples_seconds": [
+            0.349754667,
+            0.350034184,
+            0.349146871,
+            0.348570233,
+            0.347882476
+          ],
+          "median_seconds": 0.349146871,
+          "minimum_seconds": 0.347882476,
+          "maximum_seconds": 0.350034184
+        },
+        "winuae": {
+          "samples_seconds": [
+            0.181614688,
+            0.181966913,
+            0.18164209,
+            0.181425321,
+            0.183564176
+          ],
+          "median_seconds": 0.18164209,
+          "minimum_seconds": 0.181425321,
+          "maximum_seconds": 0.183564176
+        }
+      }
+    }
+  }
+}
