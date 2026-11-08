@@ -47,6 +47,13 @@ struct TCGCPUOps {
     TCGBar guest_default_memory_order;
 
     /**
+     * @tlb_min_entries: Preferred minimum soft TLB entries per MMU mode,
+     * or zero for the common minimum. Must be a power of two within the
+     * dynamic TLB bounds. Allocation failure may fall back below this hint.
+     */
+    unsigned tlb_min_entries;
+
+    /**
      * @initialize: Initialize TCG state
      *
      * Called when the first CPU is realized.

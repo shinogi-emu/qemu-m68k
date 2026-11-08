@@ -203,7 +203,7 @@ static void tb_jmp_cache_clear_page(CPUState *cpu, vaddr page_addr)
  * conflict misses.
  */
 static void tlb_mmu_resize_locked(CPUTLBDesc *desc, CPUTLBDescFast *fast,
-                                  int64_t now)
+                                  int64_t now, size_t min_entries)
 {
     size_t old_size = tlb_n_entries(fast);
     size_t rate;
@@ -236,8 +236,10 @@ static void tlb_mmu_resize_locked(CPUTLBDesc *desc, CPUTLBDescFast *fast,
         if (expected_rate > 70) {
             ceil *= 2;
         }
-        new_size = MAX(ceil, 1 << CPU_TLB_DYN_MIN_BITS);
+        new_size = MAX(ceil, min_entries);
     }
+
+    new_size = MAX(new_size, min_entries);
 
     if (new_size == old_size) {
         if (window_expired) {
@@ -287,20 +289,25 @@ static void tlb_mmu_flush_locked(CPUTLBDesc *desc, CPUTLBDescFast *fast)
     memset(desc->vtable, -1, sizeof(desc->vtable));
 }
 
+static size_t tlb_min_entries(CPUState *cpu)
+{
+    return MAX(CPU_GET_CLASS(cpu)->tcg_ops->tlb_min_entries,
+               1 << CPU_TLB_DYN_MIN_BITS);
+}
+
 static void tlb_flush_one_mmuidx_locked(CPUState *cpu, int mmu_idx,
                                         int64_t now)
 {
     CPUTLBDesc *desc = &cpu->neg.tlb.d[mmu_idx];
     CPUTLBDescFast *fast = cpu_tlb_fast(cpu, mmu_idx);
 
-    tlb_mmu_resize_locked(desc, fast, now);
+    tlb_mmu_resize_locked(desc, fast, now, tlb_min_entries(cpu));
     tlb_mmu_flush_locked(desc, fast);
 }
 
-static void tlb_mmu_init(CPUTLBDesc *desc, CPUTLBDescFast *fast, int64_t now)
+static void tlb_mmu_init(CPUTLBDesc *desc, CPUTLBDescFast *fast, int64_t now,
+                         size_t n_entries)
 {
-    size_t n_entries = 1 << CPU_TLB_DYN_DEFAULT_BITS;
-
     tlb_window_reset(desc, now, 0);
     desc->n_used_entries = 0;
     fast->mask = (n_entries - 1) << CPU_TLB_ENTRY_BITS;
@@ -322,7 +329,13 @@ static inline void tlb_n_used_entries_dec(CPUState *cpu, uintptr_t mmu_idx)
 void tlb_init(CPUState *cpu)
 {
     int64_t now = get_clock_realtime();
+    size_t n_entries = MAX(tlb_min_entries(cpu),
+                           1 << CPU_TLB_DYN_DEFAULT_BITS);
     int i;
+
+    assert(is_power_of_2(n_entries));
+    assert(n_entries >= (1 << CPU_TLB_DYN_MIN_BITS));
+    assert(n_entries <= (1 << CPU_TLB_DYN_MAX_BITS));
 
     qemu_spin_init(&cpu->neg.tlb.c.lock);
 
@@ -330,7 +343,7 @@ void tlb_init(CPUState *cpu)
     cpu->neg.tlb.c.dirty = 0;
 
     for (i = 0; i < NB_MMU_MODES; i++) {
-        tlb_mmu_init(&cpu->neg.tlb.d[i], cpu_tlb_fast(cpu, i), now);
+        tlb_mmu_init(&cpu->neg.tlb.d[i], cpu_tlb_fast(cpu, i), now, n_entries);
     }
 }
 

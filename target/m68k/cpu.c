@@ -671,6 +671,8 @@ static const TCGCPUOps m68k_tcg_ops = {
     /* MTTCG not yet supported: require strict ordering */
     .guest_default_memory_order = TCG_MO_ALL,
     .mttcg_supported = false,
+    /* Cover 4 MiB to reduce conflicts between large RAM buffers. */
+    .tlb_min_entries = 1024,
 
     .initialize = m68k_tcg_init,
     .translate_code = m68k_translate_code,
