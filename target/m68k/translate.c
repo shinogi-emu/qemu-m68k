@@ -526,10 +526,13 @@ static void gen_flush_flags(DisasContext *s)
 {
     TCGv t0, t1;
 
-    switch (s->cc_op) {
-    case CC_OP_FLAGS:
+    if (s->cc_op == CC_OP_FLAGS) {
         return;
+    }
 
+    /* Inline materialization changes the encoding, even if it was synced. */
+    s->cc_op_synced = 0;
+    switch (s->cc_op) {
     case CC_OP_ADDB:
     case CC_OP_ADDW:
     case CC_OP_ADDL:
