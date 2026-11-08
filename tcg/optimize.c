@@ -50,6 +50,7 @@ typedef struct TempOptInfo {
 typedef struct OptContext {
     TCGContext *tcg;
     TCGOp *prev_mb;
+    bool st_ld_fenced;
     TCGTempSet temps_used;
 
     IntervalTreeRoot mem_copy;
@@ -851,6 +852,7 @@ static void finish_bb(OptContext *ctx)
 {
     /* We only optimize memory barriers across basic blocks. */
     ctx->prev_mb = NULL;
+    ctx->st_ld_fenced = false;
 }
 
 static void finish_ebb(OptContext *ctx)
@@ -1563,6 +1565,7 @@ static bool fold_call(OptContext *ctx, TCGOp *op)
 
     /* Stop optimizing MB across calls. */
     ctx->prev_mb = NULL;
+    ctx->st_ld_fenced = false;
     return true;
 }
 
@@ -2074,6 +2077,18 @@ static bool fold_extu(OptContext *ctx, TCGOp *op)
 
 static bool fold_mb(OptContext *ctx, TCGOp *op)
 {
+    /*
+     * With no intervening stores, one StoreLoad barrier orders all earlier
+     * stores before every subsequent load.  Keep other barrier types intact.
+     */
+    if (op->args[0] == (TCG_BAR_SC | TCG_MO_ST_LD)) {
+        if (ctx->st_ld_fenced) {
+            tcg_op_remove(ctx->tcg, op);
+            return true;
+        }
+        ctx->st_ld_fenced = true;
+    }
+
     /* Eliminate duplicate and redundant fence instructions.  */
     if (ctx->prev_mb) {
         /*
@@ -2411,6 +2426,7 @@ static bool fold_qemu_ld_2reg(OptContext *ctx, TCGOp *op)
 
 static bool fold_qemu_st(OptContext *ctx, TCGOp *op)
 {
+    ctx->st_ld_fenced = false;
     /* Opcodes that touch guest memory stop the mb optimization.  */
     ctx->prev_mb = NULL;
     return true;
@@ -2965,6 +2981,7 @@ static bool fold_tcg_st(OptContext *ctx, TCGOp *op)
     intptr_t lm1;
 
     if (op->args[1] != tcgv_ptr_arg(tcg_env)) {
+        ctx->st_ld_fenced = false;
         remove_mem_copy_all(ctx);
         return true;
     }
