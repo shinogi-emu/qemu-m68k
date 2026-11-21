@@ -18,14 +18,17 @@ fpfastdiff: fpfastdiff.S
 	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
 		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x100000 $< -o $@
 
+# run-test puts only its first command under timeout, so each later command
+# carries its own.
 define run-fpfastdiff-cpu
 	$(call run-test,$<,$(QEMU) -M virt -cpu $1 -m 16 \
 		-global m68k-cpu.fast-fpu=off -kernel $< -monitor none \
 		-display none -serial file:$<.$1.exact -no-reboot && \
-		$(QEMU) -M virt -cpu $1 -m 16 \
-		-global m68k-cpu.fast-fpu=on -kernel $< -monitor none \
+		timeout -s KILL --foreground $(TIMEOUT) $(QEMU) -M virt -cpu $1 \
+		-m 16 -global m68k-cpu.fast-fpu=on -kernel $< -monitor none \
 		-display none -serial file:$<.$1.fast -no-reboot && \
-		$(PYTHON) $(M68K_SYSTEM_SRC)/fpfastdiff.py check --cpu $1 \
+		timeout -s KILL --foreground $(TIMEOUT) $(PYTHON) \
+		$(M68K_SYSTEM_SRC)/fpfastdiff.py check --cpu $1 \
 		$<.$1.exact $<.$1.fast)
 endef
 
@@ -43,6 +46,7 @@ run-fpbench: fpbench
 	$(call run-test,$<,/usr/bin/time -o $<.exact.t -f %e $(QEMU) \
 		-M virt -cpu m68040 -m 16 -global m68k-cpu.fast-fpu=off \
 		-kernel $< -monitor none -display none -serial null -no-reboot && \
+		timeout -s KILL --foreground $(TIMEOUT) \
 		/usr/bin/time -o $<.fast.t -f %e $(QEMU) \
 		-M virt -cpu m68040 -m 16 -global m68k-cpu.fast-fpu=on \
 		-kernel $< -monitor none -display none -serial null -no-reboot && \

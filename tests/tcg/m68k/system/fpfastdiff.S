@@ -28,11 +28,13 @@ _start:
         /* RN X: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -45,11 +47,13 @@ _start:
         /* RN X: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -62,11 +66,13 @@ _start:
         /* RN X: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -79,11 +85,13 @@ _start:
         /* RN X: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -96,11 +104,13 @@ _start:
         /* RN X: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -113,11 +123,13 @@ _start:
         /* RN X: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -130,11 +142,13 @@ _start:
         /* RN X: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -147,11 +161,13 @@ _start:
         /* RN X: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -164,11 +180,13 @@ _start:
         /* RN X: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -181,11 +199,13 @@ _start:
         /* RN X: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -198,11 +218,13 @@ _start:
         /* RN X: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -215,11 +237,13 @@ _start:
         /* RN X: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -232,11 +256,13 @@ _start:
         /* RN X: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -249,11 +275,13 @@ _start:
         /* RN X: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -266,11 +294,13 @@ _start:
         /* RN X: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -283,11 +313,13 @@ _start:
         /* RN X: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -300,11 +332,13 @@ _start:
         /* RN X: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -317,12 +351,14 @@ _start:
         /* RN X: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -335,12 +371,14 @@ _start:
         /* RN X: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -353,12 +391,14 @@ _start:
         /* RN X: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -371,12 +411,14 @@ _start:
         /* RN X: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -389,12 +431,14 @@ _start:
         /* RN X: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -407,12 +451,14 @@ _start:
         /* RN X: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -425,12 +471,14 @@ _start:
         /* RN X: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -443,12 +491,14 @@ _start:
         /* RN X: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -461,12 +511,14 @@ _start:
         /* RN X: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -479,12 +531,14 @@ _start:
         /* RN X: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -497,12 +551,14 @@ _start:
         /* RN X: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -515,12 +571,14 @@ _start:
         /* RN X: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -533,12 +591,14 @@ _start:
         /* RN X: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -551,12 +611,14 @@ _start:
         /* RN X: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -569,12 +631,14 @@ _start:
         /* RN X: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -587,12 +651,14 @@ _start:
         /* RN X: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -605,12 +671,14 @@ _start:
         /* RN X: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -623,12 +691,14 @@ _start:
         /* RN X: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -641,10 +711,12 @@ _start:
         /* RN X: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -657,10 +729,12 @@ _start:
         /* RN X: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -673,10 +747,12 @@ _start:
         /* RN X: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -689,10 +765,12 @@ _start:
         /* RN X: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -705,10 +783,12 @@ _start:
         /* RN X: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -721,11 +801,13 @@ _start:
         /* RN X: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -737,11 +819,13 @@ _start:
         /* RN X: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -753,11 +837,13 @@ _start:
         /* RN X: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -769,11 +855,13 @@ _start:
         /* RN X: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -785,11 +873,13 @@ _start:
         /* RN X: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -801,11 +891,13 @@ _start:
         /* RN X: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -817,11 +909,13 @@ _start:
         /* RN S: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -834,11 +928,13 @@ _start:
         /* RN S: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -851,11 +947,13 @@ _start:
         /* RN S: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -868,11 +966,13 @@ _start:
         /* RN S: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -885,11 +985,13 @@ _start:
         /* RN S: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -902,11 +1004,13 @@ _start:
         /* RN S: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -919,11 +1023,13 @@ _start:
         /* RN S: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -936,11 +1042,13 @@ _start:
         /* RN S: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -953,11 +1061,13 @@ _start:
         /* RN S: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -970,11 +1080,13 @@ _start:
         /* RN S: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -987,11 +1099,13 @@ _start:
         /* RN S: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -1004,11 +1118,13 @@ _start:
         /* RN S: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -1021,11 +1137,13 @@ _start:
         /* RN S: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -1038,11 +1156,13 @@ _start:
         /* RN S: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -1055,11 +1175,13 @@ _start:
         /* RN S: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -1072,11 +1194,13 @@ _start:
         /* RN S: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -1089,11 +1213,13 @@ _start:
         /* RN S: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -1106,12 +1232,14 @@ _start:
         /* RN S: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -1124,12 +1252,14 @@ _start:
         /* RN S: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -1142,12 +1272,14 @@ _start:
         /* RN S: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -1160,12 +1292,14 @@ _start:
         /* RN S: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -1178,12 +1312,14 @@ _start:
         /* RN S: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -1196,12 +1332,14 @@ _start:
         /* RN S: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -1214,12 +1352,14 @@ _start:
         /* RN S: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -1232,12 +1372,14 @@ _start:
         /* RN S: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -1250,12 +1392,14 @@ _start:
         /* RN S: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -1268,12 +1412,14 @@ _start:
         /* RN S: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -1286,12 +1432,14 @@ _start:
         /* RN S: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -1304,12 +1452,14 @@ _start:
         /* RN S: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -1322,12 +1472,14 @@ _start:
         /* RN S: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -1340,12 +1492,14 @@ _start:
         /* RN S: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -1358,12 +1512,14 @@ _start:
         /* RN S: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -1376,12 +1532,14 @@ _start:
         /* RN S: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -1394,12 +1552,14 @@ _start:
         /* RN S: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -1412,12 +1572,14 @@ _start:
         /* RN S: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -1430,10 +1592,12 @@ _start:
         /* RN S: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -1446,10 +1610,12 @@ _start:
         /* RN S: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -1462,10 +1628,12 @@ _start:
         /* RN S: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -1478,10 +1646,12 @@ _start:
         /* RN S: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -1494,10 +1664,12 @@ _start:
         /* RN S: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -1510,11 +1682,13 @@ _start:
         /* RN S: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -1526,11 +1700,13 @@ _start:
         /* RN S: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -1542,11 +1718,13 @@ _start:
         /* RN S: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -1558,11 +1736,13 @@ _start:
         /* RN S: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -1574,11 +1754,13 @@ _start:
         /* RN S: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -1590,11 +1772,13 @@ _start:
         /* RN S: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -1606,11 +1790,13 @@ _start:
         /* RN D: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -1623,11 +1809,13 @@ _start:
         /* RN D: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -1640,11 +1828,13 @@ _start:
         /* RN D: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -1657,11 +1847,13 @@ _start:
         /* RN D: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -1674,11 +1866,13 @@ _start:
         /* RN D: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -1691,11 +1885,13 @@ _start:
         /* RN D: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -1708,11 +1904,13 @@ _start:
         /* RN D: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -1725,11 +1923,13 @@ _start:
         /* RN D: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -1742,11 +1942,13 @@ _start:
         /* RN D: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -1759,11 +1961,13 @@ _start:
         /* RN D: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -1776,11 +1980,13 @@ _start:
         /* RN D: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -1793,11 +1999,13 @@ _start:
         /* RN D: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -1810,11 +2018,13 @@ _start:
         /* RN D: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -1827,11 +2037,13 @@ _start:
         /* RN D: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -1844,11 +2056,13 @@ _start:
         /* RN D: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -1861,11 +2075,13 @@ _start:
         /* RN D: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -1878,11 +2094,13 @@ _start:
         /* RN D: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -1895,12 +2113,14 @@ _start:
         /* RN D: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -1913,12 +2133,14 @@ _start:
         /* RN D: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -1931,12 +2153,14 @@ _start:
         /* RN D: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -1949,12 +2173,14 @@ _start:
         /* RN D: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -1967,12 +2193,14 @@ _start:
         /* RN D: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -1985,12 +2213,14 @@ _start:
         /* RN D: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -2003,12 +2233,14 @@ _start:
         /* RN D: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -2021,12 +2253,14 @@ _start:
         /* RN D: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -2039,12 +2273,14 @@ _start:
         /* RN D: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -2057,12 +2293,14 @@ _start:
         /* RN D: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -2075,12 +2313,14 @@ _start:
         /* RN D: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -2093,12 +2333,14 @@ _start:
         /* RN D: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -2111,12 +2353,14 @@ _start:
         /* RN D: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -2129,12 +2373,14 @@ _start:
         /* RN D: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -2147,12 +2393,14 @@ _start:
         /* RN D: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -2165,12 +2413,14 @@ _start:
         /* RN D: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -2183,12 +2433,14 @@ _start:
         /* RN D: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -2201,12 +2453,14 @@ _start:
         /* RN D: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -2219,10 +2473,12 @@ _start:
         /* RN D: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -2235,10 +2491,12 @@ _start:
         /* RN D: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -2251,10 +2509,12 @@ _start:
         /* RN D: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -2267,10 +2527,12 @@ _start:
         /* RN D: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -2283,10 +2545,12 @@ _start:
         /* RN D: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -2299,11 +2563,13 @@ _start:
         /* RN D: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -2315,11 +2581,13 @@ _start:
         /* RN D: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -2331,11 +2599,13 @@ _start:
         /* RN D: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -2347,11 +2617,13 @@ _start:
         /* RN D: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -2363,11 +2635,13 @@ _start:
         /* RN D: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -2379,11 +2653,13 @@ _start:
         /* RN D: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -2395,11 +2671,13 @@ _start:
         /* RZ X: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -2412,11 +2690,13 @@ _start:
         /* RZ X: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -2429,11 +2709,13 @@ _start:
         /* RZ X: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -2446,11 +2728,13 @@ _start:
         /* RZ X: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -2463,11 +2747,13 @@ _start:
         /* RZ X: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -2480,11 +2766,13 @@ _start:
         /* RZ X: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -2497,11 +2785,13 @@ _start:
         /* RZ X: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -2514,11 +2804,13 @@ _start:
         /* RZ X: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -2531,11 +2823,13 @@ _start:
         /* RZ X: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -2548,11 +2842,13 @@ _start:
         /* RZ X: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -2565,11 +2861,13 @@ _start:
         /* RZ X: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -2582,11 +2880,13 @@ _start:
         /* RZ X: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -2599,11 +2899,13 @@ _start:
         /* RZ X: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -2616,11 +2918,13 @@ _start:
         /* RZ X: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -2633,11 +2937,13 @@ _start:
         /* RZ X: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -2650,11 +2956,13 @@ _start:
         /* RZ X: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -2667,11 +2975,13 @@ _start:
         /* RZ X: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -2684,12 +2994,14 @@ _start:
         /* RZ X: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -2702,12 +3014,14 @@ _start:
         /* RZ X: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -2720,12 +3034,14 @@ _start:
         /* RZ X: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -2738,12 +3054,14 @@ _start:
         /* RZ X: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -2756,12 +3074,14 @@ _start:
         /* RZ X: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -2774,12 +3094,14 @@ _start:
         /* RZ X: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -2792,12 +3114,14 @@ _start:
         /* RZ X: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -2810,12 +3134,14 @@ _start:
         /* RZ X: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -2828,12 +3154,14 @@ _start:
         /* RZ X: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -2846,12 +3174,14 @@ _start:
         /* RZ X: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -2864,12 +3194,14 @@ _start:
         /* RZ X: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -2882,12 +3214,14 @@ _start:
         /* RZ X: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -2900,12 +3234,14 @@ _start:
         /* RZ X: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -2918,12 +3254,14 @@ _start:
         /* RZ X: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -2936,12 +3274,14 @@ _start:
         /* RZ X: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -2954,12 +3294,14 @@ _start:
         /* RZ X: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -2972,12 +3314,14 @@ _start:
         /* RZ X: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -2990,12 +3334,14 @@ _start:
         /* RZ X: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -3008,10 +3354,12 @@ _start:
         /* RZ X: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3024,10 +3372,12 @@ _start:
         /* RZ X: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3040,10 +3390,12 @@ _start:
         /* RZ X: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3056,10 +3408,12 @@ _start:
         /* RZ X: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3072,10 +3426,12 @@ _start:
         /* RZ X: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3088,11 +3444,13 @@ _start:
         /* RZ X: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3104,11 +3462,13 @@ _start:
         /* RZ X: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3120,11 +3480,13 @@ _start:
         /* RZ X: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3136,11 +3498,13 @@ _start:
         /* RZ X: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3152,11 +3516,13 @@ _start:
         /* RZ X: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3168,11 +3534,13 @@ _start:
         /* RZ X: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0010,%fpcr
+1:      fmove.l #0x0060,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0010,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3184,11 +3552,13 @@ _start:
         /* RZ S: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -3201,11 +3571,13 @@ _start:
         /* RZ S: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -3218,11 +3590,13 @@ _start:
         /* RZ S: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -3235,11 +3609,13 @@ _start:
         /* RZ S: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -3252,11 +3628,13 @@ _start:
         /* RZ S: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -3269,11 +3647,13 @@ _start:
         /* RZ S: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -3286,11 +3666,13 @@ _start:
         /* RZ S: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -3303,11 +3685,13 @@ _start:
         /* RZ S: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -3320,11 +3704,13 @@ _start:
         /* RZ S: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -3337,11 +3723,13 @@ _start:
         /* RZ S: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -3354,11 +3742,13 @@ _start:
         /* RZ S: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -3371,11 +3761,13 @@ _start:
         /* RZ S: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -3388,11 +3780,13 @@ _start:
         /* RZ S: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -3405,11 +3799,13 @@ _start:
         /* RZ S: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -3422,11 +3818,13 @@ _start:
         /* RZ S: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -3439,11 +3837,13 @@ _start:
         /* RZ S: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -3456,11 +3856,13 @@ _start:
         /* RZ S: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -3473,12 +3875,14 @@ _start:
         /* RZ S: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -3491,12 +3895,14 @@ _start:
         /* RZ S: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -3509,12 +3915,14 @@ _start:
         /* RZ S: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -3527,12 +3935,14 @@ _start:
         /* RZ S: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -3545,12 +3955,14 @@ _start:
         /* RZ S: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -3563,12 +3975,14 @@ _start:
         /* RZ S: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -3581,12 +3995,14 @@ _start:
         /* RZ S: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -3599,12 +4015,14 @@ _start:
         /* RZ S: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -3617,12 +4035,14 @@ _start:
         /* RZ S: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -3635,12 +4055,14 @@ _start:
         /* RZ S: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -3653,12 +4075,14 @@ _start:
         /* RZ S: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -3671,12 +4095,14 @@ _start:
         /* RZ S: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -3689,12 +4115,14 @@ _start:
         /* RZ S: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -3707,12 +4135,14 @@ _start:
         /* RZ S: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -3725,12 +4155,14 @@ _start:
         /* RZ S: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -3743,12 +4175,14 @@ _start:
         /* RZ S: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -3761,12 +4195,14 @@ _start:
         /* RZ S: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -3779,12 +4215,14 @@ _start:
         /* RZ S: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -3797,10 +4235,12 @@ _start:
         /* RZ S: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3813,10 +4253,12 @@ _start:
         /* RZ S: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3829,10 +4271,12 @@ _start:
         /* RZ S: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3845,10 +4289,12 @@ _start:
         /* RZ S: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3861,10 +4307,12 @@ _start:
         /* RZ S: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -3877,11 +4325,13 @@ _start:
         /* RZ S: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3893,11 +4343,13 @@ _start:
         /* RZ S: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3909,11 +4361,13 @@ _start:
         /* RZ S: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3925,11 +4379,13 @@ _start:
         /* RZ S: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3941,11 +4397,13 @@ _start:
         /* RZ S: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3957,11 +4415,13 @@ _start:
         /* RZ S: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0050,%fpcr
+1:      fmove.l #0x00a0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0050,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -3973,11 +4433,13 @@ _start:
         /* RZ D: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -3990,11 +4452,13 @@ _start:
         /* RZ D: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -4007,11 +4471,13 @@ _start:
         /* RZ D: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -4024,11 +4490,13 @@ _start:
         /* RZ D: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -4041,11 +4509,13 @@ _start:
         /* RZ D: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -4058,11 +4528,13 @@ _start:
         /* RZ D: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -4075,11 +4547,13 @@ _start:
         /* RZ D: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -4092,11 +4566,13 @@ _start:
         /* RZ D: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -4109,11 +4585,13 @@ _start:
         /* RZ D: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -4126,11 +4604,13 @@ _start:
         /* RZ D: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -4143,11 +4623,13 @@ _start:
         /* RZ D: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -4160,11 +4642,13 @@ _start:
         /* RZ D: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -4177,11 +4661,13 @@ _start:
         /* RZ D: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -4194,11 +4680,13 @@ _start:
         /* RZ D: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -4211,11 +4699,13 @@ _start:
         /* RZ D: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -4228,11 +4718,13 @@ _start:
         /* RZ D: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -4245,11 +4737,13 @@ _start:
         /* RZ D: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -4262,12 +4756,14 @@ _start:
         /* RZ D: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -4280,12 +4776,14 @@ _start:
         /* RZ D: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -4298,12 +4796,14 @@ _start:
         /* RZ D: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -4316,12 +4816,14 @@ _start:
         /* RZ D: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -4334,12 +4836,14 @@ _start:
         /* RZ D: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -4352,12 +4856,14 @@ _start:
         /* RZ D: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -4370,12 +4876,14 @@ _start:
         /* RZ D: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -4388,12 +4896,14 @@ _start:
         /* RZ D: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -4406,12 +4916,14 @@ _start:
         /* RZ D: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -4424,12 +4936,14 @@ _start:
         /* RZ D: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -4442,12 +4956,14 @@ _start:
         /* RZ D: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -4460,12 +4976,14 @@ _start:
         /* RZ D: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -4478,12 +4996,14 @@ _start:
         /* RZ D: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -4496,12 +5016,14 @@ _start:
         /* RZ D: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -4514,12 +5036,14 @@ _start:
         /* RZ D: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -4532,12 +5056,14 @@ _start:
         /* RZ D: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -4550,12 +5076,14 @@ _start:
         /* RZ D: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -4568,12 +5096,14 @@ _start:
         /* RZ D: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -4586,10 +5116,12 @@ _start:
         /* RZ D: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -4602,10 +5134,12 @@ _start:
         /* RZ D: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -4618,10 +5152,12 @@ _start:
         /* RZ D: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -4634,10 +5170,12 @@ _start:
         /* RZ D: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -4650,10 +5188,12 @@ _start:
         /* RZ D: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -4666,11 +5206,13 @@ _start:
         /* RZ D: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -4682,11 +5224,13 @@ _start:
         /* RZ D: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -4698,11 +5242,13 @@ _start:
         /* RZ D: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -4714,11 +5260,13 @@ _start:
         /* RZ D: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -4730,11 +5278,13 @@ _start:
         /* RZ D: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -4746,11 +5296,13 @@ _start:
         /* RZ D: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0090,%fpcr
+1:      fmove.l #0x0020,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0090,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -4762,11 +5314,13 @@ _start:
         /* RM X: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -4779,11 +5333,13 @@ _start:
         /* RM X: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -4796,11 +5352,13 @@ _start:
         /* RM X: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -4813,11 +5371,13 @@ _start:
         /* RM X: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -4830,11 +5390,13 @@ _start:
         /* RM X: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -4847,11 +5409,13 @@ _start:
         /* RM X: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -4864,11 +5428,13 @@ _start:
         /* RM X: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -4881,11 +5447,13 @@ _start:
         /* RM X: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -4898,11 +5466,13 @@ _start:
         /* RM X: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -4915,11 +5485,13 @@ _start:
         /* RM X: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -4932,11 +5504,13 @@ _start:
         /* RM X: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -4949,11 +5523,13 @@ _start:
         /* RM X: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -4966,11 +5542,13 @@ _start:
         /* RM X: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -4983,11 +5561,13 @@ _start:
         /* RM X: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -5000,11 +5580,13 @@ _start:
         /* RM X: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -5017,11 +5599,13 @@ _start:
         /* RM X: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -5034,11 +5618,13 @@ _start:
         /* RM X: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -5051,12 +5637,14 @@ _start:
         /* RM X: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -5069,12 +5657,14 @@ _start:
         /* RM X: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -5087,12 +5677,14 @@ _start:
         /* RM X: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -5105,12 +5697,14 @@ _start:
         /* RM X: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -5123,12 +5717,14 @@ _start:
         /* RM X: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -5141,12 +5737,14 @@ _start:
         /* RM X: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -5159,12 +5757,14 @@ _start:
         /* RM X: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -5177,12 +5777,14 @@ _start:
         /* RM X: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -5195,12 +5797,14 @@ _start:
         /* RM X: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -5213,12 +5817,14 @@ _start:
         /* RM X: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -5231,12 +5837,14 @@ _start:
         /* RM X: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -5249,12 +5857,14 @@ _start:
         /* RM X: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -5267,12 +5877,14 @@ _start:
         /* RM X: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -5285,12 +5897,14 @@ _start:
         /* RM X: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -5303,12 +5917,14 @@ _start:
         /* RM X: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -5321,12 +5937,14 @@ _start:
         /* RM X: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -5339,12 +5957,14 @@ _start:
         /* RM X: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -5357,12 +5977,14 @@ _start:
         /* RM X: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -5375,10 +5997,12 @@ _start:
         /* RM X: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -5391,10 +6015,12 @@ _start:
         /* RM X: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -5407,10 +6033,12 @@ _start:
         /* RM X: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -5423,10 +6051,12 @@ _start:
         /* RM X: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -5439,10 +6069,12 @@ _start:
         /* RM X: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -5455,11 +6087,13 @@ _start:
         /* RM X: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -5471,11 +6105,13 @@ _start:
         /* RM X: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -5487,11 +6123,13 @@ _start:
         /* RM X: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -5503,11 +6141,13 @@ _start:
         /* RM X: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -5519,11 +6159,13 @@ _start:
         /* RM X: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -5535,11 +6177,13 @@ _start:
         /* RM X: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0020,%fpcr
+1:      fmove.l #0x0070,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0020,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -5551,11 +6195,13 @@ _start:
         /* RM S: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -5568,11 +6214,13 @@ _start:
         /* RM S: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -5585,11 +6233,13 @@ _start:
         /* RM S: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -5602,11 +6252,13 @@ _start:
         /* RM S: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -5619,11 +6271,13 @@ _start:
         /* RM S: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -5636,11 +6290,13 @@ _start:
         /* RM S: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -5653,11 +6309,13 @@ _start:
         /* RM S: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -5670,11 +6328,13 @@ _start:
         /* RM S: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -5687,11 +6347,13 @@ _start:
         /* RM S: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -5704,11 +6366,13 @@ _start:
         /* RM S: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -5721,11 +6385,13 @@ _start:
         /* RM S: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -5738,11 +6404,13 @@ _start:
         /* RM S: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -5755,11 +6423,13 @@ _start:
         /* RM S: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -5772,11 +6442,13 @@ _start:
         /* RM S: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -5789,11 +6461,13 @@ _start:
         /* RM S: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -5806,11 +6480,13 @@ _start:
         /* RM S: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -5823,11 +6499,13 @@ _start:
         /* RM S: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -5840,12 +6518,14 @@ _start:
         /* RM S: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -5858,12 +6538,14 @@ _start:
         /* RM S: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -5876,12 +6558,14 @@ _start:
         /* RM S: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -5894,12 +6578,14 @@ _start:
         /* RM S: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -5912,12 +6598,14 @@ _start:
         /* RM S: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -5930,12 +6618,14 @@ _start:
         /* RM S: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -5948,12 +6638,14 @@ _start:
         /* RM S: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -5966,12 +6658,14 @@ _start:
         /* RM S: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -5984,12 +6678,14 @@ _start:
         /* RM S: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -6002,12 +6698,14 @@ _start:
         /* RM S: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -6020,12 +6718,14 @@ _start:
         /* RM S: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -6038,12 +6738,14 @@ _start:
         /* RM S: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -6056,12 +6758,14 @@ _start:
         /* RM S: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -6074,12 +6778,14 @@ _start:
         /* RM S: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -6092,12 +6798,14 @@ _start:
         /* RM S: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -6110,12 +6818,14 @@ _start:
         /* RM S: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -6128,12 +6838,14 @@ _start:
         /* RM S: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -6146,12 +6858,14 @@ _start:
         /* RM S: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -6164,10 +6878,12 @@ _start:
         /* RM S: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -6180,10 +6896,12 @@ _start:
         /* RM S: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -6196,10 +6914,12 @@ _start:
         /* RM S: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -6212,10 +6932,12 @@ _start:
         /* RM S: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -6228,10 +6950,12 @@ _start:
         /* RM S: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -6244,11 +6968,13 @@ _start:
         /* RM S: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -6260,11 +6986,13 @@ _start:
         /* RM S: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -6276,11 +7004,13 @@ _start:
         /* RM S: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -6292,11 +7022,13 @@ _start:
         /* RM S: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -6308,11 +7040,13 @@ _start:
         /* RM S: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -6324,11 +7058,13 @@ _start:
         /* RM S: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0060,%fpcr
+1:      fmove.l #0x00b0,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0060,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -6340,11 +7076,13 @@ _start:
         /* RM D: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -6357,11 +7095,13 @@ _start:
         /* RM D: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -6374,11 +7114,13 @@ _start:
         /* RM D: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -6391,11 +7133,13 @@ _start:
         /* RM D: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -6408,11 +7152,13 @@ _start:
         /* RM D: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -6425,11 +7171,13 @@ _start:
         /* RM D: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -6442,11 +7190,13 @@ _start:
         /* RM D: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -6459,11 +7209,13 @@ _start:
         /* RM D: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -6476,11 +7228,13 @@ _start:
         /* RM D: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -6493,11 +7247,13 @@ _start:
         /* RM D: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -6510,11 +7266,13 @@ _start:
         /* RM D: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -6527,11 +7285,13 @@ _start:
         /* RM D: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -6544,11 +7304,13 @@ _start:
         /* RM D: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -6561,11 +7323,13 @@ _start:
         /* RM D: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -6578,11 +7342,13 @@ _start:
         /* RM D: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -6595,11 +7361,13 @@ _start:
         /* RM D: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -6612,11 +7380,13 @@ _start:
         /* RM D: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -6629,12 +7399,14 @@ _start:
         /* RM D: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -6647,12 +7419,14 @@ _start:
         /* RM D: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -6665,12 +7439,14 @@ _start:
         /* RM D: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -6683,12 +7459,14 @@ _start:
         /* RM D: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -6701,12 +7479,14 @@ _start:
         /* RM D: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -6719,12 +7499,14 @@ _start:
         /* RM D: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -6737,12 +7519,14 @@ _start:
         /* RM D: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -6755,12 +7539,14 @@ _start:
         /* RM D: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -6773,12 +7559,14 @@ _start:
         /* RM D: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -6791,12 +7579,14 @@ _start:
         /* RM D: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -6809,12 +7599,14 @@ _start:
         /* RM D: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -6827,12 +7619,14 @@ _start:
         /* RM D: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -6845,12 +7639,14 @@ _start:
         /* RM D: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -6863,12 +7659,14 @@ _start:
         /* RM D: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -6881,12 +7679,14 @@ _start:
         /* RM D: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -6899,12 +7699,14 @@ _start:
         /* RM D: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -6917,12 +7719,14 @@ _start:
         /* RM D: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -6935,12 +7739,14 @@ _start:
         /* RM D: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -6953,10 +7759,12 @@ _start:
         /* RM D: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -6969,10 +7777,12 @@ _start:
         /* RM D: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -6985,10 +7795,12 @@ _start:
         /* RM D: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7001,10 +7813,12 @@ _start:
         /* RM D: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7017,10 +7831,12 @@ _start:
         /* RM D: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7033,11 +7849,13 @@ _start:
         /* RM D: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7049,11 +7867,13 @@ _start:
         /* RM D: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7065,11 +7885,13 @@ _start:
         /* RM D: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7081,11 +7903,13 @@ _start:
         /* RM D: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7097,11 +7921,13 @@ _start:
         /* RM D: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7113,11 +7939,13 @@ _start:
         /* RM D: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00a0,%fpcr
+1:      fmove.l #0x0030,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00a0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7129,11 +7957,13 @@ _start:
         /* RP X: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -7146,11 +7976,13 @@ _start:
         /* RP X: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -7163,11 +7995,13 @@ _start:
         /* RP X: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -7180,11 +8014,13 @@ _start:
         /* RP X: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -7197,11 +8033,13 @@ _start:
         /* RP X: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -7214,11 +8052,13 @@ _start:
         /* RP X: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -7231,11 +8071,13 @@ _start:
         /* RP X: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -7248,11 +8090,13 @@ _start:
         /* RP X: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -7265,11 +8109,13 @@ _start:
         /* RP X: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -7282,11 +8128,13 @@ _start:
         /* RP X: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -7299,11 +8147,13 @@ _start:
         /* RP X: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -7316,11 +8166,13 @@ _start:
         /* RP X: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -7333,11 +8185,13 @@ _start:
         /* RP X: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -7350,11 +8204,13 @@ _start:
         /* RP X: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -7367,11 +8223,13 @@ _start:
         /* RP X: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -7384,11 +8242,13 @@ _start:
         /* RP X: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -7401,11 +8261,13 @@ _start:
         /* RP X: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -7418,12 +8280,14 @@ _start:
         /* RP X: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -7436,12 +8300,14 @@ _start:
         /* RP X: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -7454,12 +8320,14 @@ _start:
         /* RP X: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -7472,12 +8340,14 @@ _start:
         /* RP X: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -7490,12 +8360,14 @@ _start:
         /* RP X: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -7508,12 +8380,14 @@ _start:
         /* RP X: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -7526,12 +8400,14 @@ _start:
         /* RP X: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -7544,12 +8420,14 @@ _start:
         /* RP X: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -7562,12 +8440,14 @@ _start:
         /* RP X: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -7580,12 +8460,14 @@ _start:
         /* RP X: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -7598,12 +8480,14 @@ _start:
         /* RP X: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -7616,12 +8500,14 @@ _start:
         /* RP X: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -7634,12 +8520,14 @@ _start:
         /* RP X: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -7652,12 +8540,14 @@ _start:
         /* RP X: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -7670,12 +8560,14 @@ _start:
         /* RP X: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -7688,12 +8580,14 @@ _start:
         /* RP X: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -7706,12 +8600,14 @@ _start:
         /* RP X: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -7724,12 +8620,14 @@ _start:
         /* RP X: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -7742,10 +8640,12 @@ _start:
         /* RP X: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7758,10 +8658,12 @@ _start:
         /* RP X: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7774,10 +8676,12 @@ _start:
         /* RP X: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7790,10 +8694,12 @@ _start:
         /* RP X: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7806,10 +8712,12 @@ _start:
         /* RP X: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -7822,11 +8730,13 @@ _start:
         /* RP X: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7838,11 +8748,13 @@ _start:
         /* RP X: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7854,11 +8766,13 @@ _start:
         /* RP X: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7870,11 +8784,13 @@ _start:
         /* RP X: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7886,11 +8802,13 @@ _start:
         /* RP X: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7902,11 +8820,13 @@ _start:
         /* RP X: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0030,%fpcr
+1:      fmove.l #0x0040,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0030,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -7918,11 +8838,13 @@ _start:
         /* RP S: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -7935,11 +8857,13 @@ _start:
         /* RP S: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -7952,11 +8876,13 @@ _start:
         /* RP S: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -7969,11 +8895,13 @@ _start:
         /* RP S: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -7986,11 +8914,13 @@ _start:
         /* RP S: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -8003,11 +8933,13 @@ _start:
         /* RP S: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -8020,11 +8952,13 @@ _start:
         /* RP S: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -8037,11 +8971,13 @@ _start:
         /* RP S: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -8054,11 +8990,13 @@ _start:
         /* RP S: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -8071,11 +9009,13 @@ _start:
         /* RP S: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -8088,11 +9028,13 @@ _start:
         /* RP S: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -8105,11 +9047,13 @@ _start:
         /* RP S: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -8122,11 +9066,13 @@ _start:
         /* RP S: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -8139,11 +9085,13 @@ _start:
         /* RP S: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -8156,11 +9104,13 @@ _start:
         /* RP S: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -8173,11 +9123,13 @@ _start:
         /* RP S: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -8190,11 +9142,13 @@ _start:
         /* RP S: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -8207,12 +9161,14 @@ _start:
         /* RP S: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -8225,12 +9181,14 @@ _start:
         /* RP S: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -8243,12 +9201,14 @@ _start:
         /* RP S: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -8261,12 +9221,14 @@ _start:
         /* RP S: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -8279,12 +9241,14 @@ _start:
         /* RP S: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -8297,12 +9261,14 @@ _start:
         /* RP S: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -8315,12 +9281,14 @@ _start:
         /* RP S: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -8333,12 +9301,14 @@ _start:
         /* RP S: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -8351,12 +9321,14 @@ _start:
         /* RP S: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -8369,12 +9341,14 @@ _start:
         /* RP S: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -8387,12 +9361,14 @@ _start:
         /* RP S: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -8405,12 +9381,14 @@ _start:
         /* RP S: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -8423,12 +9401,14 @@ _start:
         /* RP S: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -8441,12 +9421,14 @@ _start:
         /* RP S: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -8459,12 +9441,14 @@ _start:
         /* RP S: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -8477,12 +9461,14 @@ _start:
         /* RP S: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -8495,12 +9481,14 @@ _start:
         /* RP S: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -8513,12 +9501,14 @@ _start:
         /* RP S: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -8531,10 +9521,12 @@ _start:
         /* RP S: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -8547,10 +9539,12 @@ _start:
         /* RP S: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -8563,10 +9557,12 @@ _start:
         /* RP S: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -8579,10 +9575,12 @@ _start:
         /* RP S: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -8595,10 +9593,12 @@ _start:
         /* RP S: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -8611,11 +9611,13 @@ _start:
         /* RP S: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -8627,11 +9629,13 @@ _start:
         /* RP S: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -8643,11 +9647,13 @@ _start:
         /* RP S: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -8659,11 +9665,13 @@ _start:
         /* RP S: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -8675,11 +9683,13 @@ _start:
         /* RP S: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -8691,11 +9701,13 @@ _start:
         /* RP S: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x0070,%fpcr
+1:      fmove.l #0x0080,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x0070,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -8707,11 +9719,13 @@ _start:
         /* RP D: fmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -8724,11 +9738,13 @@ _start:
         /* RP D: fint, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -8741,11 +9757,13 @@ _start:
         /* RP D: fintrz, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -8758,11 +9776,13 @@ _start:
         /* RP D: fsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0004          /* fsqrt */
         fmove.l %fpsr,%d1
@@ -8775,11 +9795,13 @@ _start:
         /* RP D: fabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -8792,11 +9814,13 @@ _start:
         /* RP D: fneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -8809,11 +9833,13 @@ _start:
         /* RP D: ftst, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -8826,11 +9852,13 @@ _start:
         /* RP D: fgetexp, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -8843,11 +9871,13 @@ _start:
         /* RP D: fgetman, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -8860,11 +9890,13 @@ _start:
         /* RP D: fsmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -8877,11 +9909,13 @@ _start:
         /* RP D: fdmove, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -8894,11 +9928,13 @@ _start:
         /* RP D: fssqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0041          /* fssqrt */
         fmove.l %fpsr,%d1
@@ -8911,11 +9947,13 @@ _start:
         /* RP D: fdsqrt, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0045          /* fdsqrt */
         fmove.l %fpsr,%d1
@@ -8928,11 +9966,13 @@ _start:
         /* RP D: fsabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -8945,11 +9985,13 @@ _start:
         /* RP D: fdabs, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -8962,11 +10004,13 @@ _start:
         /* RP D: fsneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -8979,11 +10023,13 @@ _start:
         /* RP D: fdneg, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -8996,12 +10042,14 @@ _start:
         /* RP D: fadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -9014,12 +10062,14 @@ _start:
         /* RP D: fsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -9032,12 +10082,14 @@ _start:
         /* RP D: fmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -9050,12 +10102,14 @@ _start:
         /* RP D: fdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -9068,12 +10122,14 @@ _start:
         /* RP D: fcmp, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -9086,12 +10142,14 @@ _start:
         /* RP D: fsglmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -9104,12 +10162,14 @@ _start:
         /* RP D: fsgldiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -9122,12 +10182,14 @@ _start:
         /* RP D: fmod, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -9140,12 +10202,14 @@ _start:
         /* RP D: frem, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0425          /* frem */
         fmove.l %fpsr,%d1
@@ -9158,12 +10222,14 @@ _start:
         /* RP D: fscale, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -9176,12 +10242,14 @@ _start:
         /* RP D: fsadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -9194,12 +10262,14 @@ _start:
         /* RP D: fdadd, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -9212,12 +10282,14 @@ _start:
         /* RP D: fssub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -9230,12 +10302,14 @@ _start:
         /* RP D: fdsub, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -9248,12 +10322,14 @@ _start:
         /* RP D: fsmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -9266,12 +10342,14 @@ _start:
         /* RP D: fdmul, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -9284,12 +10362,14 @@ _start:
         /* RP D: fsdiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -9302,12 +10382,14 @@ _start:
         /* RP D: fddiv, 464 cases */
         lea     tbl_bin_all,%a0
         move.w  #463,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -9320,10 +10402,12 @@ _start:
         /* RP D: fmove.b in, 6 cases */
         lea     tbl_in_B,%a0
         move.w  #5,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5800          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -9336,10 +10420,12 @@ _start:
         /* RP D: fmove.w in, 6 cases */
         lea     tbl_in_W,%a0
         move.w  #5,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -9352,10 +10438,12 @@ _start:
         /* RP D: fmove.l in, 6 cases */
         lea     tbl_in_L,%a0
         move.w  #5,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4000          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -9368,10 +10456,12 @@ _start:
         /* RP D: fmove.s in, 10 cases */
         lea     tbl_in_S,%a0
         move.w  #9,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x4400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -9384,10 +10474,12 @@ _start:
         /* RP D: fmove.d in, 10 cases */
         lea     tbl_in_D,%a0
         move.w  #9,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf210,0x5400          /* fmove.<f> (%a0),%fp0 */
         fmove.l %fpsr,%d1
@@ -9400,11 +10492,13 @@ _start:
         /* RP D: fmove.b out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -9416,11 +10510,13 @@ _start:
         /* RP D: fmove.w out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -9432,11 +10528,13 @@ _start:
         /* RP D: fmove.l out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6000          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -9448,11 +10546,13 @@ _start:
         /* RP D: fmove.s out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -9464,11 +10564,13 @@ _start:
         /* RP D: fmove.d out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x7400          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -9480,11 +10582,13 @@ _start:
         /* RP D: fmove.x out, 114 cases */
         lea     tbl_un_all,%a0
         move.w  #113,%d0
-1:      fmove.l #0x00b0,%fpcr
+1:      fmove.l #0x0000,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x00b0,%fpcr
         fmove.l #0,%fpsr
         .word   0xf211,0x6800          /* fmove.<f> %fp0,(%a1) */
         fmove.l %fpsr,%d1
@@ -9496,11 +10600,13 @@ _start:
         /* RN X OPERR-en: fmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -9513,11 +10619,13 @@ _start:
         /* RN X OPERR-en: fint, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -9530,11 +10638,13 @@ _start:
         /* RN X OPERR-en: fintrz, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -9547,11 +10657,13 @@ _start:
         /* RN X OPERR-en: fabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -9564,11 +10676,13 @@ _start:
         /* RN X OPERR-en: fneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -9581,11 +10695,13 @@ _start:
         /* RN X OPERR-en: ftst, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -9598,11 +10714,13 @@ _start:
         /* RN X OPERR-en: fgetexp, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -9615,11 +10733,13 @@ _start:
         /* RN X OPERR-en: fgetman, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -9632,11 +10752,13 @@ _start:
         /* RN X OPERR-en: fsmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -9649,11 +10771,13 @@ _start:
         /* RN X OPERR-en: fdmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -9666,11 +10790,13 @@ _start:
         /* RN X OPERR-en: fsabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -9683,11 +10809,13 @@ _start:
         /* RN X OPERR-en: fdabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -9700,11 +10828,13 @@ _start:
         /* RN X OPERR-en: fsneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -9717,11 +10847,13 @@ _start:
         /* RN X OPERR-en: fdneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -9734,12 +10866,14 @@ _start:
         /* RN X OPERR-en: fadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -9752,12 +10886,14 @@ _start:
         /* RN X OPERR-en: fsub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -9770,12 +10906,14 @@ _start:
         /* RN X OPERR-en: fmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -9788,12 +10926,14 @@ _start:
         /* RN X OPERR-en: fdiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -9806,12 +10946,14 @@ _start:
         /* RN X OPERR-en: fcmp, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -9824,12 +10966,14 @@ _start:
         /* RN X OPERR-en: fsglmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -9842,12 +10986,14 @@ _start:
         /* RN X OPERR-en: fsgldiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -9860,12 +11006,14 @@ _start:
         /* RN X OPERR-en: fmod, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -9878,12 +11026,14 @@ _start:
         /* RN X OPERR-en: fscale, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -9896,12 +11046,14 @@ _start:
         /* RN X OPERR-en: fsadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -9914,12 +11066,14 @@ _start:
         /* RN X OPERR-en: fdadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -9932,12 +11086,14 @@ _start:
         /* RN X OPERR-en: fssub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -9950,12 +11106,14 @@ _start:
         /* RN X OPERR-en: fdsub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -9968,12 +11126,14 @@ _start:
         /* RN X OPERR-en: fsmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -9986,12 +11146,14 @@ _start:
         /* RN X OPERR-en: fdmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -10004,12 +11166,14 @@ _start:
         /* RN X OPERR-en: fsdiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -10022,12 +11186,14 @@ _start:
         /* RN X OPERR-en: fddiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2000,%fpcr
+1:      fmove.l #0x0050,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2000,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -10040,11 +11206,13 @@ _start:
         /* RN S OPERR-en: fmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -10057,11 +11225,13 @@ _start:
         /* RN S OPERR-en: fint, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -10074,11 +11244,13 @@ _start:
         /* RN S OPERR-en: fintrz, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -10091,11 +11263,13 @@ _start:
         /* RN S OPERR-en: fabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -10108,11 +11282,13 @@ _start:
         /* RN S OPERR-en: fneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -10125,11 +11301,13 @@ _start:
         /* RN S OPERR-en: ftst, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -10142,11 +11320,13 @@ _start:
         /* RN S OPERR-en: fgetexp, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -10159,11 +11339,13 @@ _start:
         /* RN S OPERR-en: fgetman, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -10176,11 +11358,13 @@ _start:
         /* RN S OPERR-en: fsmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -10193,11 +11377,13 @@ _start:
         /* RN S OPERR-en: fdmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -10210,11 +11396,13 @@ _start:
         /* RN S OPERR-en: fsabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -10227,11 +11415,13 @@ _start:
         /* RN S OPERR-en: fdabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -10244,11 +11434,13 @@ _start:
         /* RN S OPERR-en: fsneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -10261,11 +11453,13 @@ _start:
         /* RN S OPERR-en: fdneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -10278,12 +11472,14 @@ _start:
         /* RN S OPERR-en: fadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -10296,12 +11492,14 @@ _start:
         /* RN S OPERR-en: fsub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -10314,12 +11512,14 @@ _start:
         /* RN S OPERR-en: fmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -10332,12 +11532,14 @@ _start:
         /* RN S OPERR-en: fdiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -10350,12 +11552,14 @@ _start:
         /* RN S OPERR-en: fcmp, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -10368,12 +11572,14 @@ _start:
         /* RN S OPERR-en: fsglmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -10386,12 +11592,14 @@ _start:
         /* RN S OPERR-en: fsgldiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -10404,12 +11612,14 @@ _start:
         /* RN S OPERR-en: fmod, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -10422,12 +11632,14 @@ _start:
         /* RN S OPERR-en: fscale, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -10440,12 +11652,14 @@ _start:
         /* RN S OPERR-en: fsadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -10458,12 +11672,14 @@ _start:
         /* RN S OPERR-en: fdadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -10476,12 +11692,14 @@ _start:
         /* RN S OPERR-en: fssub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -10494,12 +11712,14 @@ _start:
         /* RN S OPERR-en: fdsub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -10512,12 +11732,14 @@ _start:
         /* RN S OPERR-en: fsmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -10530,12 +11752,14 @@ _start:
         /* RN S OPERR-en: fdmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -10548,12 +11772,14 @@ _start:
         /* RN S OPERR-en: fsdiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -10566,12 +11792,14 @@ _start:
         /* RN S OPERR-en: fddiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2040,%fpcr
+1:      fmove.l #0x0090,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2040,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -10584,11 +11812,13 @@ _start:
         /* RN D OPERR-en: fmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0000          /* fmove */
         fmove.l %fpsr,%d1
@@ -10601,11 +11831,13 @@ _start:
         /* RN D OPERR-en: fint, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0001          /* fint */
         fmove.l %fpsr,%d1
@@ -10618,11 +11850,13 @@ _start:
         /* RN D OPERR-en: fintrz, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0003          /* fintrz */
         fmove.l %fpsr,%d1
@@ -10635,11 +11869,13 @@ _start:
         /* RN D OPERR-en: fabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0018          /* fabs */
         fmove.l %fpsr,%d1
@@ -10652,11 +11888,13 @@ _start:
         /* RN D OPERR-en: fneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001a          /* fneg */
         fmove.l %fpsr,%d1
@@ -10669,11 +11907,13 @@ _start:
         /* RN D OPERR-en: ftst, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x003a          /* ftst */
         fmove.l %fpsr,%d1
@@ -10686,11 +11926,13 @@ _start:
         /* RN D OPERR-en: fgetexp, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001e          /* fgetexp */
         fmove.l %fpsr,%d1
@@ -10703,11 +11945,13 @@ _start:
         /* RN D OPERR-en: fgetman, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x001f          /* fgetman */
         fmove.l %fpsr,%d1
@@ -10720,11 +11964,13 @@ _start:
         /* RN D OPERR-en: fsmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0040          /* fsmove */
         fmove.l %fpsr,%d1
@@ -10737,11 +11983,13 @@ _start:
         /* RN D OPERR-en: fdmove, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0044          /* fdmove */
         fmove.l %fpsr,%d1
@@ -10754,11 +12002,13 @@ _start:
         /* RN D OPERR-en: fsabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0058          /* fsabs */
         fmove.l %fpsr,%d1
@@ -10771,11 +12021,13 @@ _start:
         /* RN D OPERR-en: fdabs, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005c          /* fdabs */
         fmove.l %fpsr,%d1
@@ -10788,11 +12040,13 @@ _start:
         /* RN D OPERR-en: fsneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005a          /* fsneg */
         fmove.l %fpsr,%d1
@@ -10805,11 +12059,13 @@ _start:
         /* RN D OPERR-en: fdneg, 96 cases */
         lea     tbl_un_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x005e          /* fdneg */
         fmove.l %fpsr,%d1
@@ -10822,12 +12078,14 @@ _start:
         /* RN D OPERR-en: fadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0422          /* fadd */
         fmove.l %fpsr,%d1
@@ -10840,12 +12098,14 @@ _start:
         /* RN D OPERR-en: fsub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0428          /* fsub */
         fmove.l %fpsr,%d1
@@ -10858,12 +12118,14 @@ _start:
         /* RN D OPERR-en: fmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0423          /* fmul */
         fmove.l %fpsr,%d1
@@ -10876,12 +12138,14 @@ _start:
         /* RN D OPERR-en: fdiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0420          /* fdiv */
         fmove.l %fpsr,%d1
@@ -10894,12 +12158,14 @@ _start:
         /* RN D OPERR-en: fcmp, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0438          /* fcmp */
         fmove.l %fpsr,%d1
@@ -10912,12 +12178,14 @@ _start:
         /* RN D OPERR-en: fsglmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0427          /* fsglmul */
         fmove.l %fpsr,%d1
@@ -10930,12 +12198,14 @@ _start:
         /* RN D OPERR-en: fsgldiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0424          /* fsgldiv */
         fmove.l %fpsr,%d1
@@ -10948,12 +12218,14 @@ _start:
         /* RN D OPERR-en: fmod, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0421          /* fmod */
         fmove.l %fpsr,%d1
@@ -10966,12 +12238,14 @@ _start:
         /* RN D OPERR-en: fscale, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0426          /* fscale */
         fmove.l %fpsr,%d1
@@ -10984,12 +12258,14 @@ _start:
         /* RN D OPERR-en: fsadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0462          /* fsadd */
         fmove.l %fpsr,%d1
@@ -11002,12 +12278,14 @@ _start:
         /* RN D OPERR-en: fdadd, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0466          /* fdadd */
         fmove.l %fpsr,%d1
@@ -11020,12 +12298,14 @@ _start:
         /* RN D OPERR-en: fssub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0468          /* fssub */
         fmove.l %fpsr,%d1
@@ -11038,12 +12318,14 @@ _start:
         /* RN D OPERR-en: fdsub, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x046c          /* fdsub */
         fmove.l %fpsr,%d1
@@ -11056,12 +12338,14 @@ _start:
         /* RN D OPERR-en: fsmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0463          /* fsmul */
         fmove.l %fpsr,%d1
@@ -11074,12 +12358,14 @@ _start:
         /* RN D OPERR-en: fdmul, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0467          /* fdmul */
         fmove.l %fpsr,%d1
@@ -11092,12 +12378,14 @@ _start:
         /* RN D OPERR-en: fsdiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0460          /* fsdiv */
         fmove.l %fpsr,%d1
@@ -11110,12 +12398,14 @@ _start:
         /* RN D OPERR-en: fddiv, 96 cases */
         lea     tbl_bin_norm,%a0
         move.w  #95,%d0
-1:      fmove.l #0x2080,%fpcr
+1:      fmove.l #0x0010,%fpcr
+        fmul.x  %fp0,%fp0
         fmove.x (%a0),%fp0
         fmove.x 12(%a0),%fp1
         clr.l   (%a1)
         clr.l   4(%a1)
         clr.l   8(%a1)
+        fmove.l #0x2080,%fpcr
         fmove.l #0,%fpsr
         .word   0xf200,0x0464          /* fddiv */
         fmove.l %fpsr,%d1
@@ -11617,7 +12907,7 @@ tbl_bin_all:
         .long   0x40000000, 0x810a2dc9, 0xc9ab25b2, 0x3fff0000, 0x8aa739ab, 0x2b7e79e4   /* m31,m28=4000:810a2dc9c9ab25b2,3fff:8aa739ab2b7e79e4 */
         .long   0x7ffe0000, 0xffffffff, 0xffffffff, 0x7ffe0000, 0xffffffff, 0xffffffff   /* ovf=7ffe:ffffffffffffffff,7ffe:ffffffffffffffff */
         .long   0x7ffd0000, 0x80000000, 0x00000000, 0x7ffd0000, 0x80000000, 0x00000000   /* ovf2=7ffd:8000000000000000,7ffd:8000000000000000 */
-        .long   0x7ffe0000, 0xffffffff, 0xffffffff, 0xfffd0000, 0xffffffff, 0xffffffff   /* ovf3=7ffe:ffffffffffffffff,fffd:ffffffffffffffff */
+        .long   0x7ffe0000, 0xffffffff, 0xffffffff, 0xfffe0000, 0xffffffff, 0xffffffff   /* ovf3=7ffe:ffffffffffffffff,fffe:ffffffffffffffff */
         .long   0x00010000, 0x80000000, 0x00000000, 0x00010000, 0x80000000, 0x00000000   /* unf=0001:8000000000000000,0001:8000000000000000 */
         .long   0x00020000, 0x80000000, 0x00000000, 0x00020000, 0x80000000, 0x00000000   /* unf2=0002:8000000000000000,0002:8000000000000000 */
         .long   0x00010000, 0x80000000, 0x00000000, 0x3ffe0000, 0x80000000, 0x00000000   /* unf3=0001:8000000000000000,3ffe:8000000000000000 */

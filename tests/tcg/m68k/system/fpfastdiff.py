@@ -109,7 +109,7 @@ def build_tables():
     unf = (0x0002, 1 << 63)
     edge = [
         ("ovf", (big, big)), ("ovf2", (ovf, ovf)),
-        ("ovf3", (big, (0xffff - 0x8000 + 0x7ffe, (1 << 64) - 1))),
+        ("ovf3", (big, (0xfffe, (1 << 64) - 1))),   # FSUB: max - -max
         ("unf", (small, small)), ("unf2", (unf, unf)),
         ("unf3", (small, (0x3ffe, 1 << 63))),
         ("unf4", ((0x0000, 0x4000000000000000), (0x3ffe, 1 << 63))),
@@ -185,6 +185,14 @@ class Group:
         self.table = table          # key of the shared table in TABLES
         self.cases = TABLES[table]  # [(operand text, table words)]
         self.stride = stride
+
+
+def other_fpcr(fpcr):
+    """An FPCR with a different precision and rounding mode and no enables."""
+    prec = ((fpcr >> 6) & 3) + 1
+    prec = 0 if prec > 2 else prec
+    mode = (((fpcr >> 4) & 3) + 1) & 3
+    return (prec << 6) | (mode << 4)
 
 
 def pass_name(prec, mode, enable):
@@ -298,17 +306,21 @@ def emit(path):
         A("        lea     tbl_%s,%%a0" % g.table)
         # dbra counts the low word, so the count is capped at 65536
         A("        move.w  #%d,%%d0" % (len(g.cases) - 1))
-        A("1:      fmove.l #0x%04x,%%fpcr" % g.fpcr)
+        # Leave a different mode and precision in FPCR and run one op under
+        # it, so a stale cached control state is the wrong one.  Then load,
+        # clear, and write the case's FPCR: only the FPSR clear separates that
+        # write from the op, with no branch in between.
+        A("1:      fmove.l #0x%04x,%%fpcr" % other_fpcr(g.fpcr))
+        A("        fmul.x  %fp0,%fp0")
         if g.kind == "binary":
             A("        fmove.x (%a0),%fp0")
             A("        fmove.x 12(%a0),%fp1")
-        elif g.kind == "memin":
-            pass
-        else:
+        elif g.kind != "memin":
             A("        fmove.x (%a0),%fp0")
         A("        clr.l   (%a1)")
         A("        clr.l   4(%a1)")
         A("        clr.l   8(%a1)")
+        A("        fmove.l #0x%04x,%%fpcr" % g.fpcr)
         A("        fmove.l #0,%fpsr")
         if g.kind == "memin":
             A("        .word   0xf210,0x%04x          /* fmove.<f> (%%a0),%%fp0 */"
