@@ -5602,7 +5602,15 @@ static void gen_fcc_cond(DisasCompare *c, DisasContext *s, int cond)
 
     /* TODO: Raise BSUN exception.  */
     fpsr = tcg_temp_new();
-    gen_load_fcr(s, fpsr, M68K_FPSR);
+    if (s->fast_fpu) {
+        /*
+         * The condition codes are always in env->fpsr; get_fpsr adds only
+         * the accrued byte, from the softfloat flags.
+         */
+        tcg_gen_ld_i32(fpsr, tcg_env, offsetof(CPUM68KState, fpsr));
+    } else {
+        gen_load_fcr(s, fpsr, M68K_FPSR);
+    }
     c->v1 = fpsr;
 
     switch (cond) {
