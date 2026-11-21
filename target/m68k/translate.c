@@ -274,6 +274,8 @@ static void gen_lookup_tb(DisasContext *s)
  * fast helpers read the rounding mode and precision at run time; so leave
  * the TB, to a lookup under the new flags, only when the new enable byte is
  * non-zero.  Emitted once the instruction is complete, writebacks included.
+ * Not under icount, which charges a TB's instructions on entry; the TB ends
+ * after the instruction instead.
  */
 static void gen_fast_fpcr_check(DisasContext *s)
 {
@@ -6598,7 +6600,12 @@ static void m68k_tr_translate_insn(DisasContextBase *dcbase, CPUState *cpu)
          * single-stepping, through the trace exception.
          */
         if (dc->base.is_jmp == DISAS_NEXT && !dc->ss_active) {
-            gen_fast_fpcr_check(dc);
+            if (tb_cflags(dc->base.tb) & CF_USE_ICOUNT) {
+                /* icount charged the whole TB on entry: end it here. */
+                gen_lookup_tb(dc);
+            } else {
+                gen_fast_fpcr_check(dc);
+            }
         }
     }
 
