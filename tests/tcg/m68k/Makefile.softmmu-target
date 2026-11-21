@@ -8,7 +8,7 @@
 M68K_SYSTEM_SRC = $(SRC_PATH)/tests/tcg/m68k/system
 VPATH += $(M68K_SYSTEM_SRC)
 
-TESTS += fpfastdiff fp-fast-chain fp-fast-cw fp-fast-ops
+TESTS += fpfastdiff fp-fast-chain fp-fast-cw fp-fast-ops fp-fast-traps
 
 # The fast FPU path must give exactly what the exact path gives: the same
 # guest with fast-fpu off and on, every result and FPSR compared bit for bit,
@@ -136,6 +136,29 @@ endef
 run-fp-fast-ops: fp-fast-ops fp-fast-ops-060
 	$(call run-fp-fast-ops-cpu,m68040,fp-fast-ops)
 	$(call run-fp-fast-ops-cpu,m68060,fp-fast-ops-060)
+
+# Which FP instructions trap, and to which vector, must not depend on
+# fast-fpu.  The expected lines are what exact mode gave on each CPU before
+# fast-fpu existed.
+FP_FAST_TRAPS_m68040 = ........................F......................UUU..U?04...xx
+FP_FAST_TRAPS_m68060 = FFFFFFFFFFFFFFFFFFFFFFFFF......................UUUEEEEEFFFF
+
+fp-fast-traps: fp-fast-traps.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
+
+define run-fp-fast-traps-cpu
+	$(call run-test,$<,rm -f $<.out && \
+		$(QEMU) -M virt -cpu $1 -m 16 -global m68k-cpu.fast-fpu=$2 \
+		-kernel $< -monitor none -display none -serial file:$<.out -no-reboot)
+	$(call quiet-command,test "$$(cat $<.out)" = '$(FP_FAST_TRAPS_$1)',TEST,$< on $1 fast-fpu=$2)
+endef
+
+run-fp-fast-traps: fp-fast-traps
+	$(call run-fp-fast-traps-cpu,m68040,off)
+	$(call run-fp-fast-traps-cpu,m68040,on)
+	$(call run-fp-fast-traps-cpu,m68060,off)
+	$(call run-fp-fast-traps-cpu,m68060,on)
 
 # The fast-fpu property's default on each machine and its overrides.  Those
 # defaults are what it checks, so under qemu-fast-fpu.sh it runs the binary
