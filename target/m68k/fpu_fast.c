@@ -40,6 +40,7 @@
 
 #if defined(__x86_64__)
 
+#include <math.h>
 #include "qemu/host-utils.h"
 #include "host/cpuinfo.h"
 #include "cpu.h"
@@ -62,6 +63,9 @@
 #define X87_RC_DOWN     0x0400
 #define X87_RC_UP       0x0800
 #define X87_RC_CHOP     0x0c00
+
+/* RN, 64-bit precision, all exceptions masked: what libm's code assumes */
+#define X87_CW_DEFAULT  0x037f
 
 #define FFAST_BIAS      0x3fff
 #define FFAST_SGL_MASK  0xffffff0000000000ull   /* a significand's top 24 */
@@ -175,6 +179,8 @@ typedef enum {
     FFAST_SQRT,
     FFAST_ABS,
     FFAST_NEG,
+    FFAST_LIBM,         /* the transcendentals of one result */
+    FFAST_SINCOS,
     FFAST_ADD,
     FFAST_SUB,
     FFAST_MUL,
@@ -202,6 +208,12 @@ static FFastKind ffast_kind(uint32_t opmode)
         return FFAST_ABS;
     case 0x1a: case 0x5a: case 0x5e:
         return FFAST_NEG;
+    case 0x02: case 0x06: case 0x08: case 0x09: case 0x0a: case 0x0c:
+    case 0x0d: case 0x0e: case 0x0f: case 0x10: case 0x11: case 0x12:
+    case 0x14: case 0x15: case 0x16: case 0x19: case 0x1c: case 0x1d:
+        return FFAST_LIBM;
+    case 0x30 ... 0x37:
+        return FFAST_SINCOS;
     case 0x22: case 0x62: case 0x66:
         return FFAST_ADD;
     case 0x28: case 0x68: case 0x6c:
@@ -779,6 +791,168 @@ static bool ffast_try_sglmul(CPUM68KState *env, FPReg *dest, const FPReg *a,
 }
 
 /*
+ * The transcendentals run on the C library's long double functions.  They
+ * assume the default control word, so it is loaded first (its own site, and
+ * the cache keeps it loaded across a run of them).  The result is then
+ * rounded to FPCR's precision by the x87 under FPCR's word.  That rounds
+ * twice, once to 64 bits and once to FPCR's format, which the m68k FPSP does
+ * not do; the library's own error is larger anyway, and fporacle.py holds
+ * the sum to 2 ulp.
+ *
+ * Only round to nearest is taken: the library rounds to nearest, so under a
+ * directed mode (RZ, RM, RP) its result would not be on the side FPCR names.
+ * Only a nonzero normal operand is taken, and only a result that is finite
+ * and normal in the range of its precision, with the x87 raising nothing but
+ * inexact.  Exact mode's exact special cases (a zero or an infinity in or
+ * out, an argument outside the real domain) all run there.  Every result
+ * taken is flagged inexact, as the FPSP flags every result it computes.
+ */
+
+/* The operand is inside the real domain of opmode's function. */
+static bool ffast_libm_domain(uint32_t opmode, const FPReg *x)
+{
+    bool neg = x->l.upper & 0x8000;
+    int exp = x->l.upper & 0x7fff;
+    bool lt1 = exp < FFAST_BIAS;
+    bool le1 = lt1 || (exp == FFAST_BIAS && x->l.lower == 1ull << 63);
+
+    switch (opmode) {
+    case 0x0c: case 0x1c:               /* FASIN, FACOS */
+        return le1;
+    case 0x0d:                          /* FATANH */
+        return lt1;
+    case 0x06:                          /* FLOGNP1 */
+        return !neg || lt1;
+    case 0x14: case 0x15: case 0x16:    /* FLOGN, FLOG10, FLOG2 */
+        return !neg;
+    default:
+        return true;
+    }
+}
+
+static long double ffast_libm(uint32_t opmode, long double x)
+{
+    switch (opmode) {
+    case 0x02: return sinhl(x);
+    case 0x06: return log1pl(x);
+    case 0x08: return expm1l(x);
+    case 0x09: return tanhl(x);
+    case 0x0a: return atanl(x);
+    case 0x0c: return asinl(x);
+    case 0x0d: return atanhl(x);
+    case 0x0e: return sinl(x);
+    case 0x0f: return tanl(x);
+    case 0x10: return expl(x);
+    case 0x11: return exp2l(x);
+    case 0x12: return powl(10.0L, x);   /* exp10l is not in mingw-w64 */
+    case 0x14: return logl(x);
+    case 0x15: return log10l(x);
+    case 0x16: return log2l(x);
+    case 0x19: return coshl(x);
+    case 0x1c: return acosl(x);
+    case 0x1d: return cosl(x);
+    default:
+        g_assert_not_reached();
+    }
+}
+
+/*
+ * Rounds r, a result of the library, to FPCR's precision and mode and checks
+ * what exact mode would do: false unless the result is normal, inside the
+ * range of the precision, and not in the lowest binade (tininess, as in
+ * ffast_try_x87()).
+ */
+static bool ffast_libm_round(CPUM68KState *env, FPReg *r)
+{
+    uint16_t cw = env->fast_fpu_cw;
+
+    if (cw != X87_CW_DEFAULT) {
+        uint16_t sw;
+
+        FFAST_LOAD_CW(cw, "fpcr");
+        FFAST_MONADIC(X87_ROUND, r, r, sw);
+        if (sw & X87_NOT_INEXACT) {
+            ffast_clear_flags();
+            return false;
+        }
+    }
+    return (r->l.upper & 0x7fff) > 1 && ffast_result_ok(r, false) &&
+           ffast_range_ok(r, cw);
+}
+
+/*
+ * One or two results (sine and cosine) of the library function(s) of opmode
+ * for the operand src, rounded for FPCR; none of them is written to the
+ * guest.  False when the exact path has to do the instruction.
+ */
+static bool ffast_libm_compute(CPUM68KState *env, FPReg *r0, FPReg *r1,
+                               const FPReg *src, uint32_t opmode)
+{
+    union { long double v; FPReg f; } x = { .f = *src }, y0, y1;
+    uint16_t sw;
+
+    if ((env->fast_fpu_cw & X87_RC_MASK) || !(src->l.upper & 0x7fff) ||
+        !ffast_libm_domain(opmode, src)) {
+        return false;
+    }
+    FFAST_LOAD_CW(X87_CW_DEFAULT, "libm");
+    if (r1) {
+        y0.v = sinl(x.v);
+        y1.v = cosl(x.v);
+        asm volatile("" : "+m"(y1.v));
+    } else {
+        y0.v = ffast_libm(opmode, x.v);
+    }
+    /* the results are stored, so the status word has their flags */
+    asm volatile("" : "+m"(y0.v));
+    asm volatile("fnstsw %0" : "=a"(sw));
+    if (sw & X87_NOT_INEXACT) {
+        ffast_clear_flags();
+        return false;
+    }
+    *r0 = y0.f;
+    if (!ffast_libm_round(env, r0)) {
+        return false;
+    }
+    if (r1) {
+        *r1 = y1.f;
+        return ffast_libm_round(env, r1);
+    }
+    return true;
+}
+
+static bool ffast_try_libm(CPUM68KState *env, FPReg *dest, const FPReg *src,
+                           uint32_t opmode)
+{
+    FPReg r;
+
+    if (!ffast_libm_compute(env, &r, NULL, src, opmode)) {
+        return false;
+    }
+    ffast_accept(env, dest, &r, true);
+    return true;
+}
+
+/*
+ * FSINCOS: the cosine to FP(opmode & 7) first, then the sine to the
+ * destination, as helper_fsincos() does, so the sine wins when they are the
+ * same register; FPSR is the sine's.
+ */
+static bool ffast_try_sincos(CPUM68KState *env, FPReg *dest, const FPReg *src,
+                             uint32_t opmode)
+{
+    FPReg sine, cosine, *c = &env->fregs[opmode & 7];
+
+    if (!ffast_libm_compute(env, &sine, &cosine, src, opmode)) {
+        return false;
+    }
+    c->l.upper = cosine.l.upper;
+    c->l.lower = cosine.l.lower;
+    ffast_accept(env, dest, &sine, true);
+    return true;
+}
+
+/*
  * The attempt at opmode, of kind k (not FFAST_EXACT), with src zero or
  * normal; inexact says whether src's conversion from a raw operand was.
  * Returns false, having written nothing to the guest, when the exact path
@@ -803,6 +977,10 @@ static bool ffast_try(CPUM68KState *env, FPReg *dest, const FPReg *src,
     case FFAST_MOVE:
         ffast_accept(env, dest, src, inexact);
         return true;
+    case FFAST_LIBM:
+        return ffast_try_libm(env, dest, src, opmode);
+    case FFAST_SINCOS:
+        return ffast_try_sincos(env, dest, src, opmode);
     case FFAST_SGLMUL:
     case FFAST_SGLDIV:
         /*

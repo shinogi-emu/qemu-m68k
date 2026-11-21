@@ -36,6 +36,27 @@ run-fpfastdiff: fpfastdiff
 	$(call run-fpfastdiff-cpu,m68040)
 	$(call run-fpfastdiff-cpu,m68060)
 
+# The transcendentals against mpmath (fporacle.py), with fast-fpu on: the
+# fast path computes them on the host's long double, and every function must
+# stay within the oracle's 2 ulp.  On the 68040 only: the 68060 sends them to
+# its software package.  Needs mpmath, so it is only in TESTS when the Python
+# has it.  The guest's results sit at 2 MiB, above the stack.
+fporacle-fast: fporacle.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x200000 $< -o $@
+
+run-fporacle-fast: fporacle-fast
+	$(call run-test,$<,rm -f $<.fast && \
+		$(QEMU) -M virt -cpu m68040 -m 16 -global m68k-cpu.fast-fpu=on \
+		-kernel $< -monitor none -display none -serial file:$<.fast \
+		-no-reboot && \
+		timeout -s KILL --foreground $(TIMEOUT) $(PYTHON) \
+		$(M68K_SYSTEM_SRC)/fporacle.py check $<.fast)
+
+ifneq ($(shell $(PYTHON) -c 'import mpmath' 2>/dev/null && echo y),)
+TESTS += fporacle-fast
+endif
+
 # A TB that is not fast must not chain past an FPCR write into a fast TB.
 # The guest prints P when it could tell the paths apart and the second pass
 # took the exact one, p when there was nothing to tell apart, and s on the
@@ -53,7 +74,7 @@ endef
 
 run-fp-fast-chain: fp-fast-chain
 	$(call run-fp-fast-chain-cpu,m68040,off,p)
-	$(call run-fp-fast-chain-cpu,m68040,on,[Pp])
+	$(call run-fp-fast-chain-cpu,m68040,on,P)
 	$(call run-fp-fast-chain-cpu,m68060,off,s)
 	$(call run-fp-fast-chain-cpu,m68060,on,s)
 
