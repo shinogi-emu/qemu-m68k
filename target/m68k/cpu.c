@@ -674,6 +674,10 @@ static const TCGCPUOps m68k_tcg_ops = {
     .get_tb_cpu_state = m68k_get_tb_cpu_state,
     .restore_state_to_opc = m68k_restore_state_to_opc,
     .mmu_index = m68k_cpu_mmu_index,
+#if defined(__x86_64__)
+    .cpu_exec_enter = m68k_cpu_exec_enter,
+    .cpu_exec_exit = m68k_cpu_exec_exit,
+#endif
 
 #ifndef CONFIG_USER_ONLY
     .tlb_fill = m68k_cpu_tlb_fill,

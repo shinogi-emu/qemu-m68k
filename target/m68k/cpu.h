@@ -223,6 +223,11 @@ void cpu_m68k_restore_fp_status(CPUM68KState *env);
 void cpu_m68k_set_fpcr(CPUM68KState *env, uint32_t val);
 uint32_t cpu_m68k_get_fpsr(CPUM68KState *env);
 void cpu_m68k_set_fpsr(CPUM68KState *env, uint32_t val);
+#if defined(__x86_64__)
+/* fast-fpu: the x87 control word around cpu_exec() (fpu_fast.c) */
+void m68k_cpu_exec_enter(CPUState *cs);
+void m68k_cpu_exec_exit(CPUState *cs);
+#endif
 
 /*
  * Instead of computing the condition codes after each m68k instruction,

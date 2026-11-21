@@ -83,6 +83,31 @@ static inline void ffast_clear_flags(void)
 }
 
 /*
+ * TCGCPUOps cpu_exec_enter and cpu_exec_exit, for every m68k CPU.  Generated
+ * code and the fast helpers run under FPCR's control word; host code outside
+ * cpu_exec() gets the default word back, which the ABI expects to be
+ * preserved.  The cache is forgotten on both sides, so nothing that ran in
+ * between (a signal handler's reset of the x87 in linux-user, say) can leave
+ * it stale.  Nothing is loaded when no fast helper used the x87.
+ */
+#define X87_CW_DEFAULT  0x037f
+
+void m68k_cpu_exec_enter(CPUState *cs)
+{
+    ffast_cw_loaded = 0;
+}
+
+void m68k_cpu_exec_exit(CPUState *cs)
+{
+    if (ffast_cw_loaded && ffast_cw_loaded != X87_CW_DEFAULT) {
+        uint16_t cw = X87_CW_DEFAULT;
+
+        asm volatile("fldcw %0" : : "m"(cw));
+    }
+    ffast_cw_loaded = 0;
+}
+
+/*
  * One block per x87 operation: load the operands from memory, compute, store
  * the result, read the status word.  Every block leaves the x87 stack empty.
  * FFAST_DYADIC computes dest OP src, with st(0) = dest and st(1) = src.
@@ -299,6 +324,50 @@ static inline bool ffast_out_ok(uint32_t exp, uint32_t expmax, bool zero,
     return exp < expmax - 1 && (exp != 1 || !inexact);
 }
 
+/*
+ * Inexact, from the operands.
+ *
+ * Every operand the x87 path takes is zero or m * 2^(e - 63), with m the
+ * 64-bit significand, top bit set, and e the unbiased exponent.  Every result
+ * it accepts is zero or normal, neither denormalized nor overflowed, so the
+ * x87 rounded once, at the p-th significant bit of the exact result (p = 24,
+ * 53 or 64, from the control word's precision field).  So the result is
+ * inexact exactly when the exact result has a bit set below that position,
+ * which is what each test computes:
+ *
+ * - FSMOVE, FDMOVE, FABS, FNEG and the .S/.D stores: the exact result is the
+ *   operand, sign aside, so a bit of m below its top p (ffast_lost()).
+ * - Conversions: fild and fld are exact (an int32 has at most 32 significant
+ *   bits, a .S or .D at most 53); rounding to FPCR's precision afterwards is
+ *   the FSMOVE case.
+ * - FINT, FINTRZ, and the .B/.W/.L stores (p = 64): round to an integer,
+ *   then to p bits (ffast_int_inexact()).  If e < 0, the operand is a nonzero
+ *   value below 1, which the first step changes.  If 0 <= e < p - 1, the
+ *   integer has at most e + 2 <= p bits (e + 1, plus a carry), so the second
+ *   step is exact and the first loses the bits below the binary point: the
+ *   low 63 - e bits of m.  Otherwise the binary point is at or below the
+ *   p-th bit, so every fraction bit is below it too.  A nonzero fraction
+ *   makes the first step inexact; a zero fraction leaves m to the second.
+ *   Either way a bit of m below its top p decides it.
+ * - FMUL: the exact product of the significands, < 2^128, is computed in
+ *   full; inexact when it has a bit below its top p (ffast_lost128()).
+ * - FADD, FSUB (ffast_addsub_inexact()): with |a| >= |b| and d = ea - eb,
+ *   (ma << d) +- mb is the exact result scaled by 2^(63 - eb), and fits in
+ *   128 bits for d <= 64; inexact when it has a bit below its top p.  For
+ *   d >= 65, 0 < |b| < 2^(ea - 64).  The result is more than |a| / 2, so its
+ *   last bit is worth at least 2^(ea - 64), and a is a multiple of that, so
+ *   a +- b falls between two results: always inexact.
+ * - FDIV, FSQRT: the rounded result r is exact iff r * src == dest, or
+ *   r * r == src.  On the significands that is rm * sm == dm << k with
+ *   k = de - re - se + 63, or rm * rm == sm << k with k = se - 2 re + 63.
+ *   The quotient of two significands is in (1/2, 2) and a root's exponent is
+ *   half the operand's, so a normal result has k = 62, 63 or 64 and both
+ *   sides fit in 128 bits.  k = 62 means the rounding carried into the next
+ *   binade, which is inexact, and the comparison says so.
+ * - FSGLMUL, FSGLDIV: each operand truncated to 24 bits first (inexact if
+ *   either loses a bit), then FMUL or FDIV with p = 24 on what remains.
+ */
+
 /* Whether a significand has bits set below its top p. */
 static inline bool ffast_lost(uint64_t m, int p)
 {
@@ -368,9 +437,8 @@ static bool ffast_addsub_inexact(const FPReg *a, const FPReg *b, bool sub,
 
 /*
  * Whether the exact result of kind k, of dest and src, differs from the x87
- * result r, which is normal or zero and rounded to p bits.  Values are
- * m * 2^(e - 63) with m the 64-bit significand.  For FSQRT and FDIV the
- * exponents of a normal result bound the shift to 62..64.
+ * result r, which is normal or zero and rounded to p bits (see above).  The
+ * exponents here are biased, hence the FFAST_BIAS in the shifts.
  */
 static bool ffast_inexact(FFastKind k, const FPReg *r, const FPReg *dest,
                           const FPReg *src, int p)
