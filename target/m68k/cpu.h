@@ -164,6 +164,14 @@ typedef struct CPUArchState {
 
     /* Fields from here on are preserved across CPU reset. */
     uint64_t features;
+
+    /*
+     * x87 control word wanted for the current FPCR (fast-fpu mode).  Derived
+     * from FPCR by cpu_m68k_restore_fp_status(), so a reset recomputes it.
+     * It sits last, where it moves none of the fields generated code
+     * addresses.
+     */
+    uint16_t fast_fpu_cw;
 } CPUM68KState;
 
 /*
@@ -176,6 +184,9 @@ struct ArchCPU {
     CPUState parent_obj;
 
     CPUM68KState env;
+
+    /* Translate FP arithmetic to host x87 ops (x86-64 hosts only). */
+    bool fast_fpu;
 };
 
 /*
@@ -619,6 +630,11 @@ void m68k_cpu_transaction_failed(CPUState *cs, hwaddr physaddr, vaddr addr,
 #define TB_FLAGS_TRACE          16
 #define TB_FLAGS_TRACE_BIT      (1 << TB_FLAGS_TRACE)
 #define TB_FLAGS_060_DFP        (1 << 17)
+/*
+ * fast-fpu: FP arithmetic may use the host x87 unit.  Set only with all FPCR
+ * exception enables off.
+ */
+#define TB_FLAGS_FAST_FPU       (1 << 18)
 
 void dump_mmu(CPUM68KState *env);
 

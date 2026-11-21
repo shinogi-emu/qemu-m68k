@@ -110,6 +110,7 @@ typedef struct DisasContext {
     int writeback_mask;
     TCGv writeback[8];
     bool ss_active;
+    bool fast_fpu;
 } DisasContext;
 
 static TCGv get_areg(DisasContext *s, unsigned regno)
@@ -250,6 +251,18 @@ static void gen_jmp(DisasContext *s, TCGv dest)
 {
     update_cc_op(s);
     tcg_gen_mov_i32(QREG_PC, dest);
+    s->base.is_jmp = DISAS_JUMP;
+}
+
+/*
+ * End the TB after the current instruction, with a lookup rather than a
+ * chainable jump: the instruction changed state the TB flags depend on, so
+ * the next TB has to be found under the new flags.
+ */
+static void gen_lookup_tb(DisasContext *s)
+{
+    update_cc_op(s);
+    tcg_gen_movi_i32(QREG_PC, s->pc);
     s->base.is_jmp = DISAS_JUMP;
 }
 
@@ -4833,6 +4846,10 @@ static void gen_store_fcr(DisasContext *s, TCGv val, int reg)
         break;
     case M68K_FPCR:
         gen_helper_set_fpcr(tcg_env, val);
+        if (s->fast_fpu) {
+            /* The next TB's flags depend on the new FPCR. */
+            gen_lookup_tb(s);
+        }
         break;
     }
 }
@@ -5655,6 +5672,10 @@ DISAS_INSN(frestore)
         if (mode == 3) {
             tcg_gen_addi_i32(AREG(insn, 0), addr, 12);
         }
+        if (s->fast_fpu) {
+            /* A null frame clears FPCR, and with it the enable byte. */
+            gen_lookup_tb(s);
+        }
     } else if (m68k_feature(s->env, M68K_FEATURE_M68040)) {
         SRC_EA(env, addr, OS_LONG, 0, NULL);
         /* FIXME: check the state frame */
@@ -6359,6 +6380,7 @@ static void m68k_tr_init_disas_context(DisasContextBase *dcbase, CPUState *cpu)
     dc->cc_op_synced = 1;
     dc->done_mac = 0;
     dc->writeback_mask = 0;
+    dc->fast_fpu = (dc->base.tb->flags & TB_FLAGS_FAST_FPU) != 0;
 
     dc->ss_active = (M68K_SR_TRACE(env->sr) == M68K_SR_TRACE_ANY_INS);
     /* If architectural single step active, limit to 1 */

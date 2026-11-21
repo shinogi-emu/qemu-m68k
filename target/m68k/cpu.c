@@ -22,6 +22,7 @@
 #include "accel/tcg/cpu-ops.h"
 #include "fpu/softfloat.h"
 #include "qapi/error.h"
+#include "hw/core/qdev-properties.h"
 
 #ifndef CONFIG_USER_ONLY
 #include "migration/vmstate.h"
@@ -60,6 +61,19 @@ static TCGTBCPUState m68k_get_tb_cpu_state(CPUState *cs)
     if (m68k_feature(env, M68K_FEATURE_M68060) && (env->pcr & 2)) {
         flags |= TB_FLAGS_060_DFP;
     }
+#if defined(__x86_64__)
+    M68kCPU *cpu = env_archcpu(env);
+
+    /*
+     * No pending-frame condition: this model never delivers a 68060
+     * exception frame that FRESTORE loaded (it records only the format,
+     * and every FP data instruction makes the state idle inline), so the
+     * frame cannot change what an FP instruction does.
+     */
+    if (cpu->fast_fpu && (env->fpcr & FPCR_EXCP_MASK) == 0) {
+        flags |= TB_FLAGS_FAST_FPU;
+    }
+#endif
 
     return (TCGTBCPUState){ .pc = env->pc, .flags = flags };
 }
@@ -672,6 +686,10 @@ static const TCGCPUOps m68k_tcg_ops = {
 #endif /* !CONFIG_USER_ONLY */
 };
 
+static const Property m68k_cpu_properties[] = {
+    DEFINE_PROP_BOOL("fast-fpu", M68kCPU, fast_fpu, false),
+};
+
 static void m68k_cpu_class_init(ObjectClass *c, const void *data)
 {
     M68kCPUClass *mcc = M68K_CPU_CLASS(c);
@@ -679,6 +697,7 @@ static void m68k_cpu_class_init(ObjectClass *c, const void *data)
     DeviceClass *dc = DEVICE_CLASS(c);
     ResettableClass *rc = RESETTABLE_CLASS(c);
 
+    device_class_set_props(dc, m68k_cpu_properties);
     device_class_set_parent_realize(dc, m68k_cpu_realizefn,
                                     &mcc->parent_realize);
     resettable_class_set_parent_phases(rc, NULL, m68k_cpu_reset_hold, NULL,

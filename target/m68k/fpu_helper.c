@@ -134,6 +134,41 @@ static void restore_rounding_mode(CPUM68KState *env)
     }
 }
 
+/*
+ * The x87 control word that matches the softfloat state just restored:
+ * all exceptions masked, RC from FPCR, PC from the softfloat precision (so
+ * the undefined FPCR precision keeps whatever it kept before).
+ */
+static uint16_t fast_fpu_control_word(CPUM68KState *env)
+{
+    uint16_t cw = 0x3f;
+
+    switch (env->fpcr & FPCR_RND_MASK) {
+    case FPCR_RND_N:
+        break;
+    case FPCR_RND_Z:
+        cw |= 3 << 10;
+        break;
+    case FPCR_RND_M:
+        cw |= 1 << 10;
+        break;
+    case FPCR_RND_P:
+        cw |= 2 << 10;
+        break;
+    }
+    switch (get_floatx80_rounding_precision(&env->fp_status)) {
+    case floatx80_precision_s:
+        break;
+    case floatx80_precision_d:
+        cw |= 2 << 8;
+        break;
+    default:
+        cw |= 3 << 8;
+        break;
+    }
+    return cw;
+}
+
 void cpu_m68k_restore_fp_status(CPUM68KState *env)
 {
     if (m68k_feature(env, M68K_FEATURE_CF_FPU)) {
@@ -142,6 +177,7 @@ void cpu_m68k_restore_fp_status(CPUM68KState *env)
         m68k_restore_precision_mode(env);
     }
     restore_rounding_mode(env);
+    env->fast_fpu_cw = fast_fpu_control_word(env);
 }
 
 void cpu_m68k_set_fpcr(CPUM68KState *env, uint32_t val)
