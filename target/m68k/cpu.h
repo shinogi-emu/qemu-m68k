@@ -187,6 +187,8 @@ struct ArchCPU {
 
     /* Translate FP arithmetic to host x87 ops (x86-64 hosts only). */
     bool fast_fpu;
+    /* The host thread's x87 control word, saved by m68k_cpu_exec_enter(). */
+    uint16_t fast_fpu_host_cw;
 };
 
 /*

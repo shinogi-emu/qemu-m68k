@@ -64,48 +64,60 @@
 #define X87_RC_UP       0x0800
 #define X87_RC_CHOP     0x0c00
 
-/* RN, 64-bit precision, all exceptions masked: what libm's code assumes */
+/*
+ * RN, 64-bit precision, all exceptions masked: what libm's code assumes, and
+ * FPCR's own word for extended precision rounding to nearest.
+ */
 #define X87_CW_DEFAULT  0x037f
 
 #define FFAST_BIAS      0x3fff
 #define FFAST_SGL_MASK  0xffffff0000000000ull   /* a significand's top 24 */
 
 /*
- * The control word this thread's x87 holds, 0 while none has been loaded.
- * One host thread runs several vCPUs under round-robin TCG, so the wanted
- * word is compared with it on every call.
+ * The x87 control word.  Each site that needs a particular word reads the
+ * one the x87 holds (fnstcw) and loads its own (fldcw) only when they differ.
+ * No copy is kept in software, as one would go stale behind the code's back:
+ * Microsoft's x64 longjmp() restores the control word that setjmp() saved, so
+ * every cpu_loop_exit() inside cpu_exec() puts the vCPU thread's own word
+ * back (0x027f on Win64), and linux-user's "current TB modified" path
+ * siglongjmps out of a signal handler, under the x87's default state.
+ * fast_fpu_control_word() builds every word from 0x007f, with the reserved
+ * bit 6 set as fnstcw reads it back, so the two compare directly.
+ *
+ * Every class of control word has its own fldcw, named by site: FPCR's word,
+ * the FS and FD forms, FINTRZ, FSGLDIV, the stores, the raw conversion and
+ * the library calls.  On a Zen 5 an fldcw that loads a different value than
+ * it did last time costs about 40 ns, while one that keeps loading the same
+ * value costs next to nothing, however often the word in force changes
+ * between sites.  The site name is part of the asm text, so the compiler
+ * cannot merge the sites.
  */
-static __thread uint16_t ffast_cw_loaded;
+static inline uint16_t ffast_cw_now(void)
+{
+    uint16_t cw;
 
-/*
- * Loads the control word cw unless the x87 holds it already.  Every class of
- * control word has its own fldcw, named by site: FPCR's word, the FS and FD
- * forms, FINTRZ, FSGLDIV, the stores and the raw conversion.  On a Zen 5 an
- * fldcw that loads a different value than it did last time costs about
- * 40 ns, while one that keeps loading the same value costs next to nothing,
- * however often the word in force changes between sites.  The site name is
- * part of the asm text, so the compiler cannot merge the sites.
- */
+    asm volatile("fnstcw %0" : "=m"(cw));
+    return cw;
+}
+
 #define FFAST_LOAD_CW(cw, site)                                         \
     do {                                                                \
         uint16_t cw_ = (cw);                                            \
                                                                         \
-        if (cw_ != ffast_cw_loaded) {                                   \
+        if (cw_ != ffast_cw_now()) {                                    \
             asm volatile("fldcw %0\t# " site : : "m"(cw_));             \
-            ffast_cw_loaded = cw_;                                      \
         }                                                               \
     } while (0)
 
 /*
  * The same for the stores: fist(p) and fst(p) round to the destination
- * format and ignore the precision field, so only the rounding control has to
- * be FPCR's.
+ * format and ignore the precision field, so every other field has to be
+ * FPCR's.
  */
 static inline void ffast_load_store_cw(uint16_t cw)
 {
-    if (!ffast_cw_loaded || ((ffast_cw_loaded ^ cw) & X87_RC_MASK)) {
+    if ((ffast_cw_now() ^ cw) & ~X87_PC_MASK) {
         asm volatile("fldcw %0\t# store" : : "m"(cw));
-        ffast_cw_loaded = cw;
     }
 }
 
@@ -116,32 +128,28 @@ static inline void ffast_clear_flags(void)
 
 /*
  * TCGCPUOps cpu_exec_enter and cpu_exec_exit, for every m68k CPU.  Generated
- * code and the fast helpers run under FPCR's control word; host code outside
+ * code and the fast helpers run under FPCR's control words; host code outside
  * cpu_exec() gets its own word back (callee-saved in the ABIs; Win64 starts
- * threads with 0x027f, Linux with 0x037f).  The cache is forgotten on both
- * sides, so nothing that ran in between (a signal handler's reset of the x87
- * in linux-user, say) can leave it stale.  Nothing is loaded when no fast
- * helper used the x87.
+ * threads with 0x027f, Linux with 0x037f).  Nothing is loaded when the x87
+ * holds the thread's word already.
+ *
+ * Inside cpu_exec(), generated code may call helpers, device emulation and,
+ * on Windows, Win32 APIs with one of FPCR's words loaded, where the Win64 ABI
+ * expects calls to be made under the standard word.  Only host code computing
+ * in long double could tell the difference; none was found on those paths.
  */
-static __thread uint16_t ffast_cw_host;
-
 void m68k_cpu_exec_enter(CPUState *cs)
 {
-    uint16_t cw;
-
-    asm volatile("fnstcw %0" : "=m"(cw));
-    ffast_cw_host = cw;
-    ffast_cw_loaded = 0;
+    M68K_CPU(cs)->fast_fpu_host_cw = ffast_cw_now();
 }
 
 void m68k_cpu_exec_exit(CPUState *cs)
 {
-    uint16_t cw = ffast_cw_host;
+    uint16_t cw = M68K_CPU(cs)->fast_fpu_host_cw;
 
-    if (ffast_cw_loaded && ffast_cw_loaded != cw) {
+    if (ffast_cw_now() != cw) {
         asm volatile("fldcw %0" : : "m"(cw));
     }
-    ffast_cw_loaded = 0;
 }
 
 /*
@@ -792,12 +800,14 @@ static bool ffast_try_sglmul(CPUM68KState *env, FPReg *dest, const FPReg *a,
 
 /*
  * The transcendentals run on the C library's long double functions.  They
- * assume the default control word, so it is loaded first (its own site, and
- * the cache keeps it loaded across a run of them).  The result is then
- * rounded to FPCR's precision by the x87 under FPCR's word.  That rounds
- * twice, once to 64 bits and once to FPCR's format, which the m68k FPSP does
- * not do; the library's own error is larger anyway, and fporacle.py holds
- * the sum to 2 ulp.
+ * assume the default control word, so it is loaded first, at its own site.
+ * The result is then rounded to FPCR's precision by the x87 under FPCR's
+ * word.  That rounds twice, once to 64 bits and once to FPCR's format, which
+ * the m68k FPSP does not do; the library's own error is larger anyway, and
+ * fporacle.py holds the sum to 2 ulp.  At extended precision (and round to
+ * nearest, the only mode taken, below) FPCR's word is the default one: the
+ * rounding would change nothing and is skipped, and no fldcw is needed
+ * between the library calls and the other operations.
  *
  * Only round to nearest is taken: the library rounds to nearest, so under a
  * directed mode (RZ, RM, RP) its result would not be on the side FPCR names.

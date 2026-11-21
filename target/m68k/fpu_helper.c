@@ -137,11 +137,12 @@ static void restore_rounding_mode(CPUM68KState *env)
 /*
  * The x87 control word that matches the softfloat state just restored:
  * all exceptions masked, RC from FPCR, PC from the softfloat precision (so
- * the undefined FPCR precision keeps whatever it kept before).
+ * the undefined FPCR precision keeps whatever it kept before).  The reserved
+ * bit 6 is set, as fnstcw reads it back (fpu_fast.c compares the two).
  */
 static uint16_t fast_fpu_control_word(CPUM68KState *env)
 {
-    uint16_t cw = 0x3f;
+    uint16_t cw = 0x7f;
 
     switch (env->fpcr & FPCR_RND_MASK) {
     case FPCR_RND_N:

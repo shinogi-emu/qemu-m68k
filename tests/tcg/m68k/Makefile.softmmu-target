@@ -8,7 +8,7 @@
 M68K_SYSTEM_SRC = $(SRC_PATH)/tests/tcg/m68k/system
 VPATH += $(M68K_SYSTEM_SRC)
 
-TESTS += fpfastdiff fp-fast-chain
+TESTS += fpfastdiff fp-fast-chain fp-fast-cw
 
 # The fast FPU path must give exactly what the exact path gives: the same
 # guest with fast-fpu off and on, every result and FPSR compared bit for bit,
@@ -77,6 +77,25 @@ run-fp-fast-chain: fp-fast-chain
 	$(call run-fp-fast-chain-cpu,m68040,on,P)
 	$(call run-fp-fast-chain-cpu,m68060,off,s)
 	$(call run-fp-fast-chain-cpu,m68060,on,s)
+
+# A guest exception longjmps back into cpu_exec(), which on Windows restores
+# the host thread's x87 control word: the fast path must load FPCR's again.
+fp-fast-cw: fp-fast-cw.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
+
+define run-fp-fast-cw-cpu
+	$(call run-test,$<,rm -f $<.out && \
+		$(QEMU) -M virt -cpu $1 -m 16 -global m68k-cpu.fast-fpu=$2 \
+		-kernel $< -monitor none -display none -serial file:$<.out -no-reboot)
+	$(call quiet-command,test "$$(cat $<.out)" = ESTESTESTEST,TEST,$< on $1 fast-fpu=$2)
+endef
+
+run-fp-fast-cw: fp-fast-cw
+	$(call run-fp-fast-cw-cpu,m68040,off)
+	$(call run-fp-fast-cw-cpu,m68040,on)
+	$(call run-fp-fast-cw-cpu,m68060,off)
+	$(call run-fp-fast-cw-cpu,m68060,on)
 
 # Wall-clock comparison of the two modes.  Not in TESTS: elapsed time is not
 # a pass/fail property on a loaded machine.  Run it by name.
