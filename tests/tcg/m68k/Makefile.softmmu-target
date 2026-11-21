@@ -1,0 +1,51 @@
+# -*- Mode: makefile -*-
+#
+# m68k system tests: bare-metal guests on the virt machine, which print on
+# its Goldfish TTY (0xff008000) and power off through its control device.
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+M68K_SYSTEM_SRC = $(SRC_PATH)/tests/tcg/m68k/system
+VPATH += $(M68K_SYSTEM_SRC)
+
+TESTS += fpfastdiff
+
+# The fast FPU path must give exactly what the exact path gives: the same
+# guest with fast-fpu off and on, every result and FPSR compared bit for bit,
+# on the 68040 and on the 68060.  The guest dumps hex on the serial port.  Its
+# results sit at 1 MiB, below the 8 MiB stack.
+fpfastdiff: fpfastdiff.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x100000 $< -o $@
+
+define run-fpfastdiff-cpu
+	$(call run-test,$<,$(QEMU) -M virt -cpu $1 -m 16 \
+		-global m68k-cpu.fast-fpu=off -kernel $< -monitor none \
+		-display none -serial file:$<.$1.exact -no-reboot && \
+		$(QEMU) -M virt -cpu $1 -m 16 \
+		-global m68k-cpu.fast-fpu=on -kernel $< -monitor none \
+		-display none -serial file:$<.$1.fast -no-reboot && \
+		$(PYTHON) $(M68K_SYSTEM_SRC)/fpfastdiff.py check --cpu $1 \
+		$<.$1.exact $<.$1.fast)
+endef
+
+run-fpfastdiff: fpfastdiff
+	$(call run-fpfastdiff-cpu,m68040)
+	$(call run-fpfastdiff-cpu,m68060)
+
+# Wall-clock comparison of the two modes.  Not in TESTS: elapsed time is not
+# a pass/fail property on a loaded machine.  Run it by name.
+fpbench: fpbench.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
+
+run-fpbench: fpbench
+	$(call run-test,$<,/usr/bin/time -o $<.exact.t -f %e $(QEMU) \
+		-M virt -cpu m68040 -m 16 -global m68k-cpu.fast-fpu=off \
+		-kernel $< -monitor none -display none -serial null -no-reboot && \
+		/usr/bin/time -o $<.fast.t -f %e $(QEMU) \
+		-M virt -cpu m68040 -m 16 -global m68k-cpu.fast-fpu=on \
+		-kernel $< -monitor none -display none -serial null -no-reboot && \
+		echo "exact=$$(cat $<.exact.t) fast=$$(cat $<.fast.t)" \
+		"ratio=$$(awk -v e=$$(cat $<.exact.t) -v f=$$(cat $<.fast.t) \
+		'BEGIN { printf "%.2f", e / f }')")
