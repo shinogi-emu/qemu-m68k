@@ -1105,6 +1105,7 @@ static void ffast_exact_op(CPUM68KState *env, FPReg *dest, FPReg *src,
         if (ffast_exact1[opmode]) {
             ffast_exact1[opmode](env, dest, src);
         } else {
+            g_assert(ffast_exact2[opmode]);
             ffast_exact2[opmode](env, dest, src, dest);
         }
         break;
