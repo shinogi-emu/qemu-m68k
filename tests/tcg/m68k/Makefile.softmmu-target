@@ -165,8 +165,8 @@ run-fp-fast-ops: fp-fast-ops fp-fast-ops-060
 # Which FP instructions trap, and to which vector, must not depend on
 # fast-fpu.  The expected lines are what exact mode gave on each CPU before
 # fast-fpu existed.
-FP_FAST_TRAPS_m68040 = ........................F......................UUU..U?04...xx
-FP_FAST_TRAPS_m68060 = FFFFFFFFFFFFFFFFFFFFFFFFF......................UUUEEEEEFFFF
+FP_FAST_TRAPS_m68040 = ........................F......................FFFFFFFFFFFFFFFFUUU..U?04...xx
+FP_FAST_TRAPS_m68060 = FFFFFFFFFFFFFFFFFFFFFFFFF......................FFFFFFFFFFFFFFFFUUUEEEEEFFFF
 
 fp-fast-traps: fp-fast-traps.S
 	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \

@@ -16,7 +16,9 @@
  *    68040 only the first and the last are accepted, an immediate .P is
  *    unimplemented data and the FMOVEM is an illegal instruction (vector 4);
  *  - sends FScc, FDBcc and FTRAPcc to the F-line vector on the 68060, and
- *    every FP instruction there while PCR's DFP bit disables the FPU.
+ *    every FP instruction there while PCR's DFP bit disables the FPU;
+ *  - sends opmodes no FPU defines to the F-line vector on both, whatever
+ *    the source.
  *
  * The guest runs one instruction of each kind and prints a letter for the
  * exception it took: '.' none, 'F' F-line (11), 'U' unimplemented data type
@@ -120,6 +122,28 @@ _start:
         CASE(fmove.l %fp0,%d2)
         CASE(fmove.d %fp0,(%a2))
         CASE(fbne    .+4)
+
+        /*
+         * Opmodes no FPU defines, with register and memory sources: the
+         * F-line vector on both.  The fast path must leave them to the
+         * exact switch's undef case.
+         */
+        CASE(.word 0xf200,0x0405)       /* opmode 0x05, fp1 */
+        CASE(.word 0xf200,0x040b)       /* 0x0b */
+        CASE(.word 0xf200,0x0413)       /* 0x13 */
+        CASE(.word 0xf200,0x0417)       /* 0x17 */
+        CASE(.word 0xf200,0x041b)       /* 0x1b */
+        CASE(.word 0xf200,0x0429)       /* 0x29 */
+        CASE(.word 0xf200,0x0439)       /* 0x39 */
+        CASE(.word 0xf200,0x043b)       /* 0x3b */
+        CASE(.word 0xf200,0x0442)       /* 0x42 */
+        CASE(.word 0xf200,0x047f)       /* 0x7f */
+        CASE(.word 0xf210,0x4005)       /* 0x05, .L (a0) */
+        CASE(.word 0xf210,0x4413)       /* 0x13, .S (a0) */
+        CASE(.word 0xf210,0x482f)       /* 0x2f, .X (a0) */
+        CASE(.word 0xf210,0x543b)       /* 0x3b, .D (a0) */
+        CASE(.word 0xf210,0x5042)       /* 0x42, .W (a0) */
+        CASE(.word 0xf23c,0x587f,0x0001)    /* 0x7f, .B #1 */
 
         /* Packed decimal: unimplemented data type on both. */
         CASE(fmove.p (%a0),%fp0)
