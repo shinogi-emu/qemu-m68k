@@ -217,9 +217,15 @@ static FFastKind ffast_kind(uint32_t opmode)
     case 0x1a: case 0x5a: case 0x5e:
         return FFAST_NEG;
     case 0x02: case 0x06: case 0x08: case 0x09: case 0x0a: case 0x0c:
-    case 0x0d: case 0x0e: case 0x0f: case 0x10: case 0x11: case 0x12:
+    case 0x0d: case 0x0e: case 0x0f: case 0x10: case 0x11:
     case 0x14: case 0x15: case 0x16: case 0x19: case 0x1c: case 0x1d:
         return FFAST_LIBM;
+    case 0x12:
+#ifdef _WIN32
+        return FFAST_EXACT;     /* FTENTOX, see the transcendentals */
+#else
+        return FFAST_LIBM;
+#endif
     case 0x30 ... 0x37:
         return FFAST_SINCOS;
     case 0x22: case 0x62: case 0x66:
@@ -809,6 +815,9 @@ static bool ffast_try_sglmul(CPUM68KState *env, FPReg *dest, const FPReg *a,
  * rounding would change nothing and is skipped, and no fldcw is needed
  * between the library calls and the other operations.
  *
+ * FTENTOX stays exact on Windows: mingw-w64 has no exp10l, and its
+ * powl(10, x) was measured 6 ulp off.
+ *
  * Only round to nearest is taken: the library rounds to nearest, so under a
  * directed mode (RZ, RM, RP) its result would not be on the side FPCR names.
  * Only a nonzero normal operand is taken, and only a result that is finite
@@ -854,7 +863,9 @@ static long double ffast_libm(uint32_t opmode, long double x)
     case 0x0f: return tanl(x);
     case 0x10: return expl(x);
     case 0x11: return exp2l(x);
-    case 0x12: return powl(10.0L, x);   /* exp10l is not in mingw-w64 */
+#ifndef _WIN32
+    case 0x12: return powl(10.0L, x);
+#endif
     case 0x14: return logl(x);
     case 0x15: return log10l(x);
     case 0x16: return log2l(x);
