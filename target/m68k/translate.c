@@ -111,6 +111,7 @@ typedef struct DisasContext {
     TCGv writeback[8];
     bool ss_active;
     bool fast_fpu;
+    bool fast_fpu_cpu;      /* the CPU's fast-fpu property, x86_64 hosts */
     bool fpcr_check;        /* gen_fast_fpcr_check() after this insn */
 } DisasContext;
 
@@ -4946,6 +4947,14 @@ static void gen_store_fcr(DisasContext *s, TCGv val, int reg)
         gen_helper_set_fpcr(tcg_env, val);
         if (s->fast_fpu) {
             s->fpcr_check = true;
+        } else if (s->fast_fpu_cpu) {
+            /*
+             * Whether the next TB is fast depends on the new FPCR, so a TB
+             * that may run under different FPCRs must not be chained past
+             * the write: one link made while the enable byte was zero would
+             * later lead into a fast TB with exceptions enabled.
+             */
+            gen_lookup_tb(s);
         }
         break;
     }
@@ -5828,8 +5837,12 @@ DISAS_INSN(frestore)
         if (mode == 3) {
             tcg_gen_addi_i32(AREG(insn, 0), addr, 12);
         }
-        if (s->fast_fpu) {
-            /* A null frame clears FPCR, and with it the enable byte. */
+        if (s->fast_fpu_cpu) {
+            /*
+             * A null frame clears FPCR, and with it the enable byte, so
+             * whether the next TB is fast may change: look it up, in every
+             * TB.
+             */
             gen_lookup_tb(s);
         }
     } else if (m68k_feature(s->env, M68K_FEATURE_M68040)) {
@@ -6537,6 +6550,11 @@ static void m68k_tr_init_disas_context(DisasContextBase *dcbase, CPUState *cpu)
     dc->done_mac = 0;
     dc->writeback_mask = 0;
     dc->fast_fpu = (dc->base.tb->flags & TB_FLAGS_FAST_FPU) != 0;
+#if defined(__x86_64__)
+    dc->fast_fpu_cpu = env_archcpu(env)->fast_fpu;
+#else
+    dc->fast_fpu_cpu = false;
+#endif
     dc->fpcr_check = false;
 
     dc->ss_active = (M68K_SR_TRACE(env->sr) == M68K_SR_TRACE_ANY_INS);

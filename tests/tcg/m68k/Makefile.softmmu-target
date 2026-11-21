@@ -8,7 +8,7 @@
 M68K_SYSTEM_SRC = $(SRC_PATH)/tests/tcg/m68k/system
 VPATH += $(M68K_SYSTEM_SRC)
 
-TESTS += fpfastdiff
+TESTS += fpfastdiff fp-fast-chain
 
 # The fast FPU path must give exactly what the exact path gives: the same
 # guest with fast-fpu off and on, every result and FPSR compared bit for bit,
@@ -35,6 +35,27 @@ endef
 run-fpfastdiff: fpfastdiff
 	$(call run-fpfastdiff-cpu,m68040)
 	$(call run-fpfastdiff-cpu,m68060)
+
+# A TB that is not fast must not chain past an FPCR write into a fast TB.
+# The guest prints P when it could tell the paths apart and the second pass
+# took the exact one, p when there was nothing to tell apart, and s on the
+# 68060, where nothing it computes differs between the paths.
+fp-fast-chain: fp-fast-chain.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
+
+define run-fp-fast-chain-cpu
+	$(call run-test,$<,rm -f $<.out && \
+		$(QEMU) -M virt -cpu $1 -m 16 -global m68k-cpu.fast-fpu=$2 \
+		-kernel $< -monitor none -display none -serial file:$<.out -no-reboot)
+	$(call quiet-command,grep -qx '$3' $<.out,TEST,$< on $1 fast-fpu=$2)
+endef
+
+run-fp-fast-chain: fp-fast-chain
+	$(call run-fp-fast-chain-cpu,m68040,off,p)
+	$(call run-fp-fast-chain-cpu,m68040,on,[Pp])
+	$(call run-fp-fast-chain-cpu,m68060,off,s)
+	$(call run-fp-fast-chain-cpu,m68060,on,s)
 
 # Wall-clock comparison of the two modes.  Not in TESTS: elapsed time is not
 # a pass/fail property on a loaded machine.  Run it by name.

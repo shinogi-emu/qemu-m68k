@@ -113,23 +113,28 @@ static inline void ffast_clear_flags(void)
 /*
  * TCGCPUOps cpu_exec_enter and cpu_exec_exit, for every m68k CPU.  Generated
  * code and the fast helpers run under FPCR's control word; host code outside
- * cpu_exec() gets the default word back, which the ABI expects to be
- * preserved.  The cache is forgotten on both sides, so nothing that ran in
- * between (a signal handler's reset of the x87 in linux-user, say) can leave
- * it stale.  Nothing is loaded when no fast helper used the x87.
+ * cpu_exec() gets its own word back (callee-saved in the ABIs; Win64 starts
+ * threads with 0x027f, Linux with 0x037f).  The cache is forgotten on both
+ * sides, so nothing that ran in between (a signal handler's reset of the x87
+ * in linux-user, say) can leave it stale.  Nothing is loaded when no fast
+ * helper used the x87.
  */
-#define X87_CW_DEFAULT  0x037f
+static __thread uint16_t ffast_cw_host;
 
 void m68k_cpu_exec_enter(CPUState *cs)
 {
+    uint16_t cw;
+
+    asm volatile("fnstcw %0" : "=m"(cw));
+    ffast_cw_host = cw;
     ffast_cw_loaded = 0;
 }
 
 void m68k_cpu_exec_exit(CPUState *cs)
 {
-    if (ffast_cw_loaded && ffast_cw_loaded != X87_CW_DEFAULT) {
-        uint16_t cw = X87_CW_DEFAULT;
+    uint16_t cw = ffast_cw_host;
 
+    if (ffast_cw_loaded && ffast_cw_loaded != cw) {
         asm volatile("fldcw %0" : : "m"(cw));
     }
     ffast_cw_loaded = 0;
