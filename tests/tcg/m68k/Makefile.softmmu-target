@@ -8,7 +8,7 @@
 M68K_SYSTEM_SRC = $(SRC_PATH)/tests/tcg/m68k/system
 VPATH += $(M68K_SYSTEM_SRC)
 
-TESTS += fpfastdiff fp-fast-chain fp-fast-cw
+TESTS += fpfastdiff fp-fast-chain fp-fast-cw fp-fast-ops
 
 # The fast FPU path must give exactly what the exact path gives: the same
 # guest with fast-fpu off and on, every result and FPSR compared bit for bit,
@@ -96,6 +96,55 @@ run-fp-fast-cw: fp-fast-cw
 	$(call run-fp-fast-cw-cpu,m68040,on)
 	$(call run-fp-fast-cw-cpu,m68060,off)
 	$(call run-fp-fast-cw-cpu,m68060,on)
+
+# That the fast path is taken at all: the op listing with fast-fpu on has the
+# fast helpers and no ftst or get_fpsr, and with it off the reverse.  The
+# property is set with -cpu, which wins over the global that qemu-fast-fpu.sh
+# appends, so the off run stays off under that wrapper too.  The 68060 build
+# leaves out FScc, which that CPU sends to its software package.
+fp-fast-ops: fp-fast-ops.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
+
+fp-fast-ops-060: fp-fast-ops.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib -Wa,--defsym,M68060=1 \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
+
+define run-fp-fast-ops-cpu
+	$(call run-test,$2,rm -f $2.on.out $2.on.ops && \
+		$(QEMU) -M virt -cpu $1$(COMMA)fast-fpu=on -m 16 -kernel $2 \
+		-monitor none -display none -serial file:$2.on.out -no-reboot \
+		-d op -D $2.on.ops)
+	$(call quiet-command,test "$$(cat $2.on.out)" = P && \
+		grep -qw "call ffast_op" $2.on.ops && \
+		grep -qw "call ffast_op_raw" $2.on.ops && \
+		grep -qw "call ffast_store" $2.on.ops && \
+		! grep -qw "call ftst" $2.on.ops && \
+		! grep -qw "call get_fpsr" $2.on.ops, \
+		TEST,$2 ops on $1 fast-fpu=on)
+	$(call run-test,$2,rm -f $2.off.out $2.off.ops && \
+		$(QEMU) -M virt -cpu $1$(COMMA)fast-fpu=off -m 16 -kernel $2 \
+		-monitor none -display none -serial file:$2.off.out -no-reboot \
+		-d op -D $2.off.ops)
+	$(call quiet-command,test "$$(cat $2.off.out)" = P && \
+		! grep -q "call ffast_" $2.off.ops && \
+		grep -qw "call ftst" $2.off.ops && \
+		grep -qw "call get_fpsr" $2.off.ops, \
+		TEST,$2 ops on $1 fast-fpu=off)
+endef
+
+run-fp-fast-ops: fp-fast-ops fp-fast-ops-060
+	$(call run-fp-fast-ops-cpu,m68040,fp-fast-ops)
+	$(call run-fp-fast-ops-cpu,m68060,fp-fast-ops-060)
+
+# The fast-fpu property's default on each machine and its overrides.  Those
+# defaults are what it checks, so under qemu-fast-fpu.sh it runs the binary
+# the wrapper names, not the wrapper.
+EXTRA_RUNS += run-fast-fpu-prop
+
+run-fast-fpu-prop:
+	$(call run-test,fast-fpu-prop,$(SHELL) $(M68K_SYSTEM_SRC)/fast-fpu-prop.sh \
+		"$${QEMU_FAST_FPU_BIN:-$(QEMU)}",fast-fpu-prop)
 
 # Wall-clock comparison of the two modes.  Not in TESTS: elapsed time is not
 # a pass/fail property on a loaded machine.  Run it by name.
