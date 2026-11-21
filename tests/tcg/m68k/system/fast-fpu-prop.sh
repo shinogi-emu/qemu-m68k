@@ -42,11 +42,16 @@ check() {
     fi
 }
 
-check false -M virt
-check false -M virt -cpu m68060
-check true  -M virt -cpu m68040,fast-fpu=on
-check true  -M virt -cpu m68060,fast-fpu=on
-check true  -M virt -global m68k-cpu.fast-fpu=on
+# virt has it on, for every CPU type and in every version of the machine.
+check true  -M virt
+check true  -M virt -cpu m68060
+check true  -M virt -cpu m68030
+check true  -M virt -cpu cfv4e
+check true  -M virt-10.2
+check false -M virt -cpu m68040,fast-fpu=off
+check false -M virt -cpu m68060,fast-fpu=off
+check false -M virt -global m68k-cpu.fast-fpu=off
+# The other machines have it off.
 check false -M q800 -bios "$fw"
 check true  -M q800 -bios "$fw" -cpu m68040,fast-fpu=on
 check false -M next-cube -bios "$fw"

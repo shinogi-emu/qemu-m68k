@@ -367,8 +367,20 @@ type_init(virt_machine_register_types)
 #define DEFINE_VIRT_MACHINE(major, minor) \
     DEFINE_VIRT_MACHINE_IMPL(false, major, minor)
 
+/*
+ * This machine runs FP arithmetic through the host x87 by default (fast-fpu,
+ * x86-64 hosts only), whatever CPU type it is given; -cpu <type>,fast-fpu=off
+ * or -global m68k-cpu.fast-fpu=off turns that off.  Every older version of
+ * the machine starts from these options, so it applies to all of them.
+ */
+static GlobalProperty virt_fast_fpu_compat[] = {
+    { TYPE_M68K_CPU, "fast-fpu", "on" },
+};
+
 static void virt_machine_11_0_options(MachineClass *mc)
 {
+    compat_props_add(mc->compat_props, virt_fast_fpu_compat,
+                     G_N_ELEMENTS(virt_fast_fpu_compat));
 }
 DEFINE_VIRT_MACHINE_AS_LATEST(11, 0)
 
