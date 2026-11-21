@@ -9,6 +9,7 @@ M68K_SYSTEM_SRC = $(SRC_PATH)/tests/tcg/m68k/system
 VPATH += $(M68K_SYSTEM_SRC)
 
 TESTS += fpfastdiff fp-fast-chain fp-fast-cw fp-fast-ops fp-fast-traps
+TESTS += fp-fast-fpcr
 
 # The fast FPU path must give exactly what the exact path gives: the same
 # guest with fast-fpu off and on, every result and FPSR compared bit for bit,
@@ -79,6 +80,28 @@ run-fp-fast-chain: fp-fast-chain
 	$(call run-fp-fast-chain-cpu,m68040,on,P)
 	$(call run-fp-fast-chain-cpu,m68060,off,s)
 	$(call run-fp-fast-chain-cpu,m68060,on,s)
+
+# The run-time check after an FPCR write from memory (FMOVEM) or a register
+# (FMOVE) in a fast TB: E, the exact result, after a write that enables an
+# exception; X, the fast result, after one that does not.  p when there is
+# nothing to tell apart, s on the 68060.  The property is set with -cpu, as
+# for fp-fast-chain.
+fp-fast-fpcr: fp-fast-fpcr.S
+	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
+		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
+
+define run-fp-fast-fpcr-cpu
+	$(call run-test,$<,rm -f $<.out && \
+		$(QEMU) -M virt -cpu $1$(COMMA)fast-fpu=$2 -m 16 \
+		-kernel $< -monitor none -display none -serial file:$<.out -no-reboot)
+	$(call quiet-command,test "$$(cat $<.out)" = $3,TEST,$< on $1 fast-fpu=$2)
+endef
+
+run-fp-fast-fpcr: fp-fast-fpcr
+	$(call run-fp-fast-fpcr-cpu,m68040,off,pppp)
+	$(call run-fp-fast-fpcr-cpu,m68040,on,EXEX)
+	$(call run-fp-fast-fpcr-cpu,m68060,off,s)
+	$(call run-fp-fast-fpcr-cpu,m68060,on,s)
 
 # A guest exception longjmps back into cpu_exec(), which on Windows restores
 # the host thread's x87 control word: the fast path must load FPCR's again.
