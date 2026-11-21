@@ -111,7 +111,7 @@ typedef struct DisasContext {
     TCGv writeback[8];
     bool ss_active;
     bool fast_fpu;
-    bool fast_fpu_cpu;      /* the CPU's fast-fpu property, x86_64 hosts */
+    bool fast_fpu_cpu;      /* the fast-fpu property; x86_64 hosts, no TCI */
     bool fpcr_check;        /* gen_fast_fpcr_check() after this insn */
 } DisasContext;
 
@@ -6560,7 +6560,7 @@ static void m68k_tr_init_disas_context(DisasContextBase *dcbase, CPUState *cpu)
     dc->done_mac = 0;
     dc->writeback_mask = 0;
     dc->fast_fpu = (dc->base.tb->flags & TB_FLAGS_FAST_FPU) != 0;
-#if defined(__x86_64__)
+#if defined(__x86_64__) && !defined(CONFIG_TCG_INTERPRETER)
     dc->fast_fpu_cpu = env_archcpu(env)->fast_fpu;
 #else
     dc->fast_fpu_cpu = false;

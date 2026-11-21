@@ -61,7 +61,8 @@ static TCGTBCPUState m68k_get_tb_cpu_state(CPUState *cs)
     if (m68k_feature(env, M68K_FEATURE_M68060) && (env->pcr & 2)) {
         flags |= TB_FLAGS_060_DFP;
     }
-#if defined(__x86_64__)
+#if defined(__x86_64__) && !defined(CONFIG_TCG_INTERPRETER)
+    /* The TCG interpreter always takes the exact path. */
     M68kCPU *cpu = env_archcpu(env);
 
     /*
