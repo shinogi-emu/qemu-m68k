@@ -1,0 +1,854 @@
+/*
+ * m68k FPU: fast-fpu helpers on the host x87
+ *
+ * SPDX-License-Identifier: LGPL-2.1-or-later
+ */
+
+/*
+ * In fast-fpu mode (TB_FLAGS_FAST_FPU) each FP data instruction is one call
+ * to a helper below.  The helper computes on the host x87 when every operand
+ * it reads is zero or a finite normal number, and accepts the x87 result only
+ * when that is zero or normal too and the x87 raised nothing but inexact.  It
+ * then writes what exact mode writes for such a result.  Anything else, and
+ * every instruction the x87 path does not cover, runs the exact softfloat
+ * code of that instruction inside the same call.  An attempt writes nothing
+ * to the guest before its result is accepted.
+ *
+ * The x87 exception flags are sticky, and clearing them (fnclex) costs more
+ * than the rest of a fast instruction put together.  So they are cleared only
+ * after the x87 raised something other than inexact, which sends the
+ * instruction to the exact path anyway; those flags are clear on entry.  The
+ * inexact flag may be left over from earlier instructions, so whether this
+ * one was inexact is worked out from its operands (ffast_inexact()).
+ *
+ * FPSR is kept as exact mode keeps it: the condition codes (and the FMOD/FREM
+ * quotient) in env->fpsr, the accrued exceptions as sticky softfloat flags
+ * in fp_status, which cpu_m68k_get_fpsr() merges in when FPSR is read.  An
+ * instruction the x87 completes sets the condition codes and, when it was
+ * inexact, the softfloat inexact flag; no other exception is possible for
+ * the results it accepts.  The exception status byte is not touched by any
+ * instruction, in either mode.
+ *
+ * The TB flag is set only on x86_64 hosts, with FPCR's exception-enable byte
+ * zero.  Neither path can raise a guest exception, so the helpers can be
+ * TCG_CALL_NO_RWG.
+ *
+ * On other hosts this file compiles to nothing.
+ */
+
+#include "qemu/osdep.h"
+
+#if defined(__x86_64__)
+
+#include "qemu/host-utils.h"
+#include "cpu.h"
+#include "exec/helper-proto.h"
+#include "fpu/softfloat.h"
+
+/* x87 status word exception flags other than inexact */
+#define X87_IE          0x0001
+#define X87_DE          0x0002
+#define X87_ZE          0x0004
+#define X87_OE          0x0008
+#define X87_UE          0x0010
+#define X87_NOT_INEXACT (X87_IE | X87_DE | X87_ZE | X87_OE | X87_UE)
+
+/* x87 control word fields, as fast_fpu_control_word() builds them */
+#define X87_PC_MASK     0x0300
+#define X87_PC_S        0x0000
+#define X87_PC_D        0x0200
+#define X87_RC_CHOP     0x0c00
+
+#define FFAST_BIAS      0x3fff
+#define FFAST_SGL_MASK  0xffffff0000000000ull   /* a significand's top 24 */
+
+/*
+ * The control word this thread's x87 holds, 0 while none has been loaded.
+ * One host thread runs several vCPUs under round-robin TCG, so the wanted
+ * word is compared with it on every call.
+ */
+static __thread uint16_t ffast_cw_loaded;
+
+static inline void ffast_load_cw(uint16_t cw)
+{
+    if (cw != ffast_cw_loaded) {
+        asm volatile("fldcw %0" : : "m"(cw));
+        ffast_cw_loaded = cw;
+    }
+}
+
+static inline void ffast_clear_flags(void)
+{
+    asm volatile("fnclex");
+}
+
+/*
+ * One block per x87 operation: load the operands from memory, compute, store
+ * the result, read the status word.  Every block leaves the x87 stack empty.
+ * FFAST_DYADIC computes dest OP src, with st(0) = dest and st(1) = src.
+ * X87_ROUND rounds st(0) to the precision and direction of the control word
+ * (multiplying by 1.0 keeps the sign of zero).
+ */
+#define FFAST_MONADIC(insns, res, src, sw)                              \
+    asm volatile("fldt %[s]\n\t" insns "\n\t"                           \
+                 "fstpt %[r]\n\t" "fnstsw %[w]"                         \
+                 : [r] "=m"(*(res)), [w] "=a"(sw)                       \
+                 : [s] "m"(*(src))                                      \
+                 : "st", "st(1)")
+
+#define FFAST_DYADIC(insn, res, dest, src, sw)                          \
+    asm volatile("fldt %[s]\n\t" "fldt %[d]\n\t"                        \
+                 insn " %%st(1), %%st\n\t" "fstp %%st(1)\n\t"           \
+                 "fstpt %[r]\n\t" "fnstsw %[w]"                         \
+                 : [r] "=m"(*(res)), [w] "=a"(sw)                       \
+                 : [d] "m"(*(dest)), [s] "m"(*(src))                    \
+                 : "st", "st(1)")
+
+#define X87_ROUND       "fld1\n\t" "fmulp"
+
+/* What the x87 path does for an opmode.  The dyadic kinds come last. */
+typedef enum {
+    FFAST_EXACT,        /* nothing: always the exact path */
+    FFAST_MOVE,         /* FMOVE: a copy, as gen_fp_move() */
+    FFAST_TST,
+    FFAST_CMP,
+    FFAST_ROUND,        /* FSMOVE, FDMOVE */
+    FFAST_INT,          /* FINT, FINTRZ */
+    FFAST_SQRT,
+    FFAST_ABS,
+    FFAST_NEG,
+    FFAST_ADD,
+    FFAST_SUB,
+    FFAST_MUL,
+    FFAST_DIV,
+    FFAST_SGLMUL,
+    FFAST_SGLDIV,
+} FFastKind;
+
+static FFastKind ffast_kind(uint32_t opmode)
+{
+    switch (opmode) {
+    case 0x00:
+        return FFAST_MOVE;
+    case 0x3a:
+        return FFAST_TST;
+    case 0x38:
+        return FFAST_CMP;
+    case 0x40: case 0x44:
+        return FFAST_ROUND;
+    case 0x01: case 0x03:
+        return FFAST_INT;
+    case 0x04: case 0x41: case 0x45:
+        return FFAST_SQRT;
+    case 0x18: case 0x58: case 0x5c:
+        return FFAST_ABS;
+    case 0x1a: case 0x5a: case 0x5e:
+        return FFAST_NEG;
+    case 0x22: case 0x62: case 0x66:
+        return FFAST_ADD;
+    case 0x28: case 0x68: case 0x6c:
+        return FFAST_SUB;
+    case 0x23: case 0x63: case 0x67:
+        return FFAST_MUL;
+    case 0x20: case 0x60: case 0x64:
+        return FFAST_DIV;
+    case 0x27:
+        return FFAST_SGLMUL;
+    case 0x24:
+        return FFAST_SGLDIV;
+    default:
+        return FFAST_EXACT;
+    }
+}
+
+/* The control word an opmode computes under. */
+static uint16_t ffast_op_cw(CPUM68KState *env, uint32_t opmode)
+{
+    uint16_t cw = env->fast_fpu_cw;
+
+    if (opmode & 0x40) {
+        /* FSxxx and FDxxx: PREC_BEGIN(floatx80_precision_s or _d) */
+        cw = (cw & ~X87_PC_MASK) | (opmode & 4 ? X87_PC_D : X87_PC_S);
+    } else if (opmode == 0x24 || opmode == 0x27) {
+        /* FSGLDIV, FSGLMUL: PREC_BEGIN(floatx80_precision_s) */
+        cw = (cw & ~X87_PC_MASK) | X87_PC_S;
+    } else if (opmode == 0x03) {
+        /* FINTRZ: float_round_to_zero, as helper_fitrunc() */
+        cw |= X87_RC_CHOP;
+    }
+    return cw;
+}
+
+/* Significand bits a control word rounds to. */
+static inline int ffast_prec(uint16_t cw)
+{
+    switch (cw & X87_PC_MASK) {
+    case X87_PC_S:
+        return 24;
+    case X87_PC_D:
+        return 53;
+    default:
+        return 64;
+    }
+}
+
+/* Zero, or normal: exponent 1..0x7ffe with the explicit integer bit set. */
+static inline bool ffast_operand_ok(const FPReg *f)
+{
+    uint16_t exp = f->l.upper & 0x7fff;
+
+    if (exp == 0) {
+        return f->l.lower == 0;
+    }
+    return exp != 0x7fff && (f->l.lower >> 63);
+}
+
+/* False for a .S or .D operand that is an infinity or a NaN. */
+static inline bool ffast_raw_ok(uint64_t raw, int opsize)
+{
+    switch (opsize) {
+    case OS_SINGLE:
+        return (~raw & 0x7f800000) != 0;
+    case OS_DOUBLE:
+        return (~raw & 0x7ff0000000000000ull) != 0;
+    default:
+        return true;
+    }
+}
+
+/*
+ * Whether kind k can give an exact zero from these operands; any other zero
+ * result is an underflow.
+ */
+static inline bool ffast_zero_ok(FFastKind k, const FPReg *dest,
+                                 const FPReg *src)
+{
+    switch (k) {
+    case FFAST_ADD:
+    case FFAST_SUB:
+    case FFAST_INT:
+        return true;
+    case FFAST_MUL:
+    case FFAST_SGLMUL:
+        return !dest->l.lower || !src->l.lower;
+    case FFAST_DIV:
+    case FFAST_SGLDIV:
+        return !dest->l.lower;
+    default:
+        return !src->l.lower;
+    }
+}
+
+/*
+ * An x87 result that exact mode produces too: normal and below the top
+ * binade (an overflow rounded towards zero stops at the largest finite
+ * number), or a zero the operation gives exactly.  The class is checked as
+ * well as the flags because a masked x87 underflow is flagged only when the
+ * result is also inexact.
+ */
+static inline bool ffast_result_ok(const FPReg *r, bool zero_ok)
+{
+    uint16_t exp = r->l.upper & 0x7fff;
+
+    if (exp == 0) {
+        return zero_ok && r->l.lower == 0;
+    }
+    return exp < 0x7ffe && (r->l.lower >> 63);
+}
+
+/*
+ * Under single or double precision, exact mode rounds the significand and
+ * keeps the extended exponent range, as the x87 does.  A result outside the
+ * range of that format is still left to the exact path, as on trees whose
+ * softfloat has m68k range control (overflow or underflow reported on the
+ * unrounded exponent): such results are rare, and one accepted set serves
+ * both.  The exponent of the rounded result may be one more than the
+ * unrounded one, so the x87 path takes zero, or a result r computed under
+ * the control word cw whose exponent is strictly inside the range.
+ */
+static inline bool ffast_range_ok(const FPReg *r, uint16_t cw)
+{
+    int exp = r->l.upper & 0x7fff;
+
+    if (exp == 0) {
+        return true;
+    }
+    exp -= FFAST_BIAS;
+    switch (cw & X87_PC_MASK) {
+    case X87_PC_S:
+        return exp > -126 && exp <= 127;
+    case X87_PC_D:
+        return exp > -1022 && exp <= 1023;
+    default:
+        return true;
+    }
+}
+
+/*
+ * A .S or .D store, whose exponent field is exp (all ones being expmax),
+ * that exact mode makes too: zero exactly when the source is zero, otherwise
+ * normal and below the top binade.  A rounded value in the lowest normal
+ * binade is refused, as in ffast_try().
+ */
+static inline bool ffast_out_ok(uint32_t exp, uint32_t expmax, bool zero,
+                                bool inexact)
+{
+    if (exp == 0) {
+        return zero;
+    }
+    return exp < expmax - 1 && (exp != 1 || !inexact);
+}
+
+/* Whether a significand has bits set below its top p. */
+static inline bool ffast_lost(uint64_t m, int p)
+{
+    return p < 64 && (m << p) != 0;
+}
+
+/* The same for a nonzero 128-bit integer. */
+static inline bool ffast_lost128(unsigned __int128 s, int p)
+{
+    uint64_t hi = s >> 64;
+    int below = (hi ? 128 - clz64(hi) : 64 - clz64((uint64_t)s)) - p;
+
+    return below > 0 && (s << (128 - below)) != 0;
+}
+
+/* Whether rounding f to an integer, then to p bits, changes it. */
+static bool ffast_int_inexact(const FPReg *f, int p)
+{
+    int e = (f->l.upper & 0x7fff) - FFAST_BIAS;
+    uint64_t m = f->l.lower;
+
+    if (m == 0) {
+        return false;
+    }
+    if (e < 0) {
+        return true;
+    }
+    if (e < p - 1) {
+        /* the integer fits in p bits: only the fraction is lost */
+        return (m << (e + 1)) != 0;
+    }
+    /* the fraction lies below the top p bits */
+    return ffast_lost(m, p);
+}
+
+/* Whether a + b, or a - b, has more than p significant bits. */
+static bool ffast_addsub_inexact(const FPReg *a, const FPReg *b, bool sub,
+                                 int p)
+{
+    uint64_t am = a->l.lower, bm = b->l.lower, tm;
+    int ae = a->l.upper & 0x7fff, be = b->l.upper & 0x7fff, te;
+    bool neg = ((a->l.upper ^ b->l.upper) & 0x8000) != 0;
+    unsigned __int128 s;
+
+    if (!am) {
+        return ffast_lost(bm, p);
+    }
+    if (!bm) {
+        return ffast_lost(am, p);
+    }
+    if (ae < be || (ae == be && am < bm)) {
+        tm = am, am = bm, bm = tm;
+        te = ae, ae = be, be = te;
+    }
+    /*
+     * With |a| >= |b|, the result's last bit is worth at least 2^-64 of a's
+     * leading bit; b is less than that when its exponent is 65 or more
+     * below, so it cannot be represented in the sum.
+     */
+    if (ae - be > 64) {
+        return true;
+    }
+    s = (unsigned __int128)am << (ae - be);
+    s = neg != sub ? s - bm : s + bm;
+    return s != 0 && ffast_lost128(s, p);
+}
+
+/*
+ * Whether the exact result of kind k, of dest and src, differs from the x87
+ * result r, which is normal or zero and rounded to p bits.  Values are
+ * m * 2^(e - 63) with m the 64-bit significand.  For FSQRT and FDIV the
+ * exponents of a normal result bound the shift to 62..64.
+ */
+static bool ffast_inexact(FFastKind k, const FPReg *r, const FPReg *dest,
+                          const FPReg *src, int p)
+{
+    uint64_t rm = r->l.lower, dm = dest->l.lower, sm = src->l.lower;
+    int re = r->l.upper & 0x7fff;
+    int de = dest->l.upper & 0x7fff;
+    int se = src->l.upper & 0x7fff;
+
+    switch (k) {
+    case FFAST_ROUND:
+    case FFAST_ABS:
+    case FFAST_NEG:
+        return ffast_lost(sm, p);
+    case FFAST_INT:
+        return ffast_int_inexact(src, p);
+    case FFAST_SQRT:
+        /* exact when r * r == src */
+        return sm && (unsigned __int128)rm * rm !=
+                     (unsigned __int128)sm << (se - 2 * re + FFAST_BIAS + 63);
+    case FFAST_MUL:
+        return dm && sm && ffast_lost128((unsigned __int128)dm * sm, p);
+    case FFAST_DIV:
+        /* exact when r * src == dest */
+        return dm && (unsigned __int128)rm * sm !=
+                     (unsigned __int128)dm << (de - re - se + FFAST_BIAS + 63);
+    case FFAST_ADD:
+    case FFAST_SUB:
+        return ffast_addsub_inexact(dest, src, k == FFAST_SUB, p);
+    default:
+        g_assert_not_reached();
+    }
+}
+
+/* FTST's condition codes for zero or a normal number. */
+static inline uint32_t ffast_cc(const FPReg *f)
+{
+    uint32_t cc = f->l.upper & 0x8000 ? FPSR_CC_N : 0;
+
+    if (!(f->l.upper & 0x7fff)) {
+        cc |= FPSR_CC_Z;
+    }
+    return cc;
+}
+
+/*
+ * FCMP's condition codes (float_comp_to_cc) for dest compared with src, both
+ * zero or normal: Z when equal, +0 and -0 included; N when less; none when
+ * greater.
+ */
+static uint32_t ffast_compare(const FPReg *dest, const FPReg *src)
+{
+    bool dneg = dest->l.upper & 0x8000;
+    bool sneg = src->l.upper & 0x8000;
+    uint16_t dexp = dest->l.upper & 0x7fff;
+    uint16_t sexp = src->l.upper & 0x7fff;
+    bool less;
+
+    if (dexp == 0 && sexp == 0) {
+        return FPSR_CC_Z;
+    }
+    if (dneg != sneg) {
+        return dneg ? FPSR_CC_N : 0;
+    }
+    if (dexp == sexp && dest->l.lower == src->l.lower) {
+        return FPSR_CC_Z;
+    }
+    /* Same sign: order by magnitude, the other way round when negative. */
+    less = dexp != sexp ? dexp < sexp : dest->l.lower < src->l.lower;
+    return less != dneg ? FPSR_CC_N : 0;
+}
+
+/*
+ * FPSR for an instruction the x87 completed: condition codes cc, and the
+ * sticky softfloat inexact flag that exact mode's operation would raise.
+ * Inexact is the only exception left.
+ */
+static inline void ffast_set_fpsr(CPUM68KState *env, uint32_t cc,
+                                  bool inexact)
+{
+    env->fpsr = (env->fpsr & ~FPSR_CC_MASK) | cc;
+    if (inexact) {
+        float_raise(float_flag_inexact, &env->fp_status);
+    }
+}
+
+/* A .B/.W/.L operand, sign-extended as exact mode loads it. */
+static inline int32_t ffast_raw_int(uint64_t raw, int opsize)
+{
+    switch (opsize) {
+    case OS_BYTE:
+        return (int8_t)raw;
+    case OS_WORD:
+        return (int16_t)raw;
+    default:
+        return (int32_t)raw;
+    }
+}
+
+/*
+ * Loads a .B/.W/.L/.S/.D operand that is not an infinity or a NaN into *r,
+ * exactly.  The x87 raises DE when it normalizes a denormal .S or .D; the
+ * flag is cleared again, as nothing was lost.
+ */
+static void ffast_convert(FPReg *r, uint64_t raw, int opsize)
+{
+    switch (opsize) {
+    case OS_SINGLE: {
+        uint32_t v = raw;
+
+        asm volatile("flds %[v]\n\t" "fstpt %[r]"
+                     : [r] "=m"(*r) : [v] "m"(v) : "st");
+        if (!(v & 0x7f800000) && (v & 0x007fffff)) {
+            ffast_clear_flags();
+        }
+        break;
+    }
+    case OS_DOUBLE:
+        asm volatile("fldl %[v]\n\t" "fstpt %[r]"
+                     : [r] "=m"(*r) : [v] "m"(raw) : "st");
+        if (!(raw & 0x7ff0000000000000ull) && (raw & 0x000fffffffffffffull)) {
+            ffast_clear_flags();
+        }
+        break;
+    default: {
+        int32_t v = ffast_raw_int(raw, opsize);
+
+        asm volatile("fildl %[v]\n\t" "fstpt %[r]"
+                     : [r] "=m"(*r) : [v] "m"(v) : "st");
+        break;
+    }
+    }
+}
+
+/* Computes an x87 kind into *r; returns the status word. */
+static uint16_t ffast_compute(FFastKind k, FPReg *r, const FPReg *dest,
+                              const FPReg *src)
+{
+    uint16_t sw;
+
+    switch (k) {
+    case FFAST_ROUND:
+        FFAST_MONADIC(X87_ROUND, r, src, sw);
+        break;
+    case FFAST_INT:
+        /*
+         * floatx80_round_to_int() rounds to an integer, then to the
+         * precision; frndint ignores the precision control.
+         */
+        FFAST_MONADIC("frndint\n\t" X87_ROUND, r, src, sw);
+        break;
+    case FFAST_SQRT:
+        FFAST_MONADIC("fsqrt", r, src, sw);
+        break;
+    case FFAST_ABS:
+        FFAST_MONADIC("fabs\n\t" X87_ROUND, r, src, sw);
+        break;
+    case FFAST_NEG:
+        FFAST_MONADIC("fchs\n\t" X87_ROUND, r, src, sw);
+        break;
+    case FFAST_ADD:
+        FFAST_DYADIC("fadd", r, dest, src, sw);
+        break;
+    case FFAST_SUB:
+        FFAST_DYADIC("fsub", r, dest, src, sw);
+        break;
+    case FFAST_MUL:
+        FFAST_DYADIC("fmul", r, dest, src, sw);
+        break;
+    case FFAST_DIV:
+        FFAST_DYADIC("fdiv", r, dest, src, sw);
+        break;
+    default:
+        g_assert_not_reached();
+    }
+    return sw;
+}
+
+/* Writes an accepted result r to dest, and FPSR. */
+static inline void ffast_accept(CPUM68KState *env, FPReg *dest,
+                                const FPReg *r, bool inexact)
+{
+    uint32_t cc = ffast_cc(r);
+
+    dest->l.upper = r->l.upper;
+    dest->l.lower = r->l.lower;
+    ffast_set_fpsr(env, cc, inexact);
+}
+
+/*
+ * The x87 part of an attempt: kind k, computing a OP b or OP b, under the
+ * control word cw; inexact says whether anything before the operation was.
+ * Returns false, having written nothing to the guest, when the exact path
+ * has to do the instruction.
+ */
+static bool ffast_try_x87(CPUM68KState *env, FPReg *dest, const FPReg *a,
+                          const FPReg *b, FFastKind k, uint16_t cw,
+                          bool inexact)
+{
+    uint16_t sw;
+    FPReg r;
+
+    ffast_load_cw(cw);
+    sw = ffast_compute(k, &r, a, b);
+    if (sw & X87_NOT_INEXACT) {
+        ffast_clear_flags();
+        return false;
+    }
+    if (!ffast_result_ok(&r, ffast_zero_ok(k, a, b)) ||
+        !ffast_range_ok(&r, cw)) {
+        return false;
+    }
+    inexact |= ffast_inexact(k, &r, a, b, ffast_prec(cw));
+    /*
+     * A rounded result in the lowest normal binade: whether that underflowed
+     * depends on whether tininess is detected before or after rounding, so
+     * it is left to the exact path, whichever convention fp_status has.
+     */
+    if ((r.l.upper & 0x7fff) == 1 && inexact) {
+        return false;
+    }
+    ffast_accept(env, dest, &r, inexact);
+    return true;
+}
+
+/*
+ * The attempt at opmode, of kind k (not FFAST_EXACT), with src zero or
+ * normal; inexact says whether src's conversion from a raw operand was.
+ * Returns false, having written nothing to the guest, when the exact path
+ * has to do the instruction.
+ */
+static bool ffast_try(CPUM68KState *env, FPReg *dest, const FPReg *src,
+                      uint32_t opmode, FFastKind k, bool inexact)
+{
+    uint16_t cw;
+    FPReg a, b;
+
+    if ((k == FFAST_CMP || k >= FFAST_ADD) && !ffast_operand_ok(dest)) {
+        return false;
+    }
+    switch (k) {
+    case FFAST_TST:
+        ffast_set_fpsr(env, ffast_cc(src), inexact);
+        return true;
+    case FFAST_CMP:
+        ffast_set_fpsr(env, ffast_compare(dest, src), inexact);
+        return true;
+    case FFAST_MOVE:
+        ffast_accept(env, dest, src, inexact);
+        return true;
+    case FFAST_SGLMUL:
+    case FFAST_SGLDIV:
+        /*
+         * helper_fsglmul() and helper_fsgldiv() first round both operands to
+         * single precision towards zero, then operate in single precision
+         * with FPCR's rounding mode.  An operand outside the single range is
+         * left to the exact path, as ffast_range_ok() says.
+         */
+        cw = ffast_op_cw(env, opmode);
+        if (!ffast_range_ok(dest, cw) || !ffast_range_ok(src, cw)) {
+            return false;
+        }
+        inexact |= ffast_lost(dest->l.lower, 24) ||
+                   ffast_lost(src->l.lower, 24);
+        a.l.upper = dest->l.upper;
+        a.l.lower = dest->l.lower & FFAST_SGL_MASK;
+        b.l.upper = src->l.upper;
+        b.l.lower = src->l.lower & FFAST_SGL_MASK;
+        return ffast_try_x87(env, dest, &a, &b,
+                             k == FFAST_SGLMUL ? FFAST_MUL : FFAST_DIV,
+                             cw, inexact);
+    default:
+        return ffast_try_x87(env, dest, dest, src, k,
+                             ffast_op_cw(env, opmode), inexact);
+    }
+}
+
+/* The exact-path bodies, by opmode, as DISAS_INSN(fpu) emits them. */
+typedef void FFastExact1(CPUM68KState *, FPReg *, FPReg *);
+typedef void FFastExact2(CPUM68KState *, FPReg *, FPReg *, FPReg *);
+
+static FFastExact1 * const ffast_exact1[0x80] = {
+    [0x01] = helper_firound,  [0x02] = helper_fsinh,
+    [0x03] = helper_fitrunc,  [0x04] = helper_fsqrt,
+    [0x06] = helper_flognp1,  [0x08] = helper_fetoxm1,
+    [0x09] = helper_ftanh,    [0x0a] = helper_fatan,
+    [0x0c] = helper_fasin,    [0x0d] = helper_fatanh,
+    [0x0e] = helper_fsin,     [0x0f] = helper_ftan,
+    [0x10] = helper_fetox,    [0x11] = helper_ftwotox,
+    [0x12] = helper_ftentox,  [0x14] = helper_flogn,
+    [0x15] = helper_flog10,   [0x16] = helper_flog2,
+    [0x18] = helper_fabs,     [0x19] = helper_fcosh,
+    [0x1a] = helper_fneg,     [0x1c] = helper_facos,
+    [0x1d] = helper_fcos,     [0x1e] = helper_fgetexp,
+    [0x1f] = helper_fgetman,
+    [0x40] = helper_fsround,  [0x41] = helper_fssqrt,
+    [0x44] = helper_fdround,  [0x45] = helper_fdsqrt,
+    [0x58] = helper_fsabs,    [0x5a] = helper_fsneg,
+    [0x5c] = helper_fdabs,    [0x5e] = helper_fdneg,
+};
+
+static FFastExact2 * const ffast_exact2[0x80] = {
+    [0x20] = helper_fdiv,     [0x21] = helper_fmod,
+    [0x22] = helper_fadd,     [0x23] = helper_fmul,
+    [0x24] = helper_fsgldiv,  [0x25] = helper_frem,
+    [0x26] = helper_fscale,   [0x27] = helper_fsglmul,
+    [0x28] = helper_fsub,
+    [0x60] = helper_fsdiv,    [0x62] = helper_fsadd,
+    [0x63] = helper_fsmul,    [0x64] = helper_fddiv,
+    [0x66] = helper_fdadd,    [0x67] = helper_fdmul,
+    [0x68] = helper_fssub,    [0x6c] = helper_fdsub,
+};
+
+/*
+ * What exact mode does for opmode: the op helper, then ftst on the result,
+ * except FCMP and FTST, which set FPSR themselves.  The dyadic helpers take
+ * the source first and compute dest OP src.
+ */
+static void ffast_exact_op(CPUM68KState *env, FPReg *dest, FPReg *src,
+                           uint32_t opmode)
+{
+    switch (opmode) {
+    case 0x00:
+        dest->l.upper = src->l.upper;
+        dest->l.lower = src->l.lower;
+        break;
+    case 0x30 ... 0x37:
+        helper_fsincos(env, dest, &env->fregs[opmode & 7], src);
+        break;
+    case 0x38:
+        helper_fcmp(env, src, dest);
+        return;
+    case 0x3a:
+        helper_ftst(env, src);
+        return;
+    default:
+        if (ffast_exact1[opmode]) {
+            ffast_exact1[opmode](env, dest, src);
+        } else {
+            ffast_exact2[opmode](env, dest, src, dest);
+        }
+        break;
+    }
+    helper_ftst(env, dest);
+}
+
+void HELPER(ffast_op)(CPUM68KState *env, FPReg *dest, FPReg *src,
+                      uint32_t opmode)
+{
+    FFastKind k = ffast_kind(opmode);
+
+    if (k != FFAST_EXACT && ffast_operand_ok(src) &&
+        ffast_try(env, dest, src, opmode, k, false)) {
+        return;
+    }
+    ffast_exact_op(env, dest, src, opmode);
+}
+
+void HELPER(ffast_op_raw)(CPUM68KState *env, FPReg *dest, uint64_t raw,
+                          uint32_t desc)
+{
+    uint32_t opmode = desc & 0x7f;
+    int opsize = desc >> 8;
+    FFastKind k = ffast_kind(opmode);
+    FPReg *src = &env->fp_result;
+
+    if (k != FFAST_EXACT && ffast_raw_ok(raw, opsize)) {
+        uint16_t cw = env->fast_fpu_cw;
+        bool inexact = false;
+        uint16_t sw = 0;
+        FPReg conv;
+
+        ffast_convert(&conv, raw, opsize);
+        /*
+         * Exact mode's conversion is rounded to FPCR's precision.  Only a .L
+         * or .D operand can have more significant bits than single precision
+         * holds, and none has more than double.
+         */
+        if (ffast_lost(conv.l.lower, ffast_prec(cw))) {
+            inexact = true;
+            ffast_load_cw(cw);
+            FFAST_MONADIC(X87_ROUND, &conv, &conv, sw);
+        }
+        if (sw & X87_NOT_INEXACT) {
+            ffast_clear_flags();
+        } else if (ffast_range_ok(&conv, cw) &&
+                   ffast_try(env, dest, &conv, opmode, k, inexact)) {
+            return;
+        }
+    }
+
+    /* As gen_load_fp() converts into fp_result, then the instruction. */
+    switch (opsize) {
+    case OS_SINGLE:
+        helper_extf32(env, src, (uint32_t)raw);
+        break;
+    case OS_DOUBLE:
+        helper_extf64(env, src, raw);
+        break;
+    default:
+        helper_exts32(env, src, ffast_raw_int(raw, opsize));
+        break;
+    }
+    ffast_exact_op(env, dest, src, opmode);
+}
+
+uint64_t HELPER(ffast_store)(CPUM68KState *env, FPReg *src, uint32_t opsize)
+{
+    uint64_t v;
+
+    if (ffast_operand_ok(src)) {
+        bool zero = !(src->l.upper & 0x7fff);
+        bool inexact;
+        uint16_t sw;
+
+        ffast_load_cw(env->fast_fpu_cw);
+        switch (opsize) {
+        case OS_SINGLE: {
+            uint32_t f;
+
+            asm volatile("fldt %[s]\n\t" "fstps %[v]\n\t" "fnstsw %[w]"
+                         : [v] "=m"(f), [w] "=a"(sw) : [s] "m"(*src) : "st");
+            inexact = ffast_lost(src->l.lower, 24);
+            if (!(sw & X87_NOT_INEXACT) &&
+                ffast_out_ok(extract32(f, 23, 8), 0xff, zero, inexact)) {
+                ffast_set_fpsr(env, ffast_cc(src), inexact);
+                return f;
+            }
+            break;
+        }
+        case OS_DOUBLE: {
+            uint64_t d;
+
+            asm volatile("fldt %[s]\n\t" "fstpl %[v]\n\t" "fnstsw %[w]"
+                         : [v] "=m"(d), [w] "=a"(sw) : [s] "m"(*src) : "st");
+            inexact = ffast_lost(src->l.lower, 53);
+            if (!(sw & X87_NOT_INEXACT) &&
+                ffast_out_ok(extract64(d, 52, 11), 0x7ff, zero, inexact)) {
+                ffast_set_fpsr(env, ffast_cc(src), inexact);
+                return d;
+            }
+            break;
+        }
+        default: {
+            /*
+             * .B and .W store the low bits of the int32, as in exact mode.
+             * INT32_MIN is also what an out-of-range source gives.
+             */
+            int32_t i;
+
+            asm volatile("fldt %[s]\n\t" "fistpl %[v]\n\t" "fnstsw %[w]"
+                         : [v] "=m"(i), [w] "=a"(sw) : [s] "m"(*src) : "st");
+            if (!(sw & X87_NOT_INEXACT) && i != INT32_MIN) {
+                ffast_set_fpsr(env, ffast_cc(src), ffast_int_inexact(src, 64));
+                return (uint32_t)i;
+            }
+            break;
+        }
+        }
+        if (sw & X87_NOT_INEXACT) {
+            ffast_clear_flags();
+        }
+    }
+
+    /* The conversion helper gen_store_fp() calls, then ftst on the source. */
+    switch (opsize) {
+    case OS_SINGLE:
+        v = helper_redf32(env, src);
+        break;
+    case OS_DOUBLE:
+        v = helper_redf64(env, src);
+        break;
+    default:
+        v = (uint32_t)helper_reds32(env, src);
+        break;
+    }
+    helper_ftst(env, src);
+    return v;
+}
+
+#endif

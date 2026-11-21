@@ -90,6 +90,24 @@ DEF_HELPER_3(ftanh, void, env, fp, fp)
 DEF_HELPER_3(fsinh, void, env, fp, fp)
 DEF_HELPER_3(fcosh, void, env, fp, fp)
 
+#if defined(__x86_64__)
+/*
+ * fast-fpu mode (fpu_fast.c): one call per FP data instruction, on the host
+ * x87 with the exact path as fallback inside the same call.  None of them
+ * can raise a guest exception.
+ *
+ * ffast_op(dest, src, opmode): opclass 0/2 with the source an FP register or
+ * an extended operand already in fp_result.  FCMP and FTST write no register.
+ * ffast_op_raw(dest, raw, opmode | opsize << 8): the source is the .B/.W/.L/
+ * .S/.D operand as loaded, converted in the helper.
+ * ffast_store(src, opsize): FMOVE out to .B/.W/.L/.S/.D; returns the value
+ * to store and sets FPSR as the conversion helper and ftst would.
+ */
+DEF_HELPER_FLAGS_4(ffast_op, TCG_CALL_NO_RWG, void, env, fp, fp, i32)
+DEF_HELPER_FLAGS_4(ffast_op_raw, TCG_CALL_NO_RWG, void, env, fp, i64, i32)
+DEF_HELPER_FLAGS_3(ffast_store, TCG_CALL_NO_RWG, i64, env, fp, i32)
+#endif
+
 DEF_HELPER_3(mac_move, void, env, i32, i32)
 DEF_HELPER_3(macmulf, i64, env, i32, i32)
 DEF_HELPER_3(macmuls, i64, env, i32, i32)

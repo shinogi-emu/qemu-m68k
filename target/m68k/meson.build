@@ -1,6 +1,7 @@
 m68k_ss = ss.source_set()
 m68k_ss.add(files(
   'cpu.c',
+  'fpu_fast.c',
   'fpu_helper.c',
   'helper.c',
   'op_helper.c',

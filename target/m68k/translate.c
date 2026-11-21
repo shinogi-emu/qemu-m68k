@@ -111,6 +111,7 @@ typedef struct DisasContext {
     TCGv writeback[8];
     bool ss_active;
     bool fast_fpu;
+    bool fpcr_check;        /* gen_fast_fpcr_check() after this insn */
 } DisasContext;
 
 static TCGv get_areg(DisasContext *s, unsigned regno)
@@ -264,6 +265,27 @@ static void gen_lookup_tb(DisasContext *s)
     update_cc_op(s);
     tcg_gen_movi_i32(QREG_PC, s->pc);
     s->base.is_jmp = DISAS_JUMP;
+}
+
+/*
+ * In a fast-fpu TB, after an instruction that wrote FPCR from a register or
+ * memory.  The TB flag depends only on FPCR's enable byte being zero, as the
+ * fast helpers read the rounding mode and precision at run time; so leave
+ * the TB, to a lookup under the new flags, only when the new enable byte is
+ * non-zero.  Emitted once the instruction is complete, writebacks included.
+ */
+static void gen_fast_fpcr_check(DisasContext *s)
+{
+    TCGLabel *still_fast = gen_new_label();
+    TCGv t = tcg_temp_new();
+
+    update_cc_op(s);
+    tcg_gen_ld_i32(t, tcg_env, offsetof(CPUM68KState, fpcr));
+    tcg_gen_andi_i32(t, t, FPCR_EXCP_MASK);
+    tcg_gen_brcondi_i32(TCG_COND_EQ, t, 0, still_fast);
+    tcg_gen_movi_i32(QREG_PC, s->pc);
+    tcg_gen_lookup_and_goto_ptr();
+    gen_set_label(still_fast);
 }
 
 static void gen_raise_exception(int nr)
@@ -943,8 +965,77 @@ static void gen_fp_move(TCGv_ptr dest, TCGv_ptr src)
     tcg_gen_st_i64(t64, dest, offsetof(FPReg, l.lower));
 }
 
+/*
+ * fast-fpu mode (s->fast_fpu, set only on x86_64 hosts): FMOVE out to
+ * .B/.W/.L/.S/.D is one ffast_store call, which converts and sets FPSR, so
+ * no ftst follows it.  An opclass 0/2 source in those formats is loaded raw
+ * and converted inside ffast_op_raw.
+ */
+static TCGv_i64 gen_ffast_store(TCGv_ptr fp, int opsize)
+{
+#if defined(__x86_64__)
+    TCGv_i64 t64 = tcg_temp_new_i64();
+
+    gen_helper_ffast_store(t64, tcg_env, fp, tcg_constant_i32(opsize));
+    return t64;
+#else
+    g_assert_not_reached();
+#endif
+}
+
+static void gen_ffast_op(TCGv_ptr dest, TCGv_ptr src, TCGv_i64 raw,
+                         int opmode, int opsize)
+{
+#if defined(__x86_64__)
+    if (raw) {
+        gen_helper_ffast_op_raw(tcg_env, dest, raw,
+                                tcg_constant_i32(opmode | opsize << 8));
+    } else {
+        gen_helper_ffast_op(tcg_env, dest, src, tcg_constant_i32(opmode));
+    }
+#else
+    g_assert_not_reached();
+#endif
+}
+
+/* FMOVE out conversion to 32 bits: .B/.W/.L as an int32, or .S. */
+static void gen_fp_store32(DisasContext *s, int opsize, TCGv dst, TCGv_ptr fp)
+{
+    if (s->fast_fpu) {
+        tcg_gen_extrl_i64_i32(dst, gen_ffast_store(fp, opsize));
+    } else if (opsize == OS_SINGLE) {
+        gen_helper_redf32(dst, tcg_env, fp);
+    } else {
+        gen_helper_reds32(dst, tcg_env, fp);
+    }
+}
+
+/*
+ * Source conversion from 32 bits (.B/.W/.L sign-extended, or .S), or from
+ * .D.  With raw set (fast-fpu mode) the operand is left unconverted in raw.
+ */
+static void gen_fp_load32(int opsize, TCGv_ptr fp, TCGv val, TCGv_i64 raw)
+{
+    if (raw) {
+        tcg_gen_extu_i32_i64(raw, val);
+    } else if (opsize == OS_SINGLE) {
+        gen_helper_extf32(tcg_env, fp, val);
+    } else {
+        gen_helper_exts32(tcg_env, fp, val);
+    }
+}
+
+static void gen_fp_load64(TCGv_ptr fp, TCGv_i64 val, TCGv_i64 raw)
+{
+    if (raw) {
+        tcg_gen_mov_i64(raw, val);
+    } else {
+        gen_helper_extf64(tcg_env, fp, val);
+    }
+}
+
 static void gen_load_fp(DisasContext *s, int opsize, TCGv addr, TCGv_ptr fp,
-                        int index)
+                        int index, TCGv_i64 raw)
 {
     TCGv tmp;
     TCGv_i64 t64;
@@ -956,15 +1047,15 @@ static void gen_load_fp(DisasContext *s, int opsize, TCGv addr, TCGv_ptr fp,
     case OS_WORD:
     case OS_LONG:
         tcg_gen_qemu_ld_tl(tmp, addr, index, opsize | MO_SIGN | MO_TE);
-        gen_helper_exts32(tcg_env, fp, tmp);
+        gen_fp_load32(opsize, fp, tmp, raw);
         break;
     case OS_SINGLE:
         tcg_gen_qemu_ld_tl(tmp, addr, index, MO_TEUL);
-        gen_helper_extf32(tcg_env, fp, tmp);
+        gen_fp_load32(opsize, fp, tmp, raw);
         break;
     case OS_DOUBLE:
         tcg_gen_qemu_ld_i64(t64, addr, index, MO_TEUQ);
-        gen_helper_extf64(tcg_env, fp, t64);
+        gen_fp_load64(fp, t64, raw);
         break;
     case OS_EXTENDED:
         if (m68k_feature(s->env, M68K_FEATURE_CF_FPU)) {
@@ -1002,15 +1093,19 @@ static void gen_store_fp(DisasContext *s, int opsize, TCGv addr, TCGv_ptr fp,
     case OS_BYTE:
     case OS_WORD:
     case OS_LONG:
-        gen_helper_reds32(tmp, tcg_env, fp);
+        gen_fp_store32(s, opsize, tmp, fp);
         tcg_gen_qemu_st_tl(tmp, addr, index, opsize | MO_TE);
         break;
     case OS_SINGLE:
-        gen_helper_redf32(tmp, tcg_env, fp);
+        gen_fp_store32(s, opsize, tmp, fp);
         tcg_gen_qemu_st_tl(tmp, addr, index, MO_TEUL);
         break;
     case OS_DOUBLE:
-        gen_helper_redf64(t64, tcg_env, fp);
+        if (s->fast_fpu) {
+            t64 = gen_ffast_store(fp, opsize);
+        } else {
+            gen_helper_redf64(t64, tcg_env, fp);
+        }
         tcg_gen_qemu_st_i64(t64, addr, index, MO_TEUQ);
         break;
     case OS_EXTENDED:
@@ -1038,18 +1133,22 @@ static void gen_store_fp(DisasContext *s, int opsize, TCGv addr, TCGv_ptr fp,
 }
 
 static void gen_ldst_fp(DisasContext *s, int opsize, TCGv addr,
-                        TCGv_ptr fp, ea_what what, int index)
+                        TCGv_ptr fp, ea_what what, int index, TCGv_i64 raw)
 {
     if (what == EA_STORE) {
         gen_store_fp(s, opsize, addr, fp, index);
     } else {
-        gen_load_fp(s, opsize, addr, fp, index);
+        gen_load_fp(s, opsize, addr, fp, index, raw);
     }
 }
 
+/*
+ * raw: for a load in fast-fpu mode, where a .B/.W/.L/.S/.D operand is left
+ * unconverted (see gen_fp_load32()); NULL otherwise.
+ */
 static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
                           int reg0, int opsize, TCGv_ptr fp, ea_what what,
-                          int index)
+                          int index, TCGv_i64 raw)
 {
     TCGv reg, addr, tmp;
     TCGv_i64 t64;
@@ -1062,10 +1161,8 @@ static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
             case OS_BYTE:
             case OS_WORD:
             case OS_LONG:
-                gen_helper_reds32(reg, tcg_env, fp);
-                break;
             case OS_SINGLE:
-                gen_helper_redf32(reg, tcg_env, fp);
+                gen_fp_store32(s, opsize, reg, fp);
                 break;
             default:
                 g_assert_not_reached();
@@ -1077,10 +1174,10 @@ static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
             case OS_WORD:
             case OS_LONG:
                 tcg_gen_ext_i32(tmp, reg, opsize | MO_SIGN);
-                gen_helper_exts32(tcg_env, fp, tmp);
+                gen_fp_load32(opsize, fp, tmp, raw);
                 break;
             case OS_SINGLE:
-                gen_helper_extf32(tcg_env, fp, reg);
+                gen_fp_load32(opsize, fp, reg, raw);
                 break;
             default:
                 g_assert_not_reached();
@@ -1091,11 +1188,11 @@ static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
         return -1;
     case 2: /* Indirect register */
         addr = get_areg(s, reg0);
-        gen_ldst_fp(s, opsize, addr, fp, what, index);
+        gen_ldst_fp(s, opsize, addr, fp, what, index, raw);
         return 0;
     case 3: /* Indirect postincrement.  */
         addr = cpu_aregs[reg0];
-        gen_ldst_fp(s, opsize, addr, fp, what, index);
+        gen_ldst_fp(s, opsize, addr, fp, what, index, raw);
         tcg_gen_addi_i32(addr, addr, opsize_bytes(opsize));
         return 0;
     case 4: /* Indirect predecrememnt.  */
@@ -1103,7 +1200,7 @@ static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
         if (IS_NULL_QREG(addr)) {
             return -1;
         }
-        gen_ldst_fp(s, opsize, addr, fp, what, index);
+        gen_ldst_fp(s, opsize, addr, fp, what, index, raw);
         tcg_gen_mov_i32(cpu_aregs[reg0], addr);
         return 0;
     case 5: /* Indirect displacement.  */
@@ -1113,7 +1210,7 @@ static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
         if (IS_NULL_QREG(addr)) {
             return -1;
         }
-        gen_ldst_fp(s, opsize, addr, fp, what, index);
+        gen_ldst_fp(s, opsize, addr, fp, what, index, raw);
         return 0;
     case 7: /* Other */
         switch (reg0) {
@@ -1129,23 +1226,23 @@ static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
             switch (opsize) {
             case OS_BYTE:
                 tmp = tcg_constant_i32((int8_t)read_im8(env, s));
-                gen_helper_exts32(tcg_env, fp, tmp);
+                gen_fp_load32(opsize, fp, tmp, raw);
                 break;
             case OS_WORD:
                 tmp = tcg_constant_i32((int16_t)read_im16(env, s));
-                gen_helper_exts32(tcg_env, fp, tmp);
+                gen_fp_load32(opsize, fp, tmp, raw);
                 break;
             case OS_LONG:
                 tmp = tcg_constant_i32(read_im32(env, s));
-                gen_helper_exts32(tcg_env, fp, tmp);
+                gen_fp_load32(opsize, fp, tmp, raw);
                 break;
             case OS_SINGLE:
                 tmp = tcg_constant_i32(read_im32(env, s));
-                gen_helper_extf32(tcg_env, fp, tmp);
+                gen_fp_load32(opsize, fp, tmp, raw);
                 break;
             case OS_DOUBLE:
                 t64 = tcg_constant_i64(read_im64(env, s));
-                gen_helper_extf64(tcg_env, fp, t64);
+                gen_fp_load64(fp, t64, raw);
                 break;
             case OS_EXTENDED:
                 if (m68k_feature(s->env, M68K_FEATURE_CF_FPU)) {
@@ -1176,11 +1273,12 @@ static int gen_ea_mode_fp(CPUM68KState *env, DisasContext *s, int mode,
 }
 
 static int gen_ea_fp(CPUM68KState *env, DisasContext *s, uint16_t insn,
-                       int opsize, TCGv_ptr fp, ea_what what, int index)
+                     int opsize, TCGv_ptr fp, ea_what what, int index,
+                     TCGv_i64 raw)
 {
     int mode = extract32(insn, 3, 3);
     int reg0 = REG(insn, 0);
-    return gen_ea_mode_fp(env, s, mode, reg0, opsize, fp, what, index);
+    return gen_ea_mode_fp(env, s, mode, reg0, opsize, fp, what, index, raw);
 }
 
 typedef struct {
@@ -4847,8 +4945,7 @@ static void gen_store_fcr(DisasContext *s, TCGv val, int reg)
     case M68K_FPCR:
         gen_helper_set_fpcr(tcg_env, val);
         if (s->fast_fpu) {
-            /* The next TB's flags depend on the new FPCR. */
-            gen_lookup_tb(s);
+            s->fpcr_check = true;
         }
         break;
     }
@@ -4882,6 +4979,7 @@ static void gen_op_fmove_fcr(CPUM68KState *env, DisasContext *s,
     int is_write = (ext >> 13) & 1;
     int mode = extract32(insn, 3, 3);
     int i;
+    uint32_t imm;
     TCGv addr, start, tmp;
 
     switch (mode) {
@@ -4915,8 +5013,15 @@ static void gen_op_fmove_fcr(CPUM68KState *env, DisasContext *s,
                 gen_exception(s, s->base.pc_next, EXCP_ILLEGAL);
                 return;
             }
-            tmp = tcg_constant_i32(read_im32(env, s));
-            gen_store_fcr(s, tmp, mask);
+            imm = read_im32(env, s);
+            gen_store_fcr(s, tcg_constant_i32(imm), mask);
+            if (s->fpcr_check) {
+                /* An immediate FPCR is known now (gen_fast_fpcr_check()). */
+                s->fpcr_check = false;
+                if (imm & FPCR_EXCP_MASK) {
+                    gen_lookup_tb(s);
+                }
+            }
             return;
         }
         break;
@@ -5070,6 +5175,39 @@ static bool m68060_fpu_unimplemented(int opmode)
     }
 }
 
+/*
+ * The opmodes the opclass 0/2 switch in DISAS_INSN(fpu) implements; any
+ * other goes to its undef case.  In fast-fpu mode only these are handed to
+ * the fast helpers, whose exact path has a body for each.
+ */
+static bool m68k_fpu_opmode_ok(int opmode)
+{
+    switch (opmode) {
+    case 0x00 ... 0x04:
+    case 0x06:
+    case 0x08 ... 0x0a:
+    case 0x0c ... 0x12:
+    case 0x14 ... 0x16:
+    case 0x18 ... 0x1a:
+    case 0x1c ... 0x28:
+    case 0x30 ... 0x38:
+    case 0x3a:
+    case 0x40 ... 0x41:
+    case 0x44 ... 0x45:
+    case 0x58:
+    case 0x5a:
+    case 0x5c:
+    case 0x5e:
+    case 0x60:
+    case 0x62 ... 0x64:
+    case 0x66 ... 0x68:
+    case 0x6c:
+        return true;
+    default:
+        return false;
+    }
+}
+
 static void gen_060_fpu_exception(DisasContext *s, int exception,
                                   TCGv ea)
 {
@@ -5109,6 +5247,8 @@ DISAS_INSN(fpu)
     int opmode;
     int opsize;
     TCGv_ptr cpu_src, cpu_dest;
+    TCGv_i64 raw = NULL;
+    bool fast;
 
     ext = read_im16(env, s);
     opclass = (ext >> 13) & 7;
@@ -5208,10 +5348,13 @@ DISAS_INSN(fpu)
         cpu_src = gen_fp_ptr(REG(ext, 7));
         opsize = ext_opsize(ext, 10);
         if (gen_ea_fp(env, s, insn, opsize, cpu_src,
-                      EA_STORE, IS_USER(s)) == -1) {
+                      EA_STORE, IS_USER(s), NULL) == -1) {
             gen_addr_fault(s);
         }
-        gen_helper_ftst(tcg_env, cpu_src);
+        if (!s->fast_fpu || opsize > OS_DOUBLE) {
+            /* ffast_store has set FPSR for .B/.W/.L/.S/.D. */
+            gen_helper_ftst(tcg_env, cpu_src);
+        }
         return;
     case 4: /* fmove to control register.  */
     case 5: /* fmove from control register.  */
@@ -5237,12 +5380,20 @@ DISAS_INSN(fpu)
         gen_op_fmovem(env, s, insn, ext);
         return;
     }
+    /*
+     * An opmode the switch below does not implement goes to its undef case,
+     * after the source operand is loaded, in fast-fpu mode as without it.
+     */
+    fast = s->fast_fpu && m68k_fpu_opmode_ok(opmode);
     if (ext & (1 << 14)) {
         /* Source effective address.  */
         opsize = ext_opsize(ext, 10);
         cpu_src = gen_fp_result_ptr();
+        if (fast && opsize <= OS_DOUBLE) {
+            raw = tcg_temp_new_i64();
+        }
         if (gen_ea_fp(env, s, insn, opsize, cpu_src,
-                      EA_LOADS, IS_USER(s)) == -1) {
+                      EA_LOADS, IS_USER(s), raw) == -1) {
             gen_addr_fault(s);
             return;
         }
@@ -5252,6 +5403,11 @@ DISAS_INSN(fpu)
         cpu_src = gen_fp_ptr(REG(ext, 10));
     }
     cpu_dest = gen_fp_ptr(REG(ext, 7));
+    if (fast) {
+        /* The helper sets FPSR. */
+        gen_ffast_op(cpu_dest, cpu_src, raw, opmode, opsize);
+        return;
+    }
     switch (opmode) {
     case 0: /* fmove */
         gen_fp_move(cpu_dest, cpu_src);
@@ -6381,6 +6537,7 @@ static void m68k_tr_init_disas_context(DisasContextBase *dcbase, CPUState *cpu)
     dc->done_mac = 0;
     dc->writeback_mask = 0;
     dc->fast_fpu = (dc->base.tb->flags & TB_FLAGS_FAST_FPU) != 0;
+    dc->fpcr_check = false;
 
     dc->ss_active = (M68K_SR_TRACE(env->sr) == M68K_SR_TRACE_ANY_INS);
     /* If architectural single step active, limit to 1 */
@@ -6407,6 +6564,17 @@ static void m68k_tr_translate_insn(DisasContextBase *dcbase, CPUState *cpu)
 
     opcode_table[insn](env, dc, insn);
     do_writebacks(dc);
+
+    if (dc->fpcr_check) {
+        dc->fpcr_check = false;
+        /*
+         * A TB that ends here anyway leaves through a lookup, or, when
+         * single-stepping, through the trace exception.
+         */
+        if (dc->base.is_jmp == DISAS_NEXT && !dc->ss_active) {
+            gen_fast_fpcr_check(dc);
+        }
+    }
 
     dc->pc_prev = dc->base.pc_next;
     dc->base.pc_next = dc->pc;
