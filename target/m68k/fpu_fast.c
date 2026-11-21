@@ -41,6 +41,7 @@
 #if defined(__x86_64__)
 
 #include "qemu/host-utils.h"
+#include "host/cpuinfo.h"
 #include "cpu.h"
 #include "exec/helper-proto.h"
 #include "fpu/softfloat.h"
@@ -57,6 +58,9 @@
 #define X87_PC_MASK     0x0300
 #define X87_PC_S        0x0000
 #define X87_PC_D        0x0200
+#define X87_RC_MASK     0x0c00
+#define X87_RC_DOWN     0x0400
+#define X87_RC_UP       0x0800
 #define X87_RC_CHOP     0x0c00
 
 #define FFAST_BIAS      0x3fff
@@ -69,10 +73,34 @@
  */
 static __thread uint16_t ffast_cw_loaded;
 
-static inline void ffast_load_cw(uint16_t cw)
+/*
+ * Loads the control word cw unless the x87 holds it already.  Every class of
+ * control word has its own fldcw, named by site: FPCR's word, the FS and FD
+ * forms, FINTRZ, FSGLDIV, the stores and the raw conversion.  On a Zen 5 an
+ * fldcw that loads a different value than it did last time costs about
+ * 40 ns, while one that keeps loading the same value costs next to nothing,
+ * however often the word in force changes between sites.  The site name is
+ * part of the asm text, so the compiler cannot merge the sites.
+ */
+#define FFAST_LOAD_CW(cw, site)                                         \
+    do {                                                                \
+        uint16_t cw_ = (cw);                                            \
+                                                                        \
+        if (cw_ != ffast_cw_loaded) {                                   \
+            asm volatile("fldcw %0\t# " site : : "m"(cw_));             \
+            ffast_cw_loaded = cw_;                                      \
+        }                                                               \
+    } while (0)
+
+/*
+ * The same for the stores: fist(p) and fst(p) round to the destination
+ * format and ignore the precision field, so only the rounding control has to
+ * be FPCR's.
+ */
+static inline void ffast_load_store_cw(uint16_t cw)
 {
-    if (cw != ffast_cw_loaded) {
-        asm volatile("fldcw %0" : : "m"(cw));
+    if (!ffast_cw_loaded || ((ffast_cw_loaded ^ cw) & X87_RC_MASK)) {
+        asm volatile("fldcw %0\t# store" : : "m"(cw));
         ffast_cw_loaded = cw;
     }
 }
@@ -194,9 +222,6 @@ static uint16_t ffast_op_cw(CPUM68KState *env, uint32_t opmode)
     if (opmode & 0x40) {
         /* FSxxx and FDxxx: PREC_BEGIN(floatx80_precision_s or _d) */
         cw = (cw & ~X87_PC_MASK) | (opmode & 4 ? X87_PC_D : X87_PC_S);
-    } else if (opmode == 0x24 || opmode == 0x27) {
-        /* FSGLDIV, FSGLMUL: PREC_BEGIN(floatx80_precision_s) */
-        cw = (cw & ~X87_PC_MASK) | X87_PC_S;
     } else if (opmode == 0x03) {
         /* FINTRZ: float_round_to_zero, as helper_fitrunc() */
         cw |= X87_RC_CHOP;
@@ -630,9 +655,9 @@ static inline void ffast_accept(CPUM68KState *env, FPReg *dest,
 
 /*
  * The x87 part of an attempt: kind k, computing a OP b or OP b, under the
- * control word cw; inexact says whether anything before the operation was.
- * Returns false, having written nothing to the guest, when the exact path
- * has to do the instruction.
+ * control word cw, which the caller has loaded; inexact says whether
+ * anything before the operation was.  Returns false, having written nothing
+ * to the guest, when the exact path has to do the instruction.
  */
 static bool ffast_try_x87(CPUM68KState *env, FPReg *dest, const FPReg *a,
                           const FPReg *b, FFastKind k, uint16_t cw,
@@ -641,7 +666,6 @@ static bool ffast_try_x87(CPUM68KState *env, FPReg *dest, const FPReg *a,
     uint16_t sw;
     FPReg r;
 
-    ffast_load_cw(cw);
     sw = ffast_compute(k, &r, a, b);
     if (sw & X87_NOT_INEXACT) {
         ffast_clear_flags();
@@ -657,6 +681,91 @@ static bool ffast_try_x87(CPUM68KState *env, FPReg *dest, const FPReg *a,
      * depends on whether tininess is detected before or after rounding, so
      * it is left to the exact path, whichever convention fp_status has.
      */
+    if ((r.l.upper & 0x7fff) == 1 && inexact) {
+        return false;
+    }
+    ffast_accept(env, dest, &r, inexact);
+    return true;
+}
+
+/*
+ * Rounds the significand of a normal r to 24 bits in the direction of cw's
+ * rounding control, keeping the extended exponent.  False when that carries
+ * into the top binade, which is left to the exact path as an overflow would
+ * be.
+ */
+static bool ffast_round24(FPReg *r, uint16_t cw)
+{
+    uint64_t m = r->l.lower, low = m & ~FFAST_SGL_MASK, half = 1ull << 39;
+    bool neg = r->l.upper & 0x8000;
+    bool up;
+
+    if (!low) {
+        return true;
+    }
+    switch (cw & X87_RC_MASK) {
+    case X87_RC_DOWN:
+        up = neg;
+        break;
+    case X87_RC_UP:
+        up = !neg;
+        break;
+    case X87_RC_CHOP:
+        up = false;
+        break;
+    default:
+        /* to nearest, ties to the even significand */
+        up = low > half || (low == half && (m & (1ull << 40)));
+        break;
+    }
+    m &= FFAST_SGL_MASK;
+    if (up) {
+        m += 1ull << 40;
+        if (!m) {
+            if ((r->l.upper & 0x7fff) + 1 >= 0x7ffe) {
+                return false;
+            }
+            m = 1ull << 63;
+            r->l.upper++;
+        }
+    }
+    r->l.lower = m;
+    return true;
+}
+
+/*
+ * FSGLMUL of the operands a and b, already truncated to 24 bits.  Their
+ * significands multiply exactly in 48 bits, so the x87 runs under FPCR's own
+ * word, which the caller has loaded: the product is exact under double or
+ * extended precision, and already rounded under single.  It is then rounded
+ * to 24 bits here, under FPCR's rounding mode, which is what
+ * helper_fsglmul()'s floatx80_mul under precision_s does.  So FSGLMUL needs no
+ * precision switch, and no fldcw between it and the ordinary operations.
+ * The result is held to the single range, as ffast_range_ok() says; the
+ * tininess rule is ffast_try_x87()'s.
+ */
+static bool ffast_try_sglmul(CPUM68KState *env, FPReg *dest, const FPReg *a,
+                             const FPReg *b, bool inexact)
+{
+    uint16_t cw = env->fast_fpu_cw;
+    uint16_t sw;
+    bool lost;
+    FPReg r;
+
+    FFAST_DYADIC("fmul", &r, a, b, sw);
+    if (sw & X87_NOT_INEXACT) {
+        ffast_clear_flags();
+        return false;
+    }
+    if (!ffast_result_ok(&r, ffast_zero_ok(FFAST_MUL, a, b))) {
+        return false;
+    }
+    lost = ffast_inexact(FFAST_MUL, &r, a, b, 24);
+    if ((lost && !ffast_round24(&r, cw)) ||
+        !ffast_range_ok(&r, (cw & ~X87_PC_MASK) | X87_PC_S)) {
+        return false;
+    }
+    inexact |= lost;
     if ((r.l.upper & 0x7fff) == 1 && inexact) {
         return false;
     }
@@ -697,7 +806,7 @@ static bool ffast_try(CPUM68KState *env, FPReg *dest, const FPReg *src,
          * with FPCR's rounding mode.  An operand outside the single range is
          * left to the exact path, as ffast_range_ok() says.
          */
-        cw = ffast_op_cw(env, opmode);
+        cw = (env->fast_fpu_cw & ~X87_PC_MASK) | X87_PC_S;
         if (!ffast_range_ok(dest, cw) || !ffast_range_ok(src, cw)) {
             return false;
         }
@@ -707,12 +816,26 @@ static bool ffast_try(CPUM68KState *env, FPReg *dest, const FPReg *src,
         a.l.lower = dest->l.lower & FFAST_SGL_MASK;
         b.l.upper = src->l.upper;
         b.l.lower = src->l.lower & FFAST_SGL_MASK;
-        return ffast_try_x87(env, dest, &a, &b,
-                             k == FFAST_SGLMUL ? FFAST_MUL : FFAST_DIV,
-                             cw, inexact);
+        if (k == FFAST_SGLMUL) {
+            FFAST_LOAD_CW(env->fast_fpu_cw, "fpcr");
+            return ffast_try_sglmul(env, dest, &a, &b, inexact);
+        }
+        FFAST_LOAD_CW(cw, "fsgldiv");
+        return ffast_try_x87(env, dest, &a, &b, FFAST_DIV, cw, inexact);
     default:
-        return ffast_try_x87(env, dest, dest, src, k,
-                             ffast_op_cw(env, opmode), inexact);
+        cw = ffast_op_cw(env, opmode);
+        if (opmode & 0x40) {
+            if (opmode & 4) {
+                FFAST_LOAD_CW(cw, "fd");
+            } else {
+                FFAST_LOAD_CW(cw, "fs");
+            }
+        } else if (opmode == 0x03) {
+            FFAST_LOAD_CW(cw, "fintrz");
+        } else {
+            FFAST_LOAD_CW(cw, "fpcr");
+        }
+        return ffast_try_x87(env, dest, dest, src, k, cw, inexact);
     }
 }
 
@@ -819,7 +942,7 @@ void HELPER(ffast_op_raw)(CPUM68KState *env, FPReg *dest, uint64_t raw,
          */
         if (ffast_lost(conv.l.lower, ffast_prec(cw))) {
             inexact = true;
-            ffast_load_cw(cw);
+            FFAST_LOAD_CW(cw, "conv");
             FFAST_MONADIC(X87_ROUND, &conv, &conv, sw);
         }
         if (sw & X87_NOT_INEXACT) {
@@ -850,11 +973,22 @@ uint64_t HELPER(ffast_store)(CPUM68KState *env, FPReg *src, uint32_t opsize)
     uint64_t v;
 
     if (ffast_operand_ok(src)) {
+        uint16_t cw = env->fast_fpu_cw;
         bool zero = !(src->l.upper & 0x7fff);
+        /*
+         * An integer store rounding towards zero (compiled float-to-int
+         * code sets FPCR's rounding mode just for it) uses fisttp, which
+         * truncates whatever the control word says: no fldcw.
+         */
+        bool trunc = opsize <= OS_LONG &&
+                     (cw & X87_RC_MASK) == X87_RC_CHOP &&
+                     (cpuinfo & CPUINFO_SSE3);
         bool inexact;
         uint16_t sw;
 
-        ffast_load_cw(env->fast_fpu_cw);
+        if (!trunc) {
+            ffast_load_store_cw(cw);
+        }
         switch (opsize) {
         case OS_SINGLE: {
             uint32_t f;
@@ -889,8 +1023,15 @@ uint64_t HELPER(ffast_store)(CPUM68KState *env, FPReg *src, uint32_t opsize)
              */
             int32_t i;
 
-            asm volatile("fldt %[s]\n\t" "fistpl %[v]\n\t" "fnstsw %[w]"
-                         : [v] "=m"(i), [w] "=a"(sw) : [s] "m"(*src) : "st");
+            if (trunc) {
+                asm volatile("fldt %[s]\n\t" "fisttpl %[v]\n\t" "fnstsw %[w]"
+                             : [v] "=m"(i), [w] "=a"(sw) : [s] "m"(*src)
+                             : "st");
+            } else {
+                asm volatile("fldt %[s]\n\t" "fistpl %[v]\n\t" "fnstsw %[w]"
+                             : [v] "=m"(i), [w] "=a"(sw) : [s] "m"(*src)
+                             : "st");
+            }
             if (!(sw & X87_NOT_INEXACT) && i != INT32_MIN) {
                 ffast_set_fpsr(env, ffast_cc(src), ffast_int_inexact(src, 64));
                 return (uint32_t)i;
