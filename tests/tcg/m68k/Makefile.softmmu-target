@@ -60,14 +60,16 @@ endif
 # A TB that is not fast must not chain past an FPCR write into a fast TB.
 # The guest prints P when it could tell the paths apart and the second pass
 # took the exact one, p when there was nothing to tell apart, and s on the
-# 68060, where nothing it computes differs between the paths.
+# 68060, where nothing it computes differs between the paths.  The property
+# is set with -cpu, so the off run stays off under qemu-fast-fpu.sh, which
+# would otherwise make it print P.
 fp-fast-chain: fp-fast-chain.S
 	$(CC) $(EXTRA_CFLAGS) -m68040 -nostdlib \
 		-Wl,-m,m68kelf,-e,_start,-Ttext,0x1000,-Tbss,0x9000 $< -o $@
 
 define run-fp-fast-chain-cpu
 	$(call run-test,$<,rm -f $<.out && \
-		$(QEMU) -M virt -cpu $1 -m 16 -global m68k-cpu.fast-fpu=$2 \
+		$(QEMU) -M virt -cpu $1$(COMMA)fast-fpu=$2 -m 16 \
 		-kernel $< -monitor none -display none -serial file:$<.out -no-reboot)
 	$(call quiet-command,grep -qx '$3' $<.out,TEST,$< on $1 fast-fpu=$2)
 endef
