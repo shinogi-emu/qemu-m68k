@@ -121,8 +121,12 @@ unexpected:
 
         .data
         .balign 4
-/* 10000.0: the library and exact mode disagree on its sine. */
-arg:        .long   0x400c0000,0x9c400000,0
+/*
+ * -2.1461538...: exact mode's sine of it is one ulp from the correctly
+ * rounded one, which glibc's sinl and mingw-w64's sinl both return.  (Of
+ * 10000.0, exact mode and mingw-w64 give the same wrong sine.)
+ */
+arg:        .long   0xc0000000,0x895a95a9,0x5a95a95b
 
         .bss
         .balign 4
