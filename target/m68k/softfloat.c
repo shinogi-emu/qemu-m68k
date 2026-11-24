@@ -238,7 +238,7 @@ floatx80 floatx80_lognp1(floatx80 a, float_status *status)
 
     if (aExp == 0x7FFF) {
         if ((uint64_t) (aSig << 1)) {
-            propagateFloatx80NaNOneArg(a, status);
+            return propagateFloatx80NaNOneArg(a, status);
         }
         if (aSign) {
             float_raise(float_flag_invalid, status);
@@ -437,7 +437,7 @@ floatx80 floatx80_logn(floatx80 a, float_status *status)
 
     if (aExp == 0x7FFF) {
         if ((uint64_t) (aSig << 1)) {
-            propagateFloatx80NaNOneArg(a, status);
+            return propagateFloatx80NaNOneArg(a, status);
         }
         if (aSign == 0) {
             return floatx80_default_inf(0, status);
@@ -603,7 +603,7 @@ floatx80 floatx80_log10(floatx80 a, float_status *status)
 
     if (aExp == 0x7FFF) {
         if ((uint64_t) (aSig << 1)) {
-            propagateFloatx80NaNOneArg(a, status);
+            return propagateFloatx80NaNOneArg(a, status);
         }
         if (aSign == 0) {
             return floatx80_default_inf(0, status);
@@ -659,7 +659,7 @@ floatx80 floatx80_log2(floatx80 a, float_status *status)
 
     if (aExp == 0x7FFF) {
         if ((uint64_t) (aSig << 1)) {
-            propagateFloatx80NaNOneArg(a, status);
+            return propagateFloatx80NaNOneArg(a, status);
         }
         if (aSign == 0) {
             return floatx80_default_inf(0, status);
